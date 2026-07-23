@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>鉄拳8 習得チェック</title>
+<style>
+  :root{
+    --bg:#0E0F14; --panel:#171922; --panel2:#1F2230; --border:#2A2E3D;
+    --text:#E6E8EF; --muted:#8A90A2; --dim:#3A3F4E;
+    --atk:#F6A93B; --pun:#4EA8FF; --def:#3ED598;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:620px;margin:0 auto;}
+  .sticky{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border);}
+  .pad{padding:16px;}
+  .row-top{display:flex;align-items:baseline;justify-content:space-between;}
+  .title{font-size:20px;font-weight:800;letter-spacing:.02em;}
+  .title small{color:var(--muted);font-weight:600;font-size:14px;}
+  .count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .count b{font-weight:800;}
+  input.search{
+    width:100%;margin-top:12px;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;color:var(--text);font-size:16px;padding:12px 14px;outline:none;
+    font-family:inherit;
+  }
+  .list{padding:8px 16px 48px;}
+  .item{
+    width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:13px 14px;margin-bottom:8px;cursor:pointer;font-family:inherit;color:var(--text);
+  }
+  .item:active{background:var(--panel2);}
+  .item .nm{font-size:16px;font-weight:700;}
+  .badge{font-size:10px;font-weight:800;color:var(--def);border:1px solid var(--def);border-radius:4px;padding:1px 5px;margin-left:8px;}
+  .meter{display:flex;align-items:center;}
+  .seg{border-radius:2px;}
+  .item-right{display:flex;align-items:center;gap:10px;}
+  .frac{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;width:26px;text-align:right;}
+  .empty{color:var(--muted);text-align:center;padding:48px 0;font-size:14px;}
+
+  .back{background:none;border:none;color:var(--muted);font-size:15px;padding:0;margin-bottom:12px;cursor:pointer;font-family:inherit;}
+  .dname{font-size:30px;font-weight:800;letter-spacing:.02em;}
+  .dcount{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:700;}
+  .dcount.done{color:var(--def);}
+  .sec{margin-top:22px;}
+  .sec-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .sec-dot{width:8px;height:8px;border-radius:2px;}
+  .sec-name{font-size:13px;font-weight:800;letter-spacing:.08em;}
+  .sec-desc{font-size:11px;color:var(--muted);}
+  .field{margin-bottom:12px;}
+  .field label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);margin-bottom:6px;}
+  .fdot{width:5px;height:5px;border-radius:50%;background:var(--dim);}
+  textarea{
+    width:100%;background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--border);
+    border-radius:8px;color:var(--text);font-size:15px;line-height:1.5;padding:10px 12px;
+    resize:vertical;outline:none;font-family:inherit;
+  }
+  .savebar{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:6px;font-size:11px;color:var(--def);pointer-events:none;opacity:0;transition:opacity .2s;}
+  .savebar.show{opacity:1;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="savebar" id="savebar">保存しました</div>
+
+<script>
+const CHARACTERS = [
+  {name:"仁",yomi:"じん",romaji:"jin"},{name:"一八",yomi:"かずや",romaji:"kazuya"},
+  {name:"ニーナ",yomi:"にーな",romaji:"nina"},{name:"キング",yomi:"きんぐ",romaji:"king"},
+  {name:"ロウ",yomi:"ろう",romaji:"law"},{name:"ポール",yomi:"ぽーる",romaji:"paul"},
+  {name:"ジャック8",yomi:"じゃっく",romaji:"jack"},{name:"ジュン",yomi:"じゅん",romaji:"jun"},
+  {name:"シャオユウ",yomi:"しゃおゆう",romaji:"xiaoyu"},{name:"リロイ",yomi:"りろい",romaji:"leroy"},
+  {name:"アスカ",yomi:"あすか",romaji:"asuka"},{name:"リリ",yomi:"りり",romaji:"lili"},
+  {name:"ブライアン",yomi:"ぶらいあん",romaji:"bryan"},{name:"ファラン",yomi:"ふぁらん",romaji:"hwoarang"},
+  {name:"クラウディオ",yomi:"くらうでぃお",romaji:"claudio"},{name:"アズセナ",yomi:"あずせな",romaji:"azucena"},
+  {name:"レイヴン",yomi:"れいゔん",romaji:"raven"},{name:"レオ",yomi:"れお",romaji:"leo"},
+  {name:"スティーブ",yomi:"すてぃーぶ",romaji:"steve"},{name:"クマ",yomi:"くま",romaji:"kuma"},
+  {name:"ヨシミツ",yomi:"よしみつ",romaji:"yoshimitsu"},{name:"シャヒーン",yomi:"しゃひーん",romaji:"shaheen"},
+  {name:"ドラグノフ",yomi:"どらぐのふ",romaji:"dragunov"},{name:"フェン",yomi:"ふぇん",romaji:"feng"},
+  {name:"パンダ",yomi:"ぱんだ",romaji:"panda"},{name:"リー",yomi:"りー",romaji:"lee"},
+  {name:"アリサ",yomi:"ありさ",romaji:"alisa"},{name:"ザフィーナ",yomi:"ざふぃーな",romaji:"zafina"},
+  {name:"デビル仁",yomi:"でびるじん",romaji:"devil jin"},{name:"レイナ",yomi:"れいな",romaji:"reina"},
+  {name:"ヴィクター",yomi:"ゔぃくたー",romaji:"victor"},{name:"ラース",yomi:"らーす",romaji:"lars"},
+  {name:"エディ",yomi:"えでぃ",romaji:"eddy"},{name:"リディア",yomi:"りでぃあ",romaji:"lidia"},
+  {name:"平八",yomi:"へいはち",romaji:"heihachi"},{name:"クライヴ",yomi:"くらいゔ",romaji:"clive"},
+  {name:"アンナ",yomi:"あんな",romaji:"anna"},{name:"ファーカムラム",yomi:"ふぁーかむらむ",romaji:"fahkumram"},
+  {name:"アーマーキング",yomi:"あーまーきんぐ",romaji:"armor king"},{name:"ミアリズ",yomi:"みありず",romaji:"mializ"},
+  {name:"州光",yomi:"くにみつ",romaji:"kunimitsu"}
+];
+const FIELDS = [
+  {key:"通常コンボ",cat:"攻め"},{key:"壁完走コンボ",cat:"攻め"},{key:"壁強コンボ",cat:"攻め"},
+  {key:"さばきコンボ",cat:"攻め"},{key:"ヒートバーストコンボ",cat:"攻め"},
+  {key:"12フレ確反",cat:"確反"},{key:"竜車蹴り確反",cat:"確反"},{key:"パワークラッシュ",cat:"守り"}
+];
+const CATS = ["攻め","確反","守り"];
+const CAT_COLOR = {"攻め":"var(--atk)","確反":"var(--pun)","守り":"var(--def)"};
+const CAT_HEX = {"攻め":"#F6A93B","確反":"#4EA8FF","守り":"#3ED598"};
+const CAT_DESC = {"攻め":"コンボ","確反":"確定反撃","守り":"割り込み"};
+const KEY = "tk8_8items";
+
+let data = {};
+try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ data = {}; }
+let query = "";
+
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function filledCount(name){const d=data[name]||{};return FIELDS.reduce((n,f)=>n+((d[f.key]||"").trim()?1:0),0);}
+
+let saveTimer=null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{localStorage.setItem(KEY,JSON.stringify(data));
+      const sb=document.getElementById("savebar");sb.classList.add("show");
+      setTimeout(()=>sb.classList.remove("show"),900);
+    }catch(e){}
+  },400);
+}
+
+function meterHTML(name,px){
+  const d=data[name]||{};const h=px===8?14:10;const gap=px===8?3:2;
+  let s='<div class="meter" style="gap:'+gap+'px">';
+  FIELDS.forEach(f=>{
+    const on=((d[f.key]||"").trim().length>0);
+    s+='<span class="seg" style="width:'+px+'px;height:'+h+'px;background:'+(on?CAT_HEX[f.cat]:"var(--dim)")+';opacity:'+(on?1:.55)+'"></span>';
+  });
+  return s+'</div>';
+}
+
+function renderList(){
+  const q=query.trim().toLowerCase();
+  const list=q?CHARACTERS.filter(c=>c.name.toLowerCase().includes(q)||c.yomi.includes(q)||c.romaji.includes(q)):CHARACTERS;
+  const done=CHARACTERS.filter(c=>filledCount(c.name)===8).length;
+  let h='';
+  h+='<div class="sticky"><div class="wrap pad">';
+  h+='<div class="row-top"><div class="title">鉄拳8 <small>習得チェック</small></div>';
+  h+='<div class="count">完成 <b style="color:'+(done?"#3ED598":"var(--muted)")+'">'+done+'</b> / '+CHARACTERS.length+'</div></div>';
+  h+='<input class="search" id="search" placeholder="キャラ検索（例: ニーナ / にーな / nina）" value="'+esc(query)+'">';
+  h+='</div></div>';
+  h+='<div class="wrap list">';
+  if(list.length===0){h+='<div class="empty">該当なし。名前を打ち直してください。</div>';}
+  list.forEach(c=>{
+    const n=filledCount(c.name);
+    h+='<button class="item" data-char="'+esc(c.name)+'">';
+    h+='<span style="display:flex;align-items:center;min-width:0"><span class="nm">'+esc(c.name)+'</span>'+(n===8?'<span class="badge">完</span>':'')+'</span>';
+    h+='<span class="item-right">'+meterHTML(c.name,6)+'<span class="frac">'+n+'/8</span></span>';
+    h+='</button>';
+  });
+  h+='</div>';
+  document.getElementById("app").innerHTML=h;
+
+  const s=document.getElementById("search");
+  s.addEventListener("input",e=>{query=e.target.value;renderList();
+    const el=document.getElementById("search");el.focus();
+    el.setSelectionRange(el.value.length,el.value.length);
+  });
+  document.querySelectorAll(".item").forEach(b=>{
+    b.addEventListener("click",()=>{query="";renderDetail(b.getAttribute("data-char"));});
+  });
+}
+
+function renderDetail(name){
+  const d=data[name]||{};const n=filledCount(name);
+  let h='';
+  h+='<div class="sticky"><div class="wrap pad">';
+  h+='<button class="back" id="back">← 一覧へ</button>';
+  h+='<div class="row-top"><div class="dname">'+esc(name)+'</div>';
+  h+='<div class="dcount'+(n===8?' done':'')+'" id="dcount">'+n+' / 8</div></div>';
+  h+='<div style="margin-top:10px" id="dmeter">'+meterHTML(name,8)+'</div>';
+  h+='</div></div>';
+  h+='<div class="wrap pad" style="padding-top:8px;padding-bottom:48px">';
+  CATS.forEach(cat=>{
+    h+='<div class="sec"><div class="sec-h">';
+    h+='<span class="sec-dot" style="background:'+CAT_COLOR[cat]+'"></span>';
+    h+='<span class="sec-name" style="color:'+CAT_COLOR[cat]+'">'+cat+'</span>';
+    h+='<span class="sec-desc">'+CAT_DESC[cat]+'</span></div>';
+    FIELDS.filter(f=>f.cat===cat).forEach(f=>{
+      const val=d[f.key]||"";const has=val.trim().length>0;
+      h+='<div class="field">';
+      h+='<label><span class="fdot" style="background:'+(has?CAT_HEX[cat]:"var(--dim)")+'"></span>'+f.key+'</label>';
+      h+='<textarea rows="2" data-key="'+esc(f.key)+'" data-cat="'+cat+'" placeholder="コマンド・レシピを入力" '+
+         'style="border-left-color:'+(has?CAT_HEX[cat]:"var(--border)")+'">'+esc(val)+'</textarea>';
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  document.getElementById("app").innerHTML=h;
+
+  document.getElementById("back").addEventListener("click",()=>renderList());
+  document.querySelectorAll("textarea").forEach(t=>{
+    t.addEventListener("input",()=>{
+      const key=t.getAttribute("data-key");const cat=t.getAttribute("data-cat");
+      if(!data[name])data[name]={};
+      data[name][key]=t.value;
+      const has=t.value.trim().length>0;
+      t.style.borderLeftColor=has?CAT_HEX[cat]:"var(--border)";
+      const dot=t.closest(".field").querySelector(".fdot");
+      if(dot)dot.style.background=has?CAT_HEX[cat]:"var(--dim)";
+      const nn=filledCount(name);
+      const dc=document.getElementById("dcount");
+      dc.textContent=nn+" / 8";dc.classList.toggle("done",nn===8);
+      document.getElementById("dmeter").innerHTML=meterHTML(name,8);
+      save();
+    });
+  });
+}
+
+renderList();
+</script>
+</body>
+</html>
