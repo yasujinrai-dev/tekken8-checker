@@ -1114,7 +1114,25 @@ const SND = (() => {
     buildGraph();
     return true;
   }
+  /* iPhoneのマナーモード対策：音の種類を「再生」にし、無音の<audio>を流し続けて消音スイッチの影響を外す */
+  let silentEl = null;
+  function silentWav() {
+    const sr = 8000, n = sr / 2, b = new Uint8Array(44 + n), v = new DataView(b.buffer);
+    const w = (o, s) => { for (let i = 0; i < s.length; i++) b[o + i] = s.charCodeAt(i); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, sr, true); v.setUint32(28, sr, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, 'data'); v.setUint32(40, n, true);
+    b.fill(128, 44); let s = ''; for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return 'data:audio/wav;base64,' + btoa(s);
+  }
+  function ignoreMuteSwitch() {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    try {
+      if (!silentEl) { silentEl = document.createElement('audio'); silentEl.src = silentWav(); silentEl.loop = true; silentEl.setAttribute('playsinline', ''); silentEl.preload = 'auto'; }
+      if (silentEl.paused) { const p = silentEl.play(); if (p && p.catch) p.catch(() => {}); }
+    } catch (e) {}
+  }
+  const running = () => !!ctx && ctx.state === 'running';
   function unlock() {
+    ignoreMuteSwitch();
     if (!init()) return;
     if (ctx.state === 'suspended') ctx.resume().catch(() => {});
     try { const b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(0); } catch (e) {}
@@ -1650,7 +1668,7 @@ const SND = (() => {
     let sum = 0, peak = 0; const d = buf.getChannelData(0); for (let i = 0; i < d.length; i++) { sum += d[i] * d[i]; peak = Math.max(peak, Math.abs(d[i])); }
     return { rms: +Math.sqrt(sum / d.length).toFixed(4), peak: +peak.toFixed(3) };
   }
-  return { unlock, bgm, jingle, cutJingle, sfx, cur, setOn, isOn: () => on, stopBgm, _parse: parse, _tracks: T, ready: () => !!ctx, measure, NORM };
+  return { unlock, running, bgm, jingle, cutJingle, sfx, cur, setOn, isOn: () => on, stopBgm, _parse: parse, _tracks: T, ready: () => !!ctx, measure, NORM };
 })();
 
 /* =====================================================================
@@ -3975,8 +3993,11 @@ const Title = (() => {
     dom = UI.el('div', 'title');
     dom.innerHTML = '<div class="logo">里見八犬伝</div><div class="sub">第一章　村雨丸</div><div class="hint">画面を タップして ください</div><div class="foot">原作：曲亭馬琴『南総里見八犬伝』より</div>';
     UI.root.appendChild(dom);
+    SND.bgm('title');   // 音が出せる環境ならこの時点から鳴る
+    await sleep(300); const wasRunning = SND.running();
     await waitTap();
     SND.unlock(); SND.bgm('title');
+    if (!DEBUG.auto && !DEBUG.fast) { await sleep(120); if (!wasRunning) await waitTap(); }   // 最初のタップで音が鳴り始めたら、題名画面のまま音楽を聞かせ、次のタップで先へ
     dom.querySelector('.hint').style.display = 'none';
     for (;;) {
       await Save.waitCloud(1500);
