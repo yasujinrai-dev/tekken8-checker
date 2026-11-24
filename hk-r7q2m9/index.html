@@ -1767,7 +1767,7 @@ const ITEMS = {
   mamori:    { name: '守りの丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['def', 3] }, desc: '飲んだ者の守りが3上がる' },
   // 武器
   nisemura:  { name: '村雨丸？', kind: 'w', wt: 'sword', atk: 2, price: 0, nosell: true, desc: '村雨丸…のはずの刀。どこか軽い' },
-  murasame:  { name: '村雨丸', kind: 'w', wt: 'sword', atk: 26, price: 0, nosell: true, desc: '抜けば刃に露が宿る名刀。怨霊を払う' },
+  murasame:  { name: '村雨丸', kind: 'w', wt: 'sword', atk: 26, elem: 'water', price: 0, nosell: true, desc: '刃に露が宿る名刀。斬れば水の力が走る' },
   bokuto:    { name: '木刀', kind: 'w', wt: 'sword', atk: 4, price: 12, desc: '稽古用の木の刀' },
   wakizashi: { name: '脇差', kind: 'w', wt: 'sword', atk: 9, price: 45, desc: '短めの刀' },
   uchigatana:{ name: '打刀', kind: 'w', wt: 'sword', atk: 16, price: 190, desc: '侍の使う刀' },
@@ -1804,34 +1804,34 @@ const SKILLS = {
 const MEMBERS = {
   shino:   { name: '信乃', full: '犬塚信乃', bead: '孝', sprite: 'shino', wt: 'sword',
     base: { hp: 32, mp: 6, atk: 8, def: 5, agi: 7 }, grow: { hp: 7.5, mp: 2.4, atk: 2.4, def: 1.6, agi: 1.4 },
-    learn: [[2, 'kounohikari'], [5, 'hayate']] },
+    learn: [] },   // 肉弾戦の剣士：わざは持たない
   sosuke:  { name: '荘助', full: '犬川荘助', bead: '義', sprite: 'sosuke', wt: 'staff',
     base: { hp: 36, mp: 5, atk: 7, def: 7, agi: 5 }, grow: { hp: 8.2, mp: 1.9, atk: 2.2, def: 1.9, agi: 1.15 },
-    learn: [[1, 'teate'], [4, 'dokunuki'], [6, 'kamae'], [8, 'ginoichigeki']] },
+    learn: [] },   // 肉弾戦：わざは持たない
   dosetsu: { name: '道節', full: '犬山道節', bead: '忠', sprite: 'dosetsu', wt: 'dsword',
     base: { hp: 40, mp: 14, atk: 9, def: 6, agi: 8 }, grow: { hp: 7.6, mp: 3.2, atk: 2.2, def: 1.5, agi: 1.35 },
     learn: [[1, 'katon'], [1, 'enbu'], [1, 'chunoinori']] },
 };
-const EXP_TABLE = [0, 0, 8, 22, 45, 80, 130, 200, 300, 430, 600, 820, 1100, 1450, 1900, 2450, 3100, 3900, 4800, 5900, 7200];
+const EXP_TABLE = [0, 0, 12, 35, 75, 130, 220, 420, 620, 900, 1250, 1650, 2100, 2650, 3300, 4100, 5000, 6100, 7400, 8900, 10600];
 const MAX_LV = EXP_TABLE.length - 1;
 
 /* 妖怪。act は [重み, 行動]
    chest は宝箱：[落とす確率の分母, ふつうの中身, 当たりの中身, 当たりの確率の分母]（1戦で宝箱は1つまで。大将は落とさない） */
 const ENEMIES = {
-  onibi:      { name: '鬼火', spr: 'onibi', hp: 9, atk: 10, def: 3, agi: 6, exp: 3, gold: 3, weak: ['water'], resist: ['fire'], chest: [10, 'yakusou', 'reisui', 8], act: [[3, 'attack'], [1, 'hinoko']] },
-  karakasa:   { name: '唐傘小僧', spr: 'karakasa', hp: 14, atk: 12, def: 5, agi: 5, exp: 4, gold: 5, weak: ['fire'], chest: [10, 'yakusou', 'mayoke', 6], act: [[3, 'attack'], [1, 'nameru']] },
-  sanzoku:    { name: '山賊', spr: 'sanzoku', hp: 22, atk: 15, def: 6, agi: 6, exp: 8, gold: 14, chest: [6, 'yakusou', 'wakizashi', 10], act: [[4, 'attack'], [1, 'nusumu']] },
-  chochin:    { name: '提灯お化け', spr: 'chochin', hp: 19, atk: 17, def: 7, agi: 7, exp: 9, gold: 7, weak: ['water'], chest: [9, 'dokukeshi', 'reisui', 6], act: [[3, 'attack'], [1, 'ayashi']] },
-  kappa:      { name: '河童', spr: 'kappa', hp: 27, atk: 21, def: 9, agi: 8, exp: 12, gold: 10, weak: ['fire'], resist: ['water'], chest: [8, 'yakusou', 'kawado', 10], act: [[3, 'attack'], [1, 'sumo']] },
-  tanuki:     { name: '化け狸', spr: 'tanuki', hp: 30, atk: 19, def: 8, agi: 9, exp: 14, gold: 16, chest: [6, 'yakusou', 'hangontan', 8], act: [[3, 'attack'], [1, 'haratsuzumi']] },
-  kamaitachi: { name: '鎌鼬', spr: 'kamaitachi', hp: 20, atk: 22, def: 7, agi: 16, exp: 14, gold: 9, chest: [8, 'dokukeshi', 'kashibo', 8], act: [[3, 'attack'], [1, 'renzan']] },
-  hitotsume:  { name: '一つ目小僧', spr: 'hitotsume', hp: 38, atk: 27, def: 11, agi: 10, exp: 22, gold: 15, chest: [6, 'reisui', 'mamori', 6], act: [[3, 'attack'], [1, 'niramu']] },
-  uramibi:    { name: '怨み火', spr: 'uramibi', hp: 25, atk: 27, def: 10, agi: 12, exp: 20, gold: 12, weak: ['water'], resist: ['fire'], chest: [6, 'reisui', 'hangontan', 6], act: [[2, 'attack'], [1, 'onnen']] },
-  ogama:      { name: '大蝦蟇', spr: 'ogama', hp: 62, atk: 31, def: 14, agi: 6, exp: 36, gold: 22, chest: [4, 'dokukeshi', 'kusari', 8], act: [[3, 'attack'], [1, 'dokugiri']] },
-  kashira:    { name: '山賊の頭', spr: 'sanzoku', hp: 140, atk: 34, def: 11, agi: 8, exp: 70, gold: 60, boss: true, act: [[4, 'attack'], [1, 'nusumu']] },
-  ronin:      { name: '浪人', spr: 'ronin', hp: 42, atk: 31, def: 13, agi: 11, exp: 30, gold: 30, chest: [5, 'hangontan', 'uchigatana', 8], act: [[3, 'attack'], [1, 'iai']] },
-  tsuchigumo: { name: '土蜘蛛', spr: 'tsuchigumo', hp: 310, atk: 31, def: 16, agi: 12, exp: 150, gold: 120, boss: true, acts: 2, weak: ['fire'], act: [[4, 'attack'], [2, 'dokuga'], [1, 'ito']] },
-  samojiro:   { name: '網乾左母二郎', spr: 'samojiro', hp: 320, atk: 34, def: 18, agi: 15, exp: 260, gold: 240, boss: true, acts: 2, act: [[4, 'attack'], [2, 'iaigiri'], [1, 'shibuki']] },
+  onibi:      { name: '鬼火', spr: 'onibi', hp: 11, atk: 11, def: 3, agi: 6, exp: 3, gold: 3, weak: ['water'], resist: ['fire'], chest: [10, 'yakusou', 'reisui', 8], act: [[3, 'attack'], [1, 'hinoko']] },
+  karakasa:   { name: '唐傘小僧', spr: 'karakasa', hp: 17, atk: 13, def: 5, agi: 5, exp: 4, gold: 5, weak: ['fire'], chest: [10, 'yakusou', 'mayoke', 6], act: [[3, 'attack'], [1, 'nameru']] },
+  sanzoku:    { name: '山賊', spr: 'sanzoku', hp: 26, atk: 17, def: 6, agi: 6, exp: 8, gold: 14, chest: [6, 'yakusou', 'wakizashi', 10], act: [[4, 'attack'], [1, 'nusumu']] },
+  chochin:    { name: '提灯お化け', spr: 'chochin', hp: 23, atk: 19, def: 7, agi: 7, exp: 9, gold: 7, weak: ['water'], chest: [9, 'dokukeshi', 'reisui', 6], act: [[3, 'attack'], [1, 'ayashi']] },
+  kappa:      { name: '河童', spr: 'kappa', hp: 32, atk: 24, def: 9, agi: 8, exp: 12, gold: 10, weak: ['fire'], resist: ['water'], chest: [8, 'yakusou', 'kawado', 10], act: [[3, 'attack'], [1, 'sumo']] },
+  tanuki:     { name: '化け狸', spr: 'tanuki', hp: 36, atk: 21, def: 8, agi: 9, exp: 14, gold: 16, chest: [6, 'yakusou', 'hangontan', 8], act: [[3, 'attack'], [1, 'haratsuzumi']] },
+  kamaitachi: { name: '鎌鼬', spr: 'kamaitachi', hp: 24, atk: 25, def: 7, agi: 16, exp: 14, gold: 9, chest: [8, 'dokukeshi', 'kashibo', 8], act: [[3, 'attack'], [1, 'renzan']] },
+  hitotsume:  { name: '一つ目小僧', spr: 'hitotsume', hp: 46, atk: 30, def: 11, agi: 10, exp: 22, gold: 15, chest: [6, 'reisui', 'mamori', 6], act: [[3, 'attack'], [1, 'niramu']] },
+  uramibi:    { name: '怨み火', spr: 'uramibi', hp: 30, atk: 30, def: 10, agi: 12, exp: 20, gold: 12, weak: ['water'], resist: ['fire'], chest: [6, 'reisui', 'hangontan', 6], act: [[2, 'attack'], [1, 'onnen']] },
+  ogama:      { name: '大蝦蟇', spr: 'ogama', hp: 74, atk: 35, def: 14, agi: 6, exp: 36, gold: 22, chest: [4, 'dokukeshi', 'kusari', 8], act: [[3, 'attack'], [1, 'dokugiri']] },
+  kashira:    { name: '山賊の頭', spr: 'sanzoku', hp: 190, atk: 40, def: 11, agi: 8, exp: 70, gold: 60, boss: true, act: [[4, 'attack'], [1, 'nusumu']] },
+  ronin:      { name: '浪人', spr: 'ronin', hp: 50, atk: 35, def: 13, agi: 11, exp: 30, gold: 30, chest: [5, 'hangontan', 'uchigatana', 8], act: [[3, 'attack'], [1, 'iai']] },
+  tsuchigumo: { name: '土蜘蛛', spr: 'tsuchigumo', hp: 320, atk: 32, def: 16, agi: 12, exp: 150, gold: 120, boss: true, acts: 2, weak: ['fire'], act: [[4, 'attack'], [2, 'dokuga'], [1, 'ito']] },
+  samojiro:   { name: '網乾左母二郎', spr: 'samojiro', hp: 270, atk: 31, def: 18, agi: 15, exp: 260, gold: 240, boss: true, acts: 2, act: [[4, 'attack'], [2, 'iaigiri'], [1, 'shibuki']] },
   tamazusa:   { name: '玉梓の影', spr: 'tamazusa', hp: 540, atk: 36, def: 20, agi: 14, exp: 0, gold: 0, boss: true, acts: 2, weak: ['water'], resist: ['fire'], act: [[3, 'attack'], [2, 'onnenhono'], [1, 'noroi'], [1, 'kyukon']] },
 };
 /* 妖怪の技 */
@@ -2832,7 +2832,7 @@ async function partyAct(a) {
     return;
   }
   if (m.sleep > 0) { await out(mName(m) + 'は 動けない！', 500); return; }
-  if (a.type === 'attack') { await out(mName(m) + 'の こうげき！', 350); await hitEnemy(m, a.target, 1); return; }
+  if (a.type === 'attack') { await out(mName(m) + 'の こうげき！', 350); await hitEnemy(m, a.target, 1, { elem: m.w && ITEMS[m.w].elem }); return; }
   if (a.type === 'guard') { await out(mName(m) + 'は 身を まもっている。', 500); return; }
   if (a.type === 'item') {
     const it = ITEMS[a.item];
@@ -3048,12 +3048,14 @@ const BUI = (() => {
     showEnemyList();
     const sub = async f => { if (enemyListEl) enemyListEl.style.visibility = 'hidden'; try { return await f(); } finally { if (enemyListEl) enemyListEl.style.visibility = ''; } };
     for (;;) {
-      const c = await UI.choose(['たたかう', 'わざ', 'どうぐ', 'ぼうぎょ', 'にげる'], { x: 4, b: 4, w: 96, cancel: true, cls: 'bcmd' });
+      const hasSk = skillsOf(m).length > 0;
+      const c0 = await UI.choose(hasSk ? ['たたかう', 'わざ', 'どうぐ', 'ぼうぎょ', 'にげる'] : ['たたかう', 'どうぐ', 'ぼうぎょ', 'にげる'], { x: 4, b: 4, w: 96, cancel: true, cls: 'bcmd' });
+      const c = (hasSk || c0 < 1) ? c0 : c0 + 1;
       if (c < 0) { if (idx > 0) return 'back'; continue; }
       if (c === 0) { const t = await sub(pickEnemy); if (t) return { type: 'attack', target: t }; continue; }
       if (c === 1) {
         const sk = skillsOf(m);
-        const k = await sub(() => UI.choose(sk.map(s => ({ label: SKILLS[s].name, right: SKILLS[s].mp, dis: m.mp < SKILLS[s].mp })), { x: 104, b: 4, w: 132, rows: 4, title: mName(m) + '　気 ' + m.mp, empty: 'わざを しらない', cls: 'bcmd' }));
+        const k = await sub(() => UI.choose(sk.map(s => ({ label: SKILLS[s].name, right: SKILLS[s].mp, dis: m.mp < SKILLS[s].mp })), { x: 104, b: 4, w: 132, rows: 4, title: mName(m) + '　気 ' + m.mp, empty: 'わざを もたない', cls: 'bcmd' }));
         if (k < 0) continue;
         const s = SKILLS[sk[k]];
         if (s.target === 'enemy') { const t = await sub(pickEnemy); if (t) return { type: 'skill', skill: sk[k], target: t }; continue; }
@@ -3145,7 +3147,6 @@ function stat(m, k) {
 }
 function skillsOf(m) {
   const s = MEMBERS[m.id].learn.filter(([lv]) => m.lv >= lv).map(([, id]) => id);
-  if (m.id === 'shino' && flag('murasameSkill')) s.push('murasame');
   return s;
 }
 function canEquip(m, id) { const it = ITEMS[id]; if (it.kind === 'a') return true; if (it.kind === 'w') return it.wt === MEMBERS[m.id].wt; return false; }
@@ -3284,7 +3285,7 @@ async function menuSkills(pp) {
   for (;;) {
     const sk = skillsOf(m);
     const desc = UI.info({ x: 8, y: 180, w: 224, cls: 'desc' });
-    const i = await UI.choose(sk.map(s => ({ label: SKILLS[s].name, right: SKILLS[s].mp, dis: !SKILLS[s].field })), { x: 8, y: 8, w: 224, title: mName(m) + '　気 ' + m.mp, empty: 'まだ わざを しらない', onMove: k => { desc.textContent = sk[k] ? SKILLS[sk[k]].desc : ''; } });
+    const i = await UI.choose(sk.map(s => ({ label: SKILLS[s].name, right: SKILLS[s].mp, dis: !SKILLS[s].field })), { x: 8, y: 8, w: 224, title: mName(m) + '　気 ' + m.mp, empty: 'わざを もたない', onMove: k => { desc.textContent = sk[k] ? SKILLS[sk[k]].desc : ''; } });
     desc.remove();
     if (i < 0) return;
     const s = SKILLS[sk[i]];
@@ -4001,7 +4002,7 @@ async function summitEvent() {
   await say('信乃は 村雨丸を 取りもどした！');
   G.whiteFlash = 0.2; SND.sfx('water');
   setFlag('murasameSkill');
-  await say('刃を 抜くと、白い 露が 玉と 散った。|まさしく 本物の 村雨丸だ。||信乃は わざ「村雨」を おぼえた！|（刃の露で 敵すべてを 斬る）');
+  await say('刃を 抜くと、白い 露が 玉と 散った。|まさしく 本物の 村雨丸だ。||村雨丸で 斬りつけると|刃の露が 水の力と なって 走る！');
   SND.bgm('night');
   const ds = npc('dosetsu'); if (ds) ds.dir = 'down';
   await say('……その 刀、村雨丸か。||わしは 犬山道節。|主君の 仇を 討つため、この山で|火遁の 行を 修めておった。', { name: N.dosetsu });
