@@ -2171,30 +2171,79 @@ const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight
 addEventListener('keydown', e => { const k = KEYMAP[e.key]; if (!k) return; e.preventDefault(); if (!e.repeat) Input.down(k); });
 addEventListener('keyup', e => { const k = KEYMAP[e.key]; if (k) Input.up(k); });
 addEventListener('blur', () => Input.clear());
-/* ---------------- ゲームパッド（HORIなど。標準配置で読む） ----------------
-   下ボタン＝決定(A)、右ボタン＝戻る(B)、左・上ボタンとSTART＝メニュー。十字キーと左スティックで移動 */
+/* ---------------- ゲームパッド ----------------
+   標準配置のパッド：下＝決定、右＝戻る、左・上・START＝メニュー、十字キー・左スティック＝移動。
+   標準配置でないパッド（HORIのDirectInputモードなど）は、最初に押したとき「ボタン覚え」を始め、押したボタンを覚える（localStorageに保存）。
+   十字キーが「ハット」（1本の軸に8方向が入る形）で来る場合も読む */
 const Pad = (() => {
-  const BTN = { 0: 'a', 1: 'b', 2: 'menu', 3: 'menu', 9: 'menu', 12: 'up', 13: 'down', 14: 'left', 15: 'right' };
-  const prev = {};
+  const KEYS = ['up', 'down', 'left', 'right', 'a', 'b', 'menu'];
+  const NAME = { up: '上', down: '下', left: '左', right: '右', a: '決定', b: '戻る', menu: 'メニュー' };
+  const STD = { 0: 'a', 1: 'b', 2: 'menu', 3: 'menu', 9: 'menu', 12: 'up', 13: 'down', 14: 'left', 15: 'right' };
+  const LKEY = 'shinhakkenden.pad.v1';
+  let maps = {}; try { maps = JSON.parse(localStorage.getItem(LKEY) || '{}'); } catch (e) {}
+  const prev = {}; let seen = {}, learn = null, banner = null;
+  function show(t) {
+    if (!banner) { banner = document.createElement('div'); banner.style.cssText = 'position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:99;background:rgba(12,11,25,.95);color:#f0e8d6;border:2px solid #c9a24e;padding:8px 14px;font:16px var(--ui);white-space:pre;text-align:center;pointer-events:none'; document.body.appendChild(banner); }
+    banner.textContent = t; banner.style.display = t ? 'block' : 'none';
+  }
+  let hideT = null; const flash = (t, ms = 2500) => { show(t); clearTimeout(hideT); hideT = setTimeout(() => { if (!learn) show(''); }, ms); };
+  // いま押されているもの（ボタン番号・軸の向き）を列挙
+  function raw(gp, rest) {
+    const out = [];
+    gp.buttons.forEach((b, i) => { if (b && (b.pressed || b.value > 0.5)) out.push({ t: 'b', i }); });
+    gp.axes.forEach((v, i) => { const r = rest ? rest[i] : 0; if (Math.abs(v - r) > 0.4 && Math.abs(v) <= 1.01) out.push({ t: 'x', i, v: +v.toFixed(2) }); });
+    return out;
+  }
+  const match = (m, gp) => m.t === 'b' ? !!(gp.buttons[m.i] && (gp.buttons[m.i].pressed || gp.buttons[m.i].value > 0.5)) : Math.abs((gp.axes[m.i] ?? 9) - m.v) < 0.2;
+  function startLearn(gp) {
+    learn = { id: gp.id, step: 0, map: {}, rest: gp.axes.slice(), wait: true };
+    Input.clear(); show('パッドの ボタンを 覚えます\n「' + NAME[KEYS[0]] + '」を 押してください');
+  }
+  function stepLearn(gp) {
+    const r = raw(gp, learn.rest);
+    if (learn.wait) { if (!r.length) learn.wait = false; return; }
+    if (!r.length) return;
+    const k = KEYS[learn.step]; (learn.map[k] = learn.map[k] || []).push(r[0]);
+    learn.step++; learn.wait = true;
+    if (learn.step >= KEYS.length) {
+      maps[learn.id] = learn.map; try { localStorage.setItem(LKEY, JSON.stringify(maps)); } catch (e) {}
+      learn = null; flash('覚えました。この パッドで 遊べます');
+    } else show('「' + NAME[k] + '」を 覚えました\n次は「' + NAME[KEYS[learn.step]] + '」を 押してください');
+  }
+  function state(gp) {
+    const now = {}, m = maps[gp.id];
+    if (m) { for (const k of KEYS) if ((m[k] || []).some(x => match(x, gp))) now[k] = true; }
+    else if (gp.mapping === 'standard') { for (const i in STD) { const b = gp.buttons[i]; if (b && (b.pressed || b.value > 0.5)) now[STD[i]] = true; } }
+    const x = gp.axes[0] || 0, y = gp.axes[1] || 0;   // 左スティックはどのパッドでも移動に使う
+    if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) { if (Math.abs(x) > Math.abs(y)) now[x < 0 ? 'left' : 'right'] = true; else now[y < 0 ? 'up' : 'down'] = true; }
+    if (!m && gp.axes.length > 9) {   // ハット式の十字キー（軸9に -1上 … 1左上、中立は1を超える値）
+      const h = gp.axes[9];
+      if (h >= -1.01 && h <= 1.01) { const d = Math.round((h + 1) / (2 / 7)) % 8; if ([7, 0, 1].includes(d)) now.up = true; if ([1, 2, 3].includes(d)) now.right = true; if ([3, 4, 5].includes(d)) now.down = true; if ([5, 6, 7].includes(d)) now.left = true; }
+    }
+    return now;
+  }
   function poll() {
-    const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()) : [];
     const now = {};
     for (const gp of pads) {
       if (!gp) continue;
-      for (const i in BTN) { const b = gp.buttons[i]; if (b && (b.pressed || b.value > 0.5)) now[BTN[i]] = true; }
-      const x = gp.axes[0] || 0, y = gp.axes[1] || 0;
-      if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) { if (Math.abs(x) > Math.abs(y)) now[x < 0 ? 'left' : 'right'] = true; else now[y < 0 ? 'up' : 'down'] = true; }
+      if (!seen[gp.index]) { seen[gp.index] = true; if (!learn) flash('パッドを 見つけました\n' + (gp.id || 'パッド').slice(0, 40)); }
+      if (learn) { if (learn.id === gp.id) stepLearn(gp); continue; }
+      if (!maps[gp.id] && gp.mapping !== 'standard' && raw(gp).some(r => r.t === 'b')) { startLearn(gp); continue; }
+      Object.assign(now, state(gp));
     }
-    for (const k of ['up', 'down', 'left', 'right', 'a', 'b', 'menu']) {
+    for (const k of KEYS) {
       if (now[k] && !prev[k]) Input.down(k);
       else if (!now[k] && prev[k]) Input.up(k);
       prev[k] = !!now[k];
     }
     requestAnimationFrame(poll);
   }
-  addEventListener('gamepadconnected', () => {});
+  addEventListener('gamepadconnected', e => { if (e.gamepad) flash('パッドを 見つけました\n' + (e.gamepad.id || 'パッド').slice(0, 40)); });
   requestAnimationFrame(poll);
-  return {};
+  return {
+    relearn() { const gp = Array.from(navigator.getGamepads ? navigator.getGamepads() : []).find(Boolean); if (!gp) { flash('パッドが 見つかりません\nパッドの ボタンを どれか 押してから もう一度'); return false; } delete maps[gp.id]; startLearn(gp); return true; },
+  };
 })();
 
 /* ---------------- 出来事（スクリプト）の実行 ---------------- */
@@ -3229,10 +3278,11 @@ async function menuBeads() {
 }
 async function menuSettings() {
   for (;;) {
-    const i = await UI.choose([{ label: '音', right: G.settings.sound ? 'あり' : 'なし' }, { label: '文字の速さ', right: G.settings.fastMsg ? 'はやい' : 'ふつう' }], { x: 80, y: 40, w: 152, title: '設定' });
+    const i = await UI.choose([{ label: '音', right: G.settings.sound ? 'あり' : 'なし' }, { label: '文字の速さ', right: G.settings.fastMsg ? 'はやい' : 'ふつう' }, { label: 'パッドの ボタン設定' }], { x: 80, y: 40, w: 152, title: '設定' });
     if (i < 0) return;
     if (i === 0) { G.settings.sound = !G.settings.sound; SND.setOn(G.settings.sound); if (G.settings.sound) { SND.unlock(); SND.bgm(G.map.def.bgm); } }
     if (i === 1) G.settings.fastMsg = !G.settings.fastMsg;
+    if (i === 2) { if (Pad.relearn()) return; }
     Save.prefs();
   }
 }
