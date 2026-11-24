@@ -1812,7 +1812,7 @@ const MEMBERS = {
     base: { hp: 40, mp: 14, atk: 9, def: 6, agi: 8 }, grow: { hp: 7.6, mp: 3.2, atk: 2.2, def: 1.5, agi: 1.35 },
     learn: [[1, 'katon'], [1, 'enbu'], [1, 'chunoinori']] },
 };
-const EXP_TABLE = [0, 0, 12, 35, 75, 130, 220, 420, 620, 900, 1250, 1650, 2100, 2650, 3300, 4100, 5000, 6100, 7400, 8900, 10600];
+const EXP_TABLE = [0, 0, 15, 50, 105, 180, 310, 590, 870, 1260, 1750, 2310, 2940, 3710, 4620, 5740, 7000, 8540, 10360, 12460, 14840];
 const MAX_LV = EXP_TABLE.length - 1;
 
 /* 妖怪。act は [重み, 行動]
@@ -1857,15 +1857,15 @@ const EN_SKILLS = {
 };
 /* 出現表：場所ごと */
 const ENC = {
-  near:  { bg: 'field', rate: 18, groups: [[5, ['onibi']], [4, ['onibi', 'onibi']], [4, ['karakasa']], [2, ['onibi', 'karakasa']], [1, ['sanzoku']]] },
-  far:   { bg: 'field', rate: 15, groups: [[3, ['chochin', 'onibi']], [3, ['tanuki']], [2, ['kappa']], [2, ['chochin', 'karakasa']], [2, ['kamaitachi']], [2, ['sanzoku', 'sanzoku']], [1, ['kamaitachi', 'chochin']], [1, ['karakasa', 'chochin', 'karakasa']]] },
-  wood:  { bg: 'forest', rate: 12, groups: [[3, ['tanuki']], [3, ['kamaitachi']], [2, ['chochin', 'chochin']], [1, ['tanuki', 'kamaitachi']], [2, ['karakasa', 'karakasa', 'onibi']]] },
-  river: { bg: 'field', rate: 15, groups: [[4, ['kappa']], [2, ['kappa', 'onibi']], [2, ['chochin']]] },
-  cave1: { bg: 'cave', rate: 12, groups: [[3, ['hitotsume']], [3, ['uramibi', 'chochin']], [2, ['kamaitachi', 'kamaitachi']], [2, ['chochin', 'uramibi', 'chochin']], [1, ['ronin']], [2, ['hitotsume', 'kamaitachi']]] },
+  near:  { bg: 'field', rate: 13, groups: [[5, ['onibi']], [4, ['onibi', 'onibi']], [4, ['karakasa']], [2, ['onibi', 'karakasa']], [1, ['sanzoku']]] },
+  far:   { bg: 'field', rate: 10, groups: [[3, ['chochin', 'onibi']], [3, ['tanuki']], [2, ['kappa']], [2, ['chochin', 'karakasa']], [2, ['kamaitachi']], [2, ['sanzoku', 'sanzoku']], [1, ['kamaitachi', 'chochin']], [1, ['karakasa', 'chochin', 'karakasa']]] },
+  wood:  { bg: 'forest', rate: 8, groups: [[3, ['tanuki']], [3, ['kamaitachi']], [2, ['chochin', 'chochin']], [1, ['tanuki', 'kamaitachi']], [2, ['karakasa', 'karakasa', 'onibi']]] },
+  river: { bg: 'field', rate: 10, groups: [[4, ['kappa']], [2, ['kappa', 'onibi']], [2, ['chochin']]] },
+  cave1: { bg: 'cave', rate: 8, groups: [[3, ['hitotsume']], [3, ['uramibi', 'chochin']], [2, ['kamaitachi', 'kamaitachi']], [2, ['chochin', 'uramibi', 'chochin']], [1, ['ronin']], [2, ['hitotsume', 'kamaitachi']]] },
   // 今は用のない場所：強い妖怪が群れで出る（一人旅でも数を減らさない）
-  yami:  { bg: 'forest', rate: 8, full: true, groups: [[3, ['hitotsume', 'hitotsume']], [3, ['ogama', 'kamaitachi']], [2, ['uramibi', 'uramibi', 'uramibi']], [1, ['ronin', 'hitotsume']]] },
-  numa:  { bg: 'field', rate: 8, full: true, groups: [[3, ['ogama', 'ogama']], [3, ['kappa', 'kappa', 'uramibi']], [2, ['ogama', 'uramibi']]] },
-  cave2: { bg: 'cave', rate: 11, groups: [[3, ['ogama']], [3, ['hitotsume', 'uramibi']], [2, ['ronin', 'kamaitachi']], [2, ['uramibi', 'uramibi', 'uramibi']], [1, ['ogama', 'kamaitachi']], [1, ['hitotsume', 'hitotsume']]] },
+  yami:  { bg: 'forest', rate: 6, full: true, groups: [[3, ['hitotsume', 'hitotsume']], [3, ['ogama', 'kamaitachi']], [2, ['uramibi', 'uramibi', 'uramibi']], [1, ['ronin', 'hitotsume']]] },
+  numa:  { bg: 'field', rate: 6, full: true, groups: [[3, ['ogama', 'ogama']], [3, ['kappa', 'kappa', 'uramibi']], [2, ['ogama', 'uramibi']]] },
+  cave2: { bg: 'cave', rate: 8, groups: [[3, ['ogama']], [3, ['hitotsume', 'uramibi']], [2, ['ronin', 'kamaitachi']], [2, ['uramibi', 'uramibi', 'uramibi']], [1, ['ogama', 'kamaitachi']], [1, ['hitotsume', 'hitotsume']]] },
 };
 
 /* =====================================================================
