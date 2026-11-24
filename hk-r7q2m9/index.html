@@ -2171,6 +2171,31 @@ const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight
 addEventListener('keydown', e => { const k = KEYMAP[e.key]; if (!k) return; e.preventDefault(); if (!e.repeat) Input.down(k); });
 addEventListener('keyup', e => { const k = KEYMAP[e.key]; if (k) Input.up(k); });
 addEventListener('blur', () => Input.clear());
+/* ---------------- ゲームパッド（HORIなど。標準配置で読む） ----------------
+   下ボタン＝決定(A)、右ボタン＝戻る(B)、左・上ボタンとSTART＝メニュー。十字キーと左スティックで移動 */
+const Pad = (() => {
+  const BTN = { 0: 'a', 1: 'b', 2: 'menu', 3: 'menu', 9: 'menu', 12: 'up', 13: 'down', 14: 'left', 15: 'right' };
+  const prev = {};
+  function poll() {
+    const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+    const now = {};
+    for (const gp of pads) {
+      if (!gp) continue;
+      for (const i in BTN) { const b = gp.buttons[i]; if (b && (b.pressed || b.value > 0.5)) now[BTN[i]] = true; }
+      const x = gp.axes[0] || 0, y = gp.axes[1] || 0;
+      if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) { if (Math.abs(x) > Math.abs(y)) now[x < 0 ? 'left' : 'right'] = true; else now[y < 0 ? 'up' : 'down'] = true; }
+    }
+    for (const k of ['up', 'down', 'left', 'right', 'a', 'b', 'menu']) {
+      if (now[k] && !prev[k]) Input.down(k);
+      else if (!now[k] && prev[k]) Input.up(k);
+      prev[k] = !!now[k];
+    }
+    requestAnimationFrame(poll);
+  }
+  addEventListener('gamepadconnected', () => {});
+  requestAnimationFrame(poll);
+  return {};
+})();
 
 /* ---------------- 出来事（スクリプト）の実行 ---------------- */
 async function runEvent(fn, ...a) {
