@@ -2046,9 +2046,12 @@ MAPS.morokata = { name: '諸県村', kind: 'out', bgm: 'village', rows: [
   'TTTTTTTT=TTTTTTTTTTT'] };
 
 MAPS.kakure_mae = { name: '岩山の奥', kind: 'out', bgm: 'night', rows: [
-  'MMMMMMMMMMMMMMMM',
-  'MMMMMMM..MMMMMMM',
-  'MMMMMMT==TMMMMMM',
+  'MMKKKK.RRRR.KKMM',
+  'MMKKKK.RRRR.KKMM',
+  'MMWWDW.WWDW.WDMM',
+  'MM.l.=...=..=lMM',
+  'MMMMMMM##MMMMMMM',
+  'MMMMMM.==.MMMMMM',
   'TTTTTT.==.TTTTTT',
   'TT.....==.....TT',
   'TT.,..........TT',
@@ -2176,7 +2179,7 @@ const MIRRORS = [
   { id: 'mori',    map: 'world', x: 142, y: 104, has: true,  tx: 142, ty: 105 },   // 日向の浜近くの森
   { id: 'satsuma', map: 'world', x: 90,  y: 103, has: true,  tx: 90,  ty: 104 },   // 薩摩の黒い土の奥
   { id: 'numa',    map: 'world', x: 124, y: 121, has: true,  tx: 124, ty: 120, dest: 'kakure' },   // 大隅の沼：いつも隠し村の前へ
-  { id: 'kakure',  map: 'kakure_mae', x: 7, y: 9, has: true, tx: 7, ty: 8, dest: 'numa', secret: true },   // 岩山の隠し村の前（帰りは大隅へ）
+  { id: 'kakure',  map: 'kakure_mae', x: 7, y: 12, has: true, tx: 7, ty: 11, dest: 'numa', secret: true },   // 岩山の隠し村の前（帰りは大隅へ）
   { id: 'yami',    map: 'world', tx: 119, ty: 86 },                                // 妖の森のまん中
   { id: 'sat2',    map: 'world', tx: 88,  ty: 98 },                                // 薩摩の北
   { id: 'kago',    map: 'world', tx: 95,  ty: 110 },                               // 鹿児島の城下の手前
@@ -4293,11 +4296,13 @@ async function magicMirror(from) {
 
 /* ---------------- 岩山の隠し村の前：大隅の魔の鏡から来る ---------------- */
 STORY.kakure_mae = {
-  npcs: [{ id: 'takibi', sprite: 'traveler', name: '焚き火の老人', x: 8, y: 6, dir: 'left', talk: () => kakureOldman() }],
+  npcs: [{ id: 'takibi', sprite: 'traveler', name: '焚き火の老人', x: 8, y: 9, dir: 'left', talk: () => kakureOldman() },
+    { id: 'kmura1', sprite: 'woman1', name: '村の女', x: 6, y: 3, wander: true, radius: 2, talk: async () => {} },
+    { id: 'kmura2', sprite: 'child', name: '子ども', x: 11, y: 3, wander: true, radius: 1, talk: async () => {} }],
   objects: [
     ...MIRRORS.filter(m => m.map === 'kakure_mae').map(m => ({ type: 'mirror', x: m.x, y: m.y, block: true, run: () => magicMirror(m) })),
-    look(7, 1, ['岩山の 切れ目の 先に|村の 屋根が いくつか 見える。||木戸は かたく 閉ざされている。|（今は 入れない）']),
-    look(8, 1, ['岩山の 切れ目の 先に|村の 屋根が いくつか 見える。||木戸は かたく 閉ざされている。|（今は 入れない）']),
+    look(7, 4, ['岩山に 囲まれた 村の 木戸だ。|向こうに 人の 暮らしが 見える。||木戸は かたく 閉ざされている。|（今は 入れない）']),
+    look(8, 4, ['岩山に 囲まれた 村の 木戸だ。|向こうに 人の 暮らしが 見える。||木戸は かたく 閉ざされている。|（今は 入れない）']),
   ],
 };
 async function kakureOldman() {
