@@ -278,6 +278,10 @@ function buildTiles() {
   defTile('grass1', (p, r) => { grassBase(p, r); tuft(p, 4, 10); tuft(p, 11, 5); });
   defTile('grass2', (p, r) => { grassBase(p, r); tuft(p, 12, 12); p.set(3, 4, 'h'); p.set(4, 4, 'h'); });
   defTile('flower', (p, r) => { grassBase(p, r); flower(p, 4, 4, 'w'); flower(p, 11, 7, 'i'); flower(p, 6, 12, 'w'); });
+  // 黒い火山灰の土（強い妖怪が出る所の目印）
+  defTile('ash0', (p, r) => { p.fill('#4b4049'); p.speck('#3b3139', 9, r); p.speck('#5d5159', 6, r); });
+  defTile('ash1', (p, r) => { p.fill('#4b4049'); p.speck('#3b3139', 7, r); p.speck('#5d5159', 4, r); p.set(4, 10, '#6e5a3e'); p.set(5, 10, '#6e5a3e'); p.set(11, 4, '#7a2e2e'); });
+  defTile('ash2', (p, r) => { p.fill('#4b4049'); p.speck('#3b3139', 7, r); p.set(10, 11, '#5a6b3a'); p.set(9, 10, '#5a6b3a'); p.set(11, 10, '#5a6b3a'); p.set(3, 4, '#7a2e2e'); p.set(4, 4, '#7a2e2e'); });
   defTile('road', (p, r) => { p.fill('T'); p.speck('t', 9, r); p.speck('W', 3, r); p.speck('n', 2, r); });
   defTile('sand', (p, r) => { p.fill('T'); p.speck('t', 5, r); p.speck('w', 4, r); });
   defTile('tree', (p, r) => {
@@ -1893,7 +1897,7 @@ const LEGENDS = {
   world: {
     '.': 'GRASS', ',': 'grass1', ';': 'grass2', '*': 'flower', '=': 'road', 'F': 'forest', 'T': ['tree', 0], 'M': ['mount', 0], 'h': 'hill',
     '~': ['water', 0], 'H': 'bridgeH', 'V': 'bridgeV', 'p': ['paddy', 0], 'O': 'fVillage', 'C': 'fCave', 'Q': 'fTea', 'G': ['fGate', 0], 'J': ['fDoso', 0], 'P': ['pine1', 0],
-    's': 'swamp', 'x': ['deadTree', 0], 'K': ['fTown', 0], 'X': ['fCastle', 0], 'R': ['fTemple', 0], 'S': ['fShrine', 0], 'I': ['fSign', 0],
+    's': 'swamp', 'a': 'ASH', 'x': ['deadTree', 0], 'K': ['fTown', 0], 'X': ['fCastle', 0], 'R': ['fTemple', 0], 'S': ['fShrine', 0], 'I': ['fSign', 0],
   },
 };
 const MAPS = {};
@@ -2092,7 +2096,8 @@ const WP = {
 };
 const OYODO_Y = x => 93 + Math.round(1.5 * Math.sin(x * 0.25)) + (x < 128 ? Math.round((128 - x) * 0.15) : 0);
 const inYami = (x, y) => x >= 114 && x <= 124 && y >= 80 && y <= 90;
-const inStrong = (x, y) => { const k = kuni(x, y); return k === 'o' || k === 's'; };
+const inStrong = (x, y) => { const k = kuni(x, y); return (k === 'o' || k === 's') && (x < 106 || y >= 109); };   // 薩摩・大隅：妖怪が強い
+const ASHY = (x, y) => inStrong(x, y) || inYami(x, y);   // 強い妖怪が出る所は黒い火山灰の土（見てわかる目印）
 function buildWorldRows() {
   const g = [];
   const land = (x, y) => {
@@ -2177,6 +2182,8 @@ function buildWorldRows() {
   road(136, 73, 136, 77);                                   // 関所の向こう（行けない）
   road(115, 106, 101, 106); road(101, 106, 101, 99); road(101, 99, 98, 99); road(98, 99, 98, 97); road(98, 95, 98, 92);       // 薩摩へ、肥後の関所へ
   road(101, 106, 101, 110); road(101, 110, 93, 110);        // 鹿児島の城下へ
+  // 強い妖怪が出る土地は地面を黒い土に（草地だけ塗りかえる）
+  for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) if (ASHY(x, y) && '.,;*'.includes(g[y][x])) g[y][x] = 'a';
   // 目印
   const mark = (k, c) => set(WP[k][0], WP[k][1], c);
   mark('village', 'O'); mark('doso', 'J'); mark('tea', 'Q'); mark('cave', 'C'); mark('gate', 'G'); mark('town', 'K'); mark('gate2', 'G'); mark('town2', 'K');
@@ -2192,8 +2199,8 @@ MAPS.world = { name: '日向の国', kind: 'world', bgm: 'field', rows: buildWor
   enc: (x, y, t) => {
     const k = kuni(x, y);
     if (k !== 'y' && k !== 'o' && k !== 's') return null;         // 関所や海の向こう（今は行けない）
-    if (x < 106 || y >= 109) return 'numa';                         // 薩摩・大隅：妖怪が強い
-    if (inYami(x, y)) return 'yami';
+    if (inStrong(x, y)) return 'numa';                               // 薩摩・大隅（黒い土）：妖怪が強い
+    if (inYami(x, y)) return 'yami';                                 // 妖の森（黒い土）
     if (t === 'forest') return 'wood';
     const ry = OYODO_Y(x);
     if (Math.abs(y - ry) <= 1 || Math.abs(y - ry - 1) <= 1) return 'river';
@@ -2237,6 +2244,7 @@ function compileMap(id) {
       if (name === 'GRASS') name = hh < 0.7 ? 'grass0' : hh < 0.85 ? 'grass1' : 'grass2';
       else if (name === 'CFLOOR') name = hh < 0.75 ? 'cfloor' : 'cfloor2';
       else if (name === 'NGRASS') name = hh < 0.8 ? 'ngrass' : 'ngrass2';
+      else if (name === 'ASH') name = hh < 0.6 ? 'ash0' : hh < 0.85 ? 'ash1' : 'ash2';
       else if (name.startsWith('ROOF_')) {
         const top = at(x, y - 1) !== ch, l = at(x - 1, y) !== ch, r = at(x + 1, y) !== ch;
         name = name.slice(5) + (top ? 'T' : 'B') + (l ? 'L' : r ? 'R' : 'M');
@@ -2448,7 +2456,7 @@ async function afterStep() {
   const w = G.map.warps.find(w => w.x === p.x && w.y === p.y);
   if (w) { G.path = null; await runEvent(async () => { if (w.cond && !(await w.cond())) return; await warp(w.to, w.tx, w.ty, w.dir, { sfx: w.sfx }); }); return; }
   for (const tr of G.map.triggers) {
-    const hit = tr.area ? (p.x >= tr.area[0] && p.y >= tr.area[1] && p.x <= tr.area[2] && p.y <= tr.area[3]) : (tr.x === p.x && tr.y === p.y);
+    const hit = tr.test ? tr.test(p.x, p.y) : tr.area ? (p.x >= tr.area[0] && p.y >= tr.area[1] && p.x <= tr.area[2] && p.y <= tr.area[3]) : (tr.x === p.x && tr.y === p.y);
     if (hit && (!tr.cond || tr.cond())) { G.path = null; await runEvent(tr.run); return; }
   }
   const o = objAt(p.x, p.y); if (o && o.onStep) { G.path = null; await runEvent(o.onStep, o); return; }
@@ -3731,6 +3739,7 @@ STORY.otsuka = {
     } },
     { id: 'fisher', sprite: 'man2', name: '釣り人', x: 23, y: 16, dir: 'right', talk: async () => {
       await say('大淀川は 流れが 速い。|うっかり 落ちたら ひとたまりも ないぞ。', { name: '釣り人' });
+      await say('川を 渡ると 妖怪が 手ごわくなる。|橋を 渡る前に 薬草を|多めに 買っておきな。', { name: '釣り人' });
     } },
   ],
   objects: [
@@ -3960,6 +3969,30 @@ STORY.teahouse = {
 
 /* ---------------- 日向の国（九州） ---------------- */
 STORY.world = {
+  // 強い妖怪が出る所の手前に立つ人（ここから先は危ないと教える）
+  npcs: [
+    { id: 'samurai', sprite: 'guard', name: '旅の侍', x: 116, y: 107, dir: 'up', talk: async () => {
+      await say('ここから 西は 薩摩の 国。|地面が 黒い 土に 変わるだろう。|あれは 霧島の 火山灰だ。', { name: '旅の侍' });
+      await say('黒い 土の 上には|手ごわい 妖怪が 群れで 出る。|腕に 覚えが なければ 近づくな。', { name: '旅の侍' });
+    } },
+    { id: 'hunter', sprite: 'man2', name: '猟師', x: 124, y: 108, dir: 'up', talk: async () => {
+      await say('この先は 大隅の 沼地だ。|黒い 土が 見えたら 引き返せ。||大蝦蟇が 二匹 三匹と 出てきて|わしでも 手に 負えん。', { name: '猟師' });
+    } },
+    { id: 'woodcutter', sprite: 'oldman', name: '木こり', x: 125, y: 84, dir: 'left', talk: async () => {
+      await say('西の 森は 妖の森じゃ。|昼でも 暗く、一つ目小僧が うろついておる。||わしは もう 何年も|あそこへは 入っておらん。', { name: '木こり' });
+    } },
+  ],
+  // はじめて 危ない所に 足を ふみ入れたときの 知らせ
+  triggers: [
+    { test: (x, y) => ASHY(x, y), cond: () => !flag('warn_ash'), run: async () => {
+      setFlag('warn_ash'); SND.sfx('dark');
+      await say('足もとの 土が 黒く 変わった。|妖怪の 気配が ぐっと 濃い……||（黒い 土の 上では|強い 妖怪が 出る）');
+    } },
+    { test: (x, y) => kuni(x, y) === 'y' && x > 118 && y > OYODO_Y(x) + 1 && y < 99, cond: () => !flag('warn_river'), run: async () => {
+      setFlag('warn_river');
+      await say('大淀川を 渡った。|川の こちら側は 妖怪が|すこし 手ごわく なるようだ。');
+    } },
+  ],
   warps: [
     { x: WP.village[0], y: WP.village[1], to: 'otsuka', tx: 13, ty: 22, dir: 'up', sfx: 'step' },
     { x: WP.tea[0], y: WP.tea[1], to: 'teahouse', tx: 5, ty: 5, dir: 'up' },
@@ -3969,7 +4002,7 @@ STORY.world = {
     look(...WP.gate, ['豊後へ 通じる 関所だ。|門の すき間から 山の 向こうの|府内の 町の 屋根が 見える。||「妖怪 さわぎで 関は 閉じておる。|通行手形の ない者は 通せぬ！」']),
     look(...WP.gate2, ['肥後へ 通じる 関所だ。|門の 向こうには 人吉の 町が ある。||「この先は 肥後の 国。|手形なき者は 一歩も 通さぬ！」']),
     look(...WP.kago, ['鹿児島の 城下町だ。|門は かたく 閉ざされている。||「妖怪どもが 夜な夜な 出るゆえ|よそ者は 入れられぬ」']),
-    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村・豊後の関所|西南 峠の茶屋・霧島山|東 青島の渡し　西 妖の森』||『妖の森に 入るべからず』と|小さく 書き足してある。']),
+    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村・豊後の関所|西南 峠の茶屋・霧島山|東 青島の渡し　西 妖の森』||『大淀川より 南 妖怪 強し|黒き 土に 踏み入るべからず』と|小さく 書き足してある。']),
     look(...WP.pine, async () => {
       if (G.opened.pine) { await say('浜の 大きな 一本松だ。'); return; }
       G.opened.pine = true; await say('松の 根もとに 何か うまっている……'); await getItem('reisui');
