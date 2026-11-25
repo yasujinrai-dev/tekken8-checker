@@ -304,6 +304,11 @@ function buildTiles() {
   });
   defTile('mWall', (p, r) => { p.fill('#d9dde6'); p.hl(0, 0, 16, '#f6f8fb'); p.rect(0, 5, 16, 2, '#ff4fd8'); p.hl(0, 5, 16, '#ffb3f0'); p.rect(0, 13, 16, 3, '#8d93a6'); p.hl(0, 13, 16, '#6c7186'); });
   defTile('mDoor', (p, r) => { p.fill('#d9dde6'); p.rect(0, 5, 16, 2, '#ff4fd8'); p.rect(3, 3, 10, 13, '#2c3348'); p.rect(4, 4, 4, 12, '#6ff0e6'); p.rect(8, 4, 4, 12, '#3aa7b8'); p.vl(8, 4, 12, '#14121c'); p.hl(3, 3, 10, '#ffb3f0'); });
+  const mShop = (p, sign) => { p.fill('#d9dde6'); p.rect(0, 5, 16, 2, '#ff4fd8'); p.rect(3, 7, 10, 9, '#2c3348'); p.rect(4, 8, 4, 8, '#6ff0e6'); p.rect(8, 8, 4, 8, '#3aa7b8'); p.vl(8, 8, 8, '#14121c');
+    p.rect(2, 0, 12, 6, '#14121c'); p.rect(3, 1, 10, 4, '#1f2a44'); sign(p); };
+  defTile('mShopW', p => mShop(p, q => { q.line(5, 4, 10, 1, '#e8eef8'); q.set(6, 3, '#ffef7a'); q.set(5, 4, '#ffef7a'); }));      // 武器（剣）
+  defTile('mShopI', p => mShop(p, q => { q.rect(7, 1, 2, 4, '#3ce0b4'); q.rect(6, 2, 4, 2, '#3ce0b4'); }));                          // 道具（十字）
+  defTile('mShopN', p => mShop(p, q => { q.rect(6, 1, 3, 4, '#ffef7a'); q.set(9, 1, '#ffef7a'); q.set(9, 4, '#ffef7a'); q.rect(8, 2, 1, 2, '#1f2a44'); q.set(7, 2, '#ffef7a'); }));                          // 宿（月）
   defTile('mLamp', (p, r, f) => { p.fill('#2c3348'); p.speck('#353e57', 8, r); p.vl(7, 4, 11, '#8d93a6'); p.vl(8, 4, 11, '#6c7186'); p.rect(5, 1, 6, 4, f ? '#ffef7a' : '#fff6c4'); p.rect(6, 0, 4, 1, '#8d93a6'); p.rect(6, 15, 4, 1, '#14121c'); }, 2);
   defTile('mTree', (p, r, f) => { p.fill('#2c3348'); p.poly([[8, 0], [14, 9], [8, 13], [2, 9]], '#3ce0b4'); p.poly([[8, 2], [11, 8], [8, 10], [5, 8]], f ? '#bff7e6' : '#8ff0d2'); p.rect(7, 13, 2, 3, '#6c7186'); }, 2);
   // 次元の壁：岩山の切れ目に張られた、ゆらぐ見えない壁
@@ -530,11 +535,22 @@ function buildTiles() {
     p.rect(6, 8, 4, 2, 'K'); p.set(7, 7 - f, 'o'); p.set(8, 7, 'r'); p.set(7 + f, 6, 'y'); p.set(8, 6 - f, 'o');
     p.vl(8, 0, 4, 'K'); p.rect(7, 3, 3, 2, 'K');
   }, 2);
-  const chest = (p, open) => {
-    p.rect(2, 5, 12, 10, 'k'); p.rect(3, 6, 10, 8, 'n'); p.hl(3, 6, 10, 't'); p.hl(3, 10, 10, 'N'); p.vl(3, 6, 8, 't');
-    p.rect(2, 9, 12, 1, 'Y'); p.rect(7, 9, 2, 3, 'y'); p.set(7, 10, 'k');
-    if (open) { p.rect(2, 1, 12, 5, 'k'); p.rect(3, 2, 10, 3, 'N'); p.hl(3, 2, 10, 'n'); p.rect(3, 6, 10, 3, 'K'); p.set(5, 7, 'y'); p.set(9, 7, 'y'); }
-    else { p.rect(2, 3, 12, 3, 'k'); p.rect(3, 4, 10, 2, 't'); p.hl(3, 4, 10, 'T'); }
+  const chest = (p, open) => {   // 宝箱：丸い蓋、赤茶の木箱、金の帯と錠前
+    const W = '#b0582a', w = '#d67a3e', D = '#6e3216', G = '#f2c23a', g = '#fff0a0', B = '#a9761a';
+    p.rect(1, 8, 14, 7, 'k'); p.rect(2, 9, 12, 5, W); p.hl(2, 9, 12, w); p.hl(2, 13, 12, D);
+    p.rect(1, 15, 14, 1, 'k');
+    for (const x of [3, 12]) { p.vl(x, 9, 5, G); p.vl(x + 1, 9, 5, B); }
+    if (open) {
+      p.rect(1, 4, 14, 5, 'k'); p.rect(2, 5, 12, 3, D); p.hl(2, 5, 12, '#3a1a0a');
+      p.rect(3, 6, 10, 2, '#3a1a0a'); p.set(5, 7, g); p.set(6, 6, G); p.set(9, 7, G); p.set(10, 6, g); p.set(8, 7, '#e8e8f0');
+      p.rect(1, 1, 14, 3, 'k'); p.rect(2, 2, 12, 1, w);
+    } else {
+      p.poly([[1, 8], [2, 5], [4, 3], [11, 3], [13, 5], [14, 8]], 'k');
+      p.poly([[2, 8], [3, 5], [5, 4], [10, 4], [12, 5], [13, 8]], W); p.hl(4, 4, 8, w); p.hl(3, 5, 10, w);
+      for (const x of [3, 12]) { p.vl(x, 4, 5, G); p.vl(x + 1, 4, 5, B); }
+      p.hl(1, 8, 14, G); p.hl(2, 8, 12, G);
+    }
+    p.rect(6, 7, 4, 5, 'k'); p.rect(7, 8, 2, 3, G); p.set(7, 8, g); p.set(8, 10, 'k');
   };
   defTile('chestC', (p, r) => chest(p, false));
   defTile('chestO', (p, r) => chest(p, true));
@@ -1982,7 +1998,7 @@ const LEGENDS = {
     '~': ['water', 0], 'H': 'bridgeH', 'V': 'bridgeV', 'p': ['paddy', 0], '#': ['fence', 0], 'o': ['well', 0],
     's': ['sign', 0], 'j': ['jizo', 0], 'g': ['grave', 0], 'l': ['toro', 0], 't': 'torii', 'h': ['hokora', 0],
     'M': ['mount', 0], 'f': ['pyre', 0],
-    'Q': 'mRoad', 'G': ['mGlass', 0], 'X': ['mWall', 0], 'E': ['mDoor', 0], 'Y': ['mLamp', 0], 'U': ['mTree', 0], 'J': ['rift', 0], 'Z': ['CHEST', 0],
+    'Q': 'mRoad', 'G': ['mGlass', 0], 'X': ['mWall', 0], 'E': ['mDoor', 0], 'Y': ['mLamp', 0], 'U': ['mTree', 0], 'J': ['rift', 0], 'Z': ['CHEST', 0], '1': ['mShopW', 0], '2': ['mShopI', 0], '3': ['mShopN', 0],
     'R': ['ROOF_th', 0], 'K': ['ROOF_kw', 0], 'W': ['WALL', 0], 'D': 'doorPlain', 'I': 'doorItem', 'A': 'doorWeapon', 'N': 'doorInn', 'B': 'doorBig',
   },
   in: {
@@ -2100,13 +2116,13 @@ MAPS.morokata = { name: '諸県村', kind: 'out', bgm: 'village', rows: [
   'TTTTTTTT=TTTTTTTTTTT'] };
 
 MAPS.kakure_mae = { name: '岩山の奥', kind: 'out', bgm: 'night', chestBase: 'mRoad', rows: [
-  'GGGQGGGGGGQGGGGG',
-  'GGGQGGGGGGQGGGGG',
-  'XEXQXXEEXXQXXEXX',
-  'QQQQQQQQQQQQQQQQ',
-  'QYQZQQUQQUQQQZYQ',
-  'GGQQQQQQQQQQQQGG',
-  'XEQZQQQYQQQQQQXE',
+  'GGGGGGGQQGGGGGGG',
+  'GGGGGGGQQGGGGGGG',
+  'XX1XXEXQQXE2XX3X',
+  'QYQQQQQQQQQQQZYQ',
+  'GGGGGGUQQUGGGGGG',
+  'GGGGGGGQQGGGGGGG',
+  'XEXX2XXQQXX1XXEX',
   'MMMMMMMJJMMMMMMM',
   'MMMMMM.==.MMMMMM',
   'TTTTTT.==.TTTTTT',
@@ -4532,16 +4548,14 @@ STORY.kakure_mae = {
   // 壁の向こう＝伏姫の次元牢と同じ次元。人は年を取らず、善も悪もなく、人と妖怪とからくりが共に暮らす。
   // 後の章で入れる：からくりがデスマシーンになる品、大蛇丸・自来也がティエンルン・チンワセンになる技を覚えられる
   npcs: [{ id: 'takibi', sprite: 'traveler', name: '焚き火の老人', x: 8, y: 12, dir: 'left', talk: () => kakureOldman() },
-    { id: 'jg1', sprite: 'robe1', name: '？？？', x: 5, y: 3, wander: true, radius: 3, talk: async () => {} },
-    { id: 'jg2', sprite: 'robot', name: '？？？', x: 11, y: 3, wander: true, radius: 3, talk: async () => {} },
-    { id: 'jg3', sprite: 'dragon', name: '？？？', x: 8, y: 5, wander: true, radius: 3, talk: async () => {} },
-    { id: 'jg6', sprite: 'yeti', name: '？？？', x: 6, y: 6, wander: true, radius: 2, talk: async () => {} },
-    { id: 'jg4', sprite: 'robe2', name: '？？？', x: 2, y: 5, wander: true, radius: 2, talk: async () => {} },
-    { id: 'jg5', sprite: 'robe3', name: '？？？', x: 13, y: 5, wander: true, radius: 2, talk: async () => {} }],
+    { id: 'jg1', sprite: 'robe1', name: '？？？', x: 3, y: 3, wander: true, radius: 2, talk: async () => {} },
+    { id: 'jg2', sprite: 'robot', name: '？？？', x: 10, y: 3, wander: true, radius: 2, talk: async () => {} },
+    { id: 'jg3', sprite: 'dragon', name: '？？？', x: 8, y: 5, wander: true, radius: 1, talk: async () => {} },
+    { id: 'jg4', sprite: 'robe3', name: '？？？', x: 5, y: 3, wander: true, radius: 1, talk: async () => {} }],
   objects: [
     ...MIRRORS.filter(m => m.map === 'kakure_mae').map(m => ({ type: 'mirror', x: m.x, y: m.y, block: true, run: () => magicMirror(m) })),
     ...[7, 8].map(x => look(x, 7, ['岩山の 切れ目の 空気が|ゆらゆらと ゆがんでいる。||向こうには 見たこともない 町が……|光る 道を 異国の 衣の 人々と|妖怪と からくりが 行き交っている。', '手を のばすと 見えない 壁に|はじき返された。|（今は 入れない）'])),
-    chest('c_jigen1', 3, 4, { gold: 3000 }), chest('c_jigen2', 13, 4, { gold: 3000 }), chest('c_jigen3', 3, 6, { gold: 3000 }),
+    chest('c_jigen1', 13, 3, { gold: 3000 }),
   ],
 };
 async function kakureOldman() {
