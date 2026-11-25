@@ -1528,13 +1528,20 @@ const SND = (() => {
   // 野原：決意を持って進む行進。ホ短調・132。長調の牧歌感を消し、Em→C→D→Bの短調で前へ押す。
   //   旋律は低いミから5度上へ踏み出し、後半は1オクターブ上で同じ決意を言い直す。低音は「ど・どど」と前のめり、2・4拍目に和音の「ジャン」
   const fieldP2 = ['Em', 'C', 'D', 'B', 'Em', 'C', 'D', 'Em'];
+  // Cメロ（8小節）：視界がひらける大きな展開。C→D→Bm→Em と長調側へ持ち上げ、Am→D→B→B7 で最高音まで登りきって頭のミへ戻る。
+  //   旋律は長い音で大きく歌い、伴奏は8分の分散和音、低音は大股、太鼓は毎拍「どん」で最後に連打
+  const fieldC = ['C', 'D', 'Bm', 'Em', 'Am', 'D', 'B', 'B7'];
   def('field', 132, true, [
     { w: 'tri', v: 0.3, seq: M(['e4:4 b4:4 b4:3 a4:1 b4:4', 'c5:6 b4:2 a4:4 g4:4', 'a4:3 b4:1 a4:4 d5:4 a4:4', 'b4:8 d#5:4 f#5:4',
-      'e5:4 b4:4 e5:3 f#5:1 g5:4', 'g5:6 f#5:2 e5:4 c5:4', 'd5:3 e5:1 f#5:4 a5:4 f#5:4', 'e5:12 r:4']) },
-    { w: 0.25, v: 0.1, s: 0.35, seq: gen(fieldP2, c => [[null, 4], [c.up[1], 2], [null, 2], [null, 4], [c.up[2], 2], [null, 2]]) },
-    { w: 0.5, v: 0.11, s: 0.35, seq: gen(fieldP2, c => { const a = c.root + 12; return [[a, 2], [null, 2], [a, 2], [a, 2], [a + 12, 2], [null, 2], [a, 2], [a + 7, 2]]; }) },
-    { w: 'drum', v: 0.05, seq: rep('D:4 r:4 D:4 r:4', 8) },
-    { w: 'drum', v: 0.2, seq: rep('r:4 S:4 r:4 S:4 | r:4 S:4 r:4 S:1 S:1 S:1 S:1', 4) },
+      'e5:4 b4:4 e5:3 f#5:1 g5:4', 'g5:6 f#5:2 e5:4 c5:4', 'd5:3 e5:1 f#5:4 a5:4 f#5:4', 'e5:12 r:4',
+      'g5:8 e5:4 g5:4', 'a5:8 f#5:4 d5:4', 'b5:8 a5:4 f#5:4', 'g5:12 e5:4',
+      'c6:8 b5:4 a5:4', 'd6:8 c6:4 a5:4', 'b5:6 a5:2 b5:4 d#6:4', 'f#6:12 r:4']) },
+    { w: 0.25, v: 0.1, s: 0.35, seq: gen(fieldP2, c => [[null, 4], [c.up[1], 2], [null, 2], [null, 4], [c.up[2], 2], [null, 2]]) + ' | ' +
+      gen(fieldC, c => Array.from({ length: 8 }, (_, k) => [c.up[[0, 1, 2, 1][k % 4]] + 12, 2])) },
+    { w: 0.5, v: 0.11, s: 0.35, seq: gen(fieldP2, c => { const a = c.root + 12; return [[a, 2], [null, 2], [a, 2], [a, 2], [a + 12, 2], [null, 2], [a, 2], [a + 7, 2]]; }) + ' | ' +
+      gen(fieldC, c => { const a = c.root + 12; return [[a, 6], [a, 2], [a + 12, 4], [a + 7, 4]]; }) },
+    { w: 'drum', v: 0.05, seq: rep('D:4 r:4 D:4 r:4', 8) + ' | ' + rep('D:4 D:4 D:4 D:4', 7) + ' | D:2 D:2 D:2 D:2 D:1 D:1 D:1 D:1 D:1 D:1 D:1 D:1' },
+    { w: 'drum', v: 0.2, seq: rep('r:4 S:4 r:4 S:4 | r:4 S:4 r:4 S:1 S:1 S:1 S:1', 4) + ' | ' + rep('r:4 S:4 r:4 S:4', 7) + ' | ' + Array(16).fill('S:1').join(' ') },
   ]);
   // 洞窟：レゲエ調。旋律はそのまま、裏拍に短い「ンチャ」、低音は「どーん、ど、ど」と重く跳ねる、太鼓は3拍目にだけ「どん」と拍子木（ワンドロップ）
   def('cave', 100, true, [
@@ -1650,12 +1657,15 @@ const SND = (() => {
   }
 
   /* ---------------- 再生 ---------------- */
-  function stopBgm() { if (timer) clearInterval(timer); timer = null; track = null; trackId = null; endCb = null; }
-  function play(id, onEnd) {
+  // 止めた曲がどこまで進んでいたかを覚えておく（戦闘のあと野原の曲を続きから鳴らすため）
+  const lastPos = {};
+  function stopBgm() { if (track && track.tr.loop && ctx) lastPos[trackId] = ctx.currentTime - track.t0; if (timer) clearInterval(timer); timer = null; track = null; trackId = null; endCb = null; }
+  function play(id, onEnd, resume) {
     if (!init() || !T[id]) return;
     if (trackId === id && T[id].loop) return;
     stopBgm();
     const tr = T[id], step = 60 / tr.bpm / 4, t0 = ctx.currentTime + 0.06;
+    const off = resume && tr.loop ? (lastPos[id] || 0) : 0;
     const mkOut = c => {
       const o = ctx.createGain(); let last = o;
       if (ctx.createStereoPanner && c.pan) { const p = ctx.createStereoPanner(); p.pan.value = c.pan; o.connect(p); last = p; }
@@ -1664,7 +1674,16 @@ const SND = (() => {
       if (c.dly) { const dl = ctx.createDelay(1); dl.delayTime.value = step * 3; const fb = ctx.createGain(); fb.gain.value = 0.28; const wet = ctx.createGain(); wet.gain.value = 0.22; o.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(last === o ? bgmBus : last); }
       return o;
     };
-    track = { tr, step, ch: tr.chans.map(c => ({ c, i: 0, t: t0, out: mkOut(c) })), done: 0 };
+    // 続きから：各パートの何番目の音から鳴らすかを、止めた時の経過時間から求める（イントロのあとはループ部分で割った余り）
+    const seek = c => {
+      if (!off) return { i: 0, t: t0 };
+      const d = e => e.len * step, intro = c.ev.slice(0, c.ls).reduce((a, e) => a + d(e), 0), body = c.ev.slice(c.ls).reduce((a, e) => a + d(e), 0);
+      let o = off < intro || !body ? off : intro + (off - intro) % body, i = off < intro ? 0 : c.ls, acc = off < intro ? 0 : intro;
+      while (i < c.ev.length && acc + d(c.ev[i]) <= o) { acc += d(c.ev[i]); i++; }
+      if (i >= c.ev.length) { i = c.ls; acc = o; }
+      return { i, t: t0 + (acc - o) };
+    };
+    track = { tr, step, t0: t0 - off, ch: tr.chans.map(c => ({ c, ...seek(c), out: mkOut(c) })), done: 0 };
     trackId = id; endCb = onEnd || null;
     const myTrack = track;
     const tick = () => {
@@ -1700,7 +1719,7 @@ const SND = (() => {
       play(id, fin); setTimeout(fin, 6000);
     });
   }
-  function bgm(id) { if (id === 'field' && typeof G !== 'undefined' && G.party && G.party.length >= 4) id = 'field2'; if (id) play(id); else stopBgm(); }   // 仲間が4人そろったら野原は「野原その2」
+  function bgm(id, resume) { if (id === 'field' && typeof G !== 'undefined' && G.party && G.party.length >= 4) id = 'field2'; if (id) play(id, null, resume); else stopBgm(); }   // 仲間が4人そろったら野原は「野原その2」
   const cur = () => trackId;
 
   /* ---------------- 効果音 ---------------- */
@@ -3084,7 +3103,7 @@ const BUI = (() => {
     statusEl && statusEl.remove(); logEl && logEl.remove(); enemyListEl && enemyListEl.remove();
     statusEl = logEl = enemyListEl = null;
     if (result === 'lose') return;
-    await fadeTo(1, 160); G.mode = 'field'; if (!opt.keepMusic) SND.bgm(G.map.def.bgm); await fadeTo(0, 160);
+    await fadeTo(1, 160); G.mode = 'field'; if (!opt.keepMusic) SND.bgm(G.map.def.bgm, true); await fadeTo(0, 160);
   }
   function status() {
     if (!statusEl) return;
