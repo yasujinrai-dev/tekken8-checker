@@ -4281,7 +4281,7 @@ STORY.summit = {
 };
 /* 玉を取り返す：玉を手にした犬士はクラスが上がる */
 async function regainBead(id, item, text, line, who) {
-  addItem(item);
+  if (!G.bag[item]) addItem(item);
   SND.sfx('shine'); G.whiteFlash = 0.3;
   await say(text);
   if (line) await say(line, { name: who });
@@ -4551,6 +4551,7 @@ async function continueGame() {
   await fadeTo(1, 300);
   applySave(d);
   // 九州の地図に描き替える前の記録は、野原の位置が合わないので日向村の前から始める
+  if (d.flags && d.flags.samojiroDone && d.bag && !d.bag.kou) d.bag.kou = 1;   // 玉を取り返す話より前の記録
   if (d.map === 'world' && d.wv !== 2) { d.x = WP.village[0]; d.y = WP.village[1] + 1; d.dir = 'down'; }
   G.mode = 'field'; loadMap(d.map, d.x, d.y, d.dir);
   await fadeTo(0, 400);
