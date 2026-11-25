@@ -1765,7 +1765,7 @@ const ITEMS = {
   reisui:    { name: '霊水', kind: 'use', price: 60, target: 'ally', eff: { mp: [18, 22] }, desc: '気（MP）を20ほど回復する' },
   hangontan: { name: '反魂丹', kind: 'use', price: 90, target: 'dead', eff: { revive: 0.5 }, desc: '倒れた仲間を生き返らせる' },
   mayoke:    { name: '魔除けの香', kind: 'use', price: 20, target: 'none', field: true, battle: false, eff: { mayoke: 80 }, desc: 'しばらく妖怪を寄せつけない' },
-  modorisuzu:{ name: '戻り鈴', kind: 'use', price: 25, target: 'none', field: true, battle: false, eff: { warp: 'otsuka' }, desc: '大塚村へ一瞬で戻る' },
+  modorisuzu:{ name: '戻り鈴', kind: 'use', price: 25, target: 'none', field: true, battle: false, eff: { warp: 'otsuka' }, desc: '日向村へ一瞬で戻る' },
   chikara:   { name: '力の丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['atk', 3] }, desc: '飲んだ者の力が3上がる' },
   mamori:    { name: '守りの丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['def', 3] }, desc: '飲んだ者の守りが3上がる' },
   // 武器
@@ -1899,7 +1899,7 @@ const LEGENDS = {
 const MAPS = {};
 const seg = rows => rows.map(r => Array.isArray(r) ? r.join('') : r);
 
-MAPS.otsuka = { name: '大塚村', kind: 'out', bgm: 'village', rows: seg([
+MAPS.otsuka = { name: '日向村', kind: 'out', bgm: 'village', rows: seg([
   ['TTTTTTTTTT', 'TTTTTTTTTT', 'TTTT~~TTTT'],
   ['T.,RRRR...', '..KKKKKKK.', '.lhl~~.,.T'],
   ['T..RRRR.;.', '..KKKKKKK.', '..=.~~..*T'],
@@ -2051,7 +2051,7 @@ MAPS.summit = { name: '円塚山 山頂', kind: 'summit', bgm: 'night', night: t
   'TTTTTTTTETTTTTTTT'] };
 
 /* 武蔵野：手続きで地形をつくる（84×60）
-   第一章で行く場所：大塚村（北西）→ 道祖神の辻 → 神宮川の橋 → 尾根の切れ目の峠の茶屋 → 北の円塚山
+   第一章で行く場所：日向村（北西）→ 道祖神の辻 → 神宮川の橋 → 尾根の切れ目の峠の茶屋 → 北の円塚山
    見えるが行けない場所：南の関所の向こうの古河の町、東の湖に浮かぶ島の城
    今は用がない場所（強い妖怪が出る）：西の妖の森と荒れ寺、北東の夜叉沼と封印の祠 */
 const WORLD_W = 84, WORLD_H = 60;
@@ -2580,7 +2580,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '円塚山': 'まるつかやま', '大塚村': 'おおつかむら', '武蔵野': 'むさしの', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '円塚山': 'まるつかやま', '日向村': 'ひゅうがむら', '武蔵野': 'むさしの', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -3641,7 +3641,7 @@ async function gameOver() {
   Save.auto();
 }
 
-/* ---------------- 大塚村 ---------------- */
+/* ---------------- 日向村 ---------------- */
 STORY.otsuka = {
   warps: [
     { x: 4, y: 3, to: 'shino_house', tx: 3, ty: 5, dir: 'up' },
@@ -3778,7 +3778,7 @@ async function cellTalk() {
     setFlag('cellTalk');
     await say('（格子の 向こうに|若い 男が すわりこんでいる……）');
     await say('……だれだ。|左母二郎の 手の者か。', { name: '？？？' });
-    await say('いや、その顔……|大塚村の 犬塚信乃さま！', { name: '？？？' });
+    await say('いや、その顔……|日向村の 犬塚信乃さま！', { name: '？？？' });
     await say('権六さまの 下男、額蔵に ございます。', { name: N.gakuzo });
     await say('（この男が 額蔵……！|村で 何度も 名を 聞いた）');
     await say('権六さまの 使いの 帰り、峠で|浪人どもに からまれた 娘を かばい……|多勢に 無勢、この ありさまです。', { name: N.gakuzo });
@@ -3908,7 +3908,7 @@ STORY.world = {
   ],
   objects: [
     look(...WP.gate, ['古河へ 通じる 関所だ。|門の すき間から 向こうの 町の|屋根が 見える。||「通行手形の ない者は 通せぬ！」']),
-    look(...WP.doso, ['道祖神の 石碑だ。|『北 大塚村　東 峠の茶屋|南 古河の関所　西 妖の森』||『妖の森に 入るべからず』と|小さく 書き足してある。']),
+    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村　東 峠の茶屋|南 古河の関所　西 妖の森』||『妖の森に 入るべからず』と|小さく 書き足してある。']),
     look(...WP.pine, async () => {
       if (G.opened.pine) { await say('大きな 一本松だ。'); return; }
       G.opened.pine = true; await say('松の 根もとに 何か うまっている……'); await getItem('reisui');
