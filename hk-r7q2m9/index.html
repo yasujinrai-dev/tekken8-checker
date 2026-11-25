@@ -1815,9 +1815,9 @@ const ITEMS = {
   kusari:    { name: '鎖帷子', kind: 'a', def: 11, price: 210, desc: '細い鎖を編んだ肌着' },
   shirosho:  { name: '白装束', kind: 'a', def: 8, price: 0, nosell: true, desc: '行者の白い装束' },
   // 大事なもの
-  kou:       { name: '孝の玉', kind: 'key', desc: '「孝」の字が浮かぶ霊玉。信乃が生まれながらに持つ' },
-  gi:        { name: '義の玉', kind: 'key', desc: '「義」の字が浮かぶ霊玉。荘助が持つ' },
-  chu:       { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節が持つ' },
+  kou:       { name: '孝の玉', kind: 'key', desc: '「孝」の字が浮かぶ霊玉。信乃の玉' },
+  gi:        { name: '義の玉', kind: 'key', desc: '「義」の字が浮かぶ霊玉。荘助の玉' },
+  chu:       { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節の玉' },
   rouKey:    { name: '牢の鍵', kind: 'key', desc: '山賊の頭が持っていた鍵束。洞窟の牢を開けられる' },
   inro:      { name: '網乾家の印籠', kind: 'key', desc: '網乾の家紋が入った印籠。左母二郎の落とし物' },
   kanzashi:  { name: '浜路の簪', kind: 'key', desc: '浜路が髪にさしていた簪' },
@@ -1832,19 +1832,28 @@ const SKILLS = {
   ginoichigeki:{ name: '義の一撃', mp: 5, target: 'enemy', kind: 'phys', mult: 2.2, acc: 0.85, desc: '渾身の一撃。たまに外れる' },
   katon:       { name: '火遁の術', mp: 5, target: 'enemies', kind: 'magic', elem: 'fire', pow: [22, 30], desc: '炎で敵すべてを焼く' },
   enbu:        { name: '炎舞', mp: 7, target: 'enemy', kind: 'magic', elem: 'fire', pow: [52, 64], desc: '敵ひとりを大きな炎で包む' },
+  jinsoku:     { name: '神足', mp: 3, target: 'self', kind: 'agiup', desc: 'この戦いのあいだ自分の素早さを上げる' },
+  shuchu:      { name: '集中', mp: 2, target: 'self', kind: 'focus', desc: '次のターンだけ力が倍になる' },
   chunoinori:  { name: '忠の祈り', mp: 8, target: 'party', kind: 'healall', pow: [26, 34], field: true, desc: '味方すべてのHPを回復' },
 };
 /* 仲間 */
 const MEMBERS = {
   shino:   { name: '信乃', full: '犬塚信乃', bead: '孝', sprite: 'shino', wt: 'sword',
     base: { hp: 32, mp: 6, atk: 8, def: 5, agi: 7 }, grow: { hp: 7.5, mp: 2.4, atk: 2.4, def: 1.6, agi: 1.4 },
-    learn: [] },   // 肉弾戦の剣士：わざは持たない
+    learn: [],     // 肉弾戦の剣士：わざは玉を取り返してクラスが上がると覚える
+    cls: [{ name: '素浪人' }, { name: '孝の剣士', bonus: { hp: 6, atk: 2, agi: 3 }, learn: ['jinsoku', 'shuchu'] },
+          { name: '孝の剣豪', bonus: { hp: 6, atk: 2, def: 2 } }, { name: '孝の剣聖', bonus: { hp: 8, atk: 2, agi: 3 } }],
+    clsDef: () => flag('samojiroDone') ? 1 : 0 },
   sosuke:  { name: '荘助', full: '犬川荘助', bead: '義', sprite: 'sosuke', wt: 'staff',
     base: { hp: 36, mp: 5, atk: 7, def: 7, agi: 5 }, grow: { hp: 8.2, mp: 1.9, atk: 2.2, def: 1.9, agi: 1.15 },
-    learn: [] },   // 肉弾戦：わざは持たない
+    learn: [],     // 肉弾戦：わざは持たない
+    cls: [{ name: '下男' }, { name: '義の棒術使い', bonus: { hp: 8, atk: 1, def: 3 } }],
+    clsDef: () => flag('tsuchigumo') ? 1 : 0 },
   dosetsu: { name: '道節', full: '犬山道節', bead: '忠', sprite: 'dosetsu', wt: 'dsword',
     base: { hp: 40, mp: 14, atk: 9, def: 6, agi: 8 }, grow: { hp: 7.6, mp: 3.2, atk: 2.2, def: 1.5, agi: 1.35 },
-    learn: [[1, 'katon'], [1, 'enbu'], [1, 'chunoinori']] },
+    learn: [[1, 'katon'], [1, 'enbu'], [1, 'chunoinori']],
+    cls: [{ name: '行者' }, { name: '忠の火遁使い', bonus: { mp: 4, atk: 1, def: 1 } }],
+    clsDef: () => 1 },
 };
 const EXP_TABLE = [0, 0, 15, 50, 105, 180, 310, 590, 870, 1260, 1750, 2310, 2940, 3710, 4620, 5740, 7000, 8540, 10360, 12460, 14840];
 const MAX_LV = EXP_TABLE.length - 1;
@@ -2680,6 +2689,7 @@ const UI = (() => {
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
     '孝の玉': 'こうのたま', '義の玉': 'ぎのたま', '忠の玉': 'ちゅうのたま', '『孝』': '『こう』', '『義』': '『ぎ』', '『忠』': '『ちゅう』',
+    '牡丹': 'ぼたん', '痣': 'あざ', '神足': 'じんそく', '全神速': 'ぜんしんそく', '無刀取り': 'むとうどり', '剣豪': 'けんごう', '剣聖': 'けんせい', '棒術': 'ぼうじゅつ',
     '白装束': 'しろしょうぞく', '路銀': 'ろぎん', '曲者': 'くせもの', '拙者': 'せっしゃ', '樫': 'かし', '居合い': 'いあい',
   };
   const RUBY_RE = new RegExp(Object.keys(RUBY).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
@@ -2829,6 +2839,8 @@ function physDamage(atk, def, mult = 1) {
   return Math.round(v);
 }
 const pDef = m => Math.round(stat(m, 'def') * (B.kamae ? 1.4 : 1));
+const bAgi = m => Math.round(stat(m, 'agi') * (B && B.agiUp.has(m) ? 1.5 : 1));
+const bAtk = m => stat(m, 'atk') * (B && B.focus.get(m) === B.round ? 2 : 1);   // 集中：次のターンだけ力が倍
 
 /* -------- 出力（画面あり／なし） -------- */
 async function out(text, ms) { if (B.sim) return; BUI.log(text); await BUI.wait(ms); }
@@ -2840,7 +2852,7 @@ async function startRandomBattle(zone) {
   return battle(wpick(z.groups), { bg: z.bg });
 }
 async function battle(ids, opt = {}) {
-  B = { en: makeEnemies(ids, opt.solo ? 0.8 : 1), party: G.party, bg: opt.bg || 'field', boss: !!opt.boss, kamae: false, guard: new Set(), runFails: 0, sim: !!opt.sim, policy: opt.policy, round: 0, opt };
+  B = { en: makeEnemies(ids, opt.solo ? 0.8 : 1), party: G.party, bg: opt.bg || 'field', boss: !!opt.boss, kamae: false, guard: new Set(), agiUp: new Set(), focus: new Map(), runFails: 0, sim: !!opt.sim, policy: opt.policy, round: 0, opt };
   if (!B.sim) { G.mode = 'battle'; await BUI.enter(opt); }
   let result;
   try {
@@ -2880,7 +2892,7 @@ async function battleLoop() {
       cmds.length = 0;
     }
     // 敵の行動
-    const acts = cmds.filter(Boolean).map(c => ({ ...c, side: 'p', spd: stat(c.who, 'agi') * (0.6 + rand() * 0.6) }));
+    const acts = cmds.filter(Boolean).map(c => ({ ...c, side: 'p', spd: bAgi(c.who) * (0.6 + rand() * 0.6) }));
     for (const e of liveEn()) for (let k = 0; k < (e.d.acts || 1); k++) acts.push({ who: e, side: 'e', spd: e.d.agi * (0.6 + rand() * 0.6) - k * 4 });
     for (const a of acts) if (a.type === 'guard') B.guard.add(a.who);
     acts.sort((a, b) => b.spd - a.spd);
@@ -2910,7 +2922,7 @@ async function hitEnemy(m, t, mult, opt = {}) {
   const crit = !opt.noCrit && rand() < 1 / 24;
   const miss = !crit && rand() < (opt.acc ? 1 - opt.acc : 1 / 30);
   if (miss) { SND.sfx('miss'); await out('ミス！ ' + t.name + 'は ひらりと かわした！', 600); return; }
-  let v = crit ? Math.round(stat(m, 'atk') * mult * (0.9 + rand() * 0.2) * 0.72) : physDamage(stat(m, 'atk'), t.d.def, mult);
+  let v = crit ? Math.round(bAtk(m) * mult * (0.9 + rand() * 0.2) * 0.72) : physDamage(bAtk(m), t.d.def, mult);
   v = Math.round(v * elemMul(t.d, opt.elem));
   if (crit) { SND.sfx('crit'); await fx('crit'); await out('会心の一撃！', 300); }
   else SND.sfx(opt.elem === 'water' ? 'water' : 'hit');
@@ -2947,12 +2959,12 @@ async function partyAct(a) {
     const s = SKILLS[a.skill];
     if (m.mp < s.mp) { await out(mName(m) + 'は ' + s.name + 'を つかおうとしたが\n気が たりない！', 600); return; }
     m.mp -= s.mp;
-    const verb = s.kind === 'magic' ? 'を となえた！' : s.kind === 'heal' || s.kind === 'healall' ? 'を ささげた！' : s.kind === 'guard' ? 'を とった！' : s.kind === 'cure' ? 'を ほどこした！' : 'を はなった！';
+    const verb = s.kind === 'magic' ? 'を となえた！' : s.kind === 'heal' || s.kind === 'healall' ? 'を ささげた！' : s.kind === 'guard' ? 'を とった！' : s.kind === 'agiup' || s.kind === 'focus' ? '！' : s.kind === 'cure' ? 'を ほどこした！' : 'を はなった！';
     await out(mName(m) + 'は ' + s.name + verb, 450);
     if (s.kind === 'phys' && s.target === 'enemy') { await hitEnemy(m, a.target, s.mult, { acc: s.acc, elem: s.elem }); return; }
     if (s.kind === 'phys' && s.target === 'enemies') {
       SND.sfx('water'); await fx('water');
-      for (const t of liveEn()) { const v = Math.round(physDamage(stat(m, 'atk'), t.d.def, s.mult) * elemMul(t.d, s.elem)); await damageEnemy(t, v); }
+      for (const t of liveEn()) { const v = Math.round(physDamage(bAtk(m), t.d.def, s.mult) * elemMul(t.d, s.elem)); await damageEnemy(t, v); }
       return;
     }
     if (s.kind === 'magic') {
@@ -2972,6 +2984,8 @@ async function partyAct(a) {
       await out('みんなの 傷が いえていく。', 600); return;
     }
     if (s.kind === 'cure') { const t = a.target; if (t && t.poison) { t.poison = false; SND.sfx('heal'); await out(mName(t) + 'の 毒が 消えた！', 600); } else await out('しかし なにも おこらなかった。', 500); return; }
+    if (s.kind === 'agiup') { SND.sfx('buff'); if (B.agiUp.has(m)) await out('しかし すでに 足が 速まっている。', 500); else { B.agiUp.add(m); await out(mName(m) + 'の 素早さが 上がった！', 600); } return; }
+    if (s.kind === 'focus') { SND.sfx('buff'); B.focus.set(m, B.round + 1); await out(mName(m) + 'は 気を しずめ、|次の 一撃に 力を ためた！'.replace('|', '\n'), 650); return; }
     if (s.kind === 'guard') { SND.sfx('buff'); if (B.kamae) await out('しかし すでに 構えている。', 500); else { B.kamae = true; await out('みんなの 守りが 上がった！', 600); } return; }
   }
 }
@@ -3245,14 +3259,25 @@ function newMember(id, lv = 1) {
 }
 const mName = m => MEMBERS[m.id].name;
 function baseStat(m, k, lv = m.lv) { const d = MEMBERS[m.id]; return Math.floor(d.base[k] + d.grow[k] * (lv - 1)); }
+/* クラス：玉を取り返すと上がる。上がるたびに少しだけ強くなる */
+const clsOf = m => m.cls != null ? m.cls : (MEMBERS[m.id].clsDef ? MEMBERS[m.id].clsDef() : 0);
+const clsName = m => { const c = MEMBERS[m.id].cls; return c ? c[Math.min(clsOf(m), c.length - 1)].name : ''; };
+function clsBonus(m, k) { const c = MEMBERS[m.id].cls; let v = 0; if (c) for (let i = 1; i <= clsOf(m) && i < c.length; i++) v += (c[i].bonus && c[i].bonus[k]) || 0; return v; }
+function setCls(m, n) {
+  const before = { hp: stat(m, 'hp'), mp: stat(m, 'mp') };
+  m.cls = n;
+  if (m.hp > 0) { m.hp += stat(m, 'hp') - before.hp; m.mp += stat(m, 'mp') - before.mp; }
+}
 function stat(m, k) {
-  let v = baseStat(m, k) + (m.bonus[k] || 0);
+  let v = baseStat(m, k) + (m.bonus[k] || 0) + clsBonus(m, k);
   if (k === 'atk' && m.w) v += ITEMS[m.w].atk || 0;
   if (k === 'def' && m.a) v += ITEMS[m.a].def || 0;
   return v;
 }
 function skillsOf(m) {
   const s = MEMBERS[m.id].learn.filter(([lv]) => m.lv >= lv).map(([, id]) => id);
+  const c = MEMBERS[m.id].cls;
+  if (c) for (let i = 1; i <= clsOf(m) && i < c.length; i++) for (const id of c[i].learn || []) if (!s.includes(id)) s.push(id);
   return s;
 }
 function canEquip(m, id) { const it = ITEMS[id]; if (it.kind === 'a') return true; if (it.kind === 'w') return it.who ? it.who.includes(m.id) : it.wt === MEMBERS[m.id].wt; return false; }
@@ -3441,7 +3466,7 @@ async function menuStatus() {
   const e = UI.info({ x: 8, y: 8, w: 224, h: 224, cls: 'status' });
   const d = MEMBERS[m.id], next = m.lv < MAX_LV ? EXP_TABLE[m.lv + 1] - m.exp : 0;
   const rows = [
-    [d.full, '「' + d.bead + '」の玉'], ['レベル', m.lv], ['HP', m.hp + ' / ' + stat(m, 'hp')], ['気', m.mp + ' / ' + stat(m, 'mp')],
+    [d.full, '「' + d.bead + '」の玉'], ['クラス', clsName(m)], ['レベル', m.lv], ['HP', m.hp + ' / ' + stat(m, 'hp')], ['気', m.mp + ' / ' + stat(m, 'mp')],
     ['力', stat(m, 'atk')], ['守り', stat(m, 'def')], ['素早さ', stat(m, 'agi')], ['経験', m.exp], ['次まで', next],
     ['武器', m.w ? itemName(m.w) : 'なし'], ['防具', m.a ? itemName(m.a) : 'なし'], ['わざ', skillsOf(m).map(s => SKILLS[s].name).join('・') || 'なし'],
   ];
@@ -3818,7 +3843,9 @@ async function openingEvent() {
   await say('信乃や。|旅立つ 前に 聞いておくれ。', { name: N.jiiya });
   await say('お前には 果たさねば ならぬ ことが|二つ ある。', { name: N.jiiya });
   await Pic.show('kami2');
-  await say('一つは 剣士を 探すこと。|お前と 同じ 光る 玉を 持つ|剣士たちじゃ。', { name: N.jiiya });
+  await say('一つは 剣士を 探すこと。|お前の 肩と 同じ、牡丹の 形の|痣を 持つ 剣士たちじゃ。', { name: N.jiiya });
+  await say('お前は 生まれたとき『孝』の 玉を|にぎって おった。|じゃが その夜、妖怪に 奪われて しもうた。', { name: N.jiiya });
+  await say('玉を 持つ 妖は 力を 得て、|どこかで 国を 荒らして おろう。|剣士が そろえば 玉も 取り返せよう。', { name: N.jiiya });
   await Pic.show('kami3');
   await say('もう一つは、お前の 家宝|村雨丸を 取りもどすことじゃ。', { name: N.jiiya });
   await Pic.show('kami4');
@@ -3873,10 +3900,10 @@ STORY.banya = {
   objects: [1, 2, 3, 4, 5, 6, 7].map(x => look(x, 2, ['太い 格子の 向こうは|からっぽの 牢だ。'])).concat([look(3, 3, ['水がめだ。'])]),
 };
 async function elderRumor() {
-  await say('信乃か。剣士を 探して おるそうじゃな。|光る 玉を 持つ 剣士……か。', { name: '長老' });
-  await say('そういえば 権六の 家の 額蔵が|光る 玉を 大事に 持っておった。|あれは 見かけに よらず 腕が 立つ。', { name: '長老' });
+  await say('信乃か。剣士を 探して おるそうじゃな。|牡丹の 痣を 持つ 剣士……か。', { name: '長老' });
+  await say('そういえば 権六の 家の 額蔵の 腕に|牡丹の 形の 痣が あったのう。|あれは 見かけに よらず 腕が 立つ。', { name: '長老' });
   SND.sfx('shine');
-  await say('（光る 玉……？|おれの 孝の玉と 同じ……？）');
+  await say('（牡丹の 痣……？|おれの 肩の 痣と 同じ……？）');
   await say('額蔵なら 番屋の 牢番が|最後に 見たと 言うておったぞ。', { name: '長老' });
   setFlag('askGaku');
 }
@@ -3892,7 +3919,7 @@ async function cellTalk() {
     await say('権六さまの 使いの 帰り、峠で|浪人どもに からまれた 娘を かばい……|多勢に 無勢、この ありさまです。', { name: N.gakuzo });
     await say('信乃さまの 村雨丸を 左母二郎が!?|あの 浪人なら この山の 頂に|陣取って おります。', { name: N.gakuzo });
     SND.sfx('shine'); G.whiteFlash = 0.12;
-    await say('（ふところの 孝の玉が 熱い……！|額蔵の ふところも かすかに 光っている）');
+    await say('（肩の 痣が 熱い……！|額蔵の 腕の 痣も かすかに 光っている）');
     if (!G.bag.rouKey) {
       await say('牢の 鍵は 山賊の 頭が|持って おります。|洞窟の 南西の 奥に いるはず。||鍵さえ あれば わたしも|お供 いたします！', { name: N.gakuzo });
       Save.auto(); return;
@@ -3925,13 +3952,13 @@ async function releaseSosuke() {
   await fadeTo(0, 400);
   await say('信乃さま、かたじけない。|この恩は 一生 忘れません。', { name: N.gakuzo });
   SND.sfx('shine'); G.whiteFlash = 0.3;
-  await say('そのとき、信乃の ふところと|額蔵の ふところが|同時に 光を 放った！');
-  await say('これは……わたしが 生まれたときから|持っていた『義』の玉……|信乃さまの 玉と 同じ 光……！', { name: N.gakuzo });
-  await say('信乃さま。わたしの まことの 名は|犬川荘助と 申します。||同じ 玉を 持つ方に 会ったら|命を かけて 仕えよと|母に 言われて 育ちました。', { name: N.gakuzo });
+  await say('そのとき、信乃の 肩と|額蔵の 腕の 痣が|同時に 光を 放った！');
+  await say('この 痣……信乃さまにも！||母が 申して おりました。|わたしが 生まれた 夜、にぎっていた|『義』の 玉を 妖怪に 奪われたと。', { name: N.gakuzo });
+  await say('信乃さま。わたしの まことの 名は|犬川荘助と 申します。||同じ 痣を 持つ方に 会ったら|命を かけて 仕えよと|母に 言われて 育ちました。', { name: N.gakuzo });
   await say('信乃さまの 行く道が|わたしの 道です。|村雨丸を 取りもどしに|まいりましょう！', { name: N.sosuke });
   const m = joinParty('sosuke', Math.max(1, G.party[0].lv));
   if (m) { m.w = 'kashibo'; m.a = 'kawado'; m.hp = stat(m, 'hp'); }
-  addItem('gi'); removeItem('rouKey'); setFlag('sosuke');
+  removeItem('rouKey'); setFlag('sosuke');
   G.npcs = G.npcs.filter(n => n !== gk);
   if (G.pl) refreshFollowers();
   SND.stopBgm(); await SND.jingle('join'); SND.bgm('cave');
@@ -4106,7 +4133,10 @@ async function tsuchigumoEvent() {
   const r = await fight(['tsuchigumo'], { boss: true, bg: 'cave', intro: '土蜘蛛が おそいかかってきた！', winText: '土蜘蛛を たおした！' });
   if (r !== 'win') return;
   setFlag('tsuchigumo');
-  await say('土蜘蛛は 闇の中へ 崩れ落ちていった……|出口から 夜風が 吹きこんでくる。');
+  await say('土蜘蛛は 闇の中へ 崩れ落ちていった……');
+  await regainBead('sosuke', 'gi', '土蜘蛛の 骸の 中から|『義』の 字が 浮かぶ 玉が 転がり出た！', 'これは……母の 言っていた|わたしの 玉……！||妖が 玉の 力で 化けて いたのか。', N.sosuke);
+  SND.bgm(G.map.def.bgm);
+  await say('出口から 夜風が 吹きこんでくる。');
   SND.sfx('water');
   await say('土蜘蛛が ふさいでいた 岩の かげから|清らかな 水が わき出した。');
 }
@@ -4128,12 +4158,30 @@ STORY.summit = {
     { area: [1, 1, 15, 10], cond: () => !flag('samojiroDone'), run: () => summitEvent() },
   ],
 };
+/* 玉を取り返す：玉を手にした犬士はクラスが上がる */
+async function regainBead(id, item, text, line, who) {
+  addItem(item);
+  SND.sfx('shine'); G.whiteFlash = 0.3;
+  await say(text);
+  if (line) await say(line, { name: who });
+  const m = G.party.find(x => x.id === id); if (!m) return;
+  const c = MEMBERS[id].cls, n = Math.max(1, m.cls || 0);
+  const sk0 = skillsOf(m);
+  m.cls = 0; setCls(m, n);
+  SND.stopBgm(); await SND.jingle('item');
+  let t = mName(m) + 'は 「' + c[n].name + '」に なった！';
+  for (const s of skillsOf(m).filter(s => !sk0.includes(s))) t += '|' + mName(m) + 'は 「' + SKILLS[s].name + '」を\nおぼえた！';
+  await say(t);
+}
 async function summitEvent() {
   await walkParty(['up']);
   await say('炎よ……わが 主君の 無念を|天へ とどけよ……', { name: '白装束の男' });
   await say('ほう、来たか 信乃。|それに 下男の 額蔵まで。', { name: N.samo });
   await say('左母二郎！|村雨丸を 返してもらう！');
-  await say('ふん、なまくら刀で 何が できる。|村雨丸さえ あれば 出世は 思いのまま。|名刀の 斬れ味、きさまで 試してくれる！', { name: N.samo });
+  await say('ふん、なまくら刀で 何が できる。|村雨丸さえ あれば 出世は 思いのまま。', { name: N.samo });
+  SND.sfx('dark'); G.whiteFlash = 0.15;
+  await say('左母二郎の ふところで|『孝』の 字の 玉が 赤黒く 光った！');
+  await say('この 玉か？ 山の 妖から 奪った 物よ。|持つだけで 体に 力が みなぎる。|名刀の 斬れ味、きさまで 試してくれる！', { name: N.samo });
   await walkNpc('samojiro', ['left', 'down']);
   const r = await fight(['ronin', 'samojiro'], { boss: true, bg: 'summit', intro: '網乾左母二郎が おそいかかってきた！', winText: '網乾左母二郎を うちやぶった！' });
   if (r !== 'win') return;
@@ -4147,9 +4195,11 @@ async function summitEvent() {
   G.whiteFlash = 0.2; SND.sfx('water');
   setFlag('murasameSkill');
   await say('刃を 抜くと、白い 露が 玉と 散った。|まさしく 本物の 村雨丸だ。||村雨丸で 斬りつけると|刃の露が 水の力と なって 走る！');
+  await regainBead('shino', 'kou', '左母二郎の 落とした 玉が|信乃の 手の中で 光を 取りもどした！', null);
   SND.bgm('night');
   const ds = npc('dosetsu'); if (ds) ds.dir = 'down';
   await say('……その 刀、村雨丸か。||わしは 犬山道節。|主君の 仇を 討つため、この山で|火遁の 行を 修めておった。', { name: N.dosetsu });
+  await say('わしも 生まれた 夜に 玉を 奪われた。|十年 かけて その 妖を 探し出し、|火遁で 焼きはらって 取り返したのだ。', { name: N.dosetsu });
   SND.sfx('shine'); G.whiteFlash = 0.2;
   await say('道節の 胸もとで『忠』の 玉が|信乃と 荘助の 玉と 呼びあうように|光を 放った！');
   // 玉梓の影
@@ -4180,7 +4230,7 @@ async function tamazusaBattle() {
 async function endingEvent() {
   setFlag('ch1'); setFlag('pyreOut');
   G.flags.purpleFire = false;
-  await say('おのれ 犬どもめ……|これで 終わったと 思うな……|のこる 五つの 玉も いずれ……', { name: N.tama });
+  await say('おのれ 犬どもめ……|これで 終わったと 思うな……|のこる 五つの 玉は わらわの 手の者が|握っておる……', { name: N.tama });
   await say('紫の 炎は 夜空へ ほどけるように|消えていった。');
   await say('……玉は ひかれあう、か。|どうやら わしも おぬしらと 行く|さだめらしい。', { name: N.dosetsu });
   await fadeTo(1, 800);
@@ -4338,7 +4388,7 @@ const Title = (() => {
     await P('むかし、安房の国の 里見家は|悪女・玉梓の 怨みを かい、|末代まで たたると のろわれた。');
     await P('二十年前。|里見の 姫・伏姫の 数珠から|八つの 玉が 光を 放った。', () => { stage = 'beads'; t = 0; });
     await P('仁・義・礼・智・忠・信・孝・悌――|文字の 浮かぶ 玉は 関東に 生まれた|八人の 赤子に 宿った。', () => { orbs.t0 = t; stage = 'scatter'; SND.sfx('shine'); });
-    await P('その夜、玉梓は 伏姫を|次元の 牢に 封じこめ、|妖怪どもに 赤子を 襲わせた。', () => { stage = 'dark'; });
+    await P('その夜、玉梓は 伏姫を|次元の 牢に 封じこめ、|妖怪どもに 赤子を 襲わせ、|八つの 玉を 奪いとらせた。', () => { stage = 'dark'; });
     await P('血を 分けた 者たちは 赤子を 抱いて|関東を のがれ、|日本の 果てへ 散っていった。');
     await P('それから 二十年――|日向の 国で 育った 若者・犬塚信乃は|まだ 何も 知らない。');
     hint.remove(); UI.hideMsg();
