@@ -3740,6 +3740,7 @@ STORY.otsuka = {
     } },
     { id: 'fisher', sprite: 'man2', name: '釣り人', x: 23, y: 16, dir: 'right', talk: async () => {
       await say('大淀川は 流れが 速い。|うっかり 落ちたら ひとたまりも ないぞ。', { name: '釣り人' });
+      await say('それと な、|あの 橋を 越えると 妖怪どもが|ぐっと 手ごわくなる。||心して 渡るんだぞ。', { name: '釣り人' });
     } },
   ],
   objects: [
@@ -3789,7 +3790,6 @@ async function openingEvent() {
   G.gold += 60; addItem('yakusou', 2);
   await say('（60文と 薬草2つを 受けとった）');
   SND.sfx('bark'); await say('ワン！', { name: '与四郎' });
-  await say('ひとつ 言うておく。|村の 南の 大淀川の 橋を 越えると|妖怪どもが ぐっと 手ごわくなる。||心して 渡るのじゃぞ。', { name: N.jiiya });
   await say('与四郎も 行く気 まんまんじゃな。|さあ 行け、信乃。', { name: N.jiiya });
   setFlag('opening');
 }
