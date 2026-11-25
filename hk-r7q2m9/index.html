@@ -1818,6 +1818,7 @@ const ITEMS = {
   kazenoha:  { name: '風の刃', kind: 'w', wt: 'sword', atk: 24, price: 0, sell: 5, desc: '風をまとう薄刃の刀。山賊がどこかで奪った業物' },
   kurouchi:  { name: '黒打ちの刀', kind: 'w', wt: 'sword', atk: 21, price: 0, sell: 5, desc: '浪人が手放さなかった黒鉄の刀' },
   kama:      { name: 'かま', kind: 'w', wt: 'sickle', who: ['sosuke'], atk: 13, price: 0, sell: 5, desc: '鎌鼬の前足のような鋭い鎌。荘助が使える' },
+  ono:       { name: '炭焼きの斧', kind: 'w', wt: 'axe', who: ['sosuke'], atk: 10, price: 0, sell: 5, desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
   dorobo:    { name: '泥棒頭巾', kind: 'a', def: 7, price: 0, sell: 5, desc: '山賊の頭巾。身をかわしやすい' },
   kappako:   { name: '河童の甲羅', kind: 'a', def: 10, price: 0, sell: 5, desc: '固い甲羅を胴に当てた防具' },
   haramaki:  { name: '狸の腹巻', kind: 'a', def: 8, price: 0, sell: 5, desc: '化け狸の毛で編んだ腹巻。ほかほか' },
@@ -1834,7 +1835,6 @@ const ITEMS = {
   chu:       { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節の玉' },
   rouKey:    { name: '牢の合鍵', kind: 'key', desc: '権太親方が打ち直した鍵。洞窟の牢を開けられる' },
   oreKagi:   { name: '折れた鍵', kind: 'key', desc: '山賊の頭が投げつけた牢の鍵。まん中で折れている' },
-  ono:       { name: '炭焼きの斧', kind: 'key', desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
   sumidawara:{ name: '炭俵', kind: 'key', desc: '諸県村の炭焼きが焼いた炭。鍛冶に使う' },
   zaru:      { name: 'ザル', kind: 'key', desc: '茶屋のおばばに借りたザル' },
   satetsu:   { name: '砂鉄', kind: 'key', desc: '日向の浜ですくった黒い砂。玉鋼の材料になる' },
@@ -2099,13 +2099,25 @@ MAPS.cave1 = { name: '霧島山 洞窟・下', kind: 'cave', bgm: 'cave', enc: (
   '##..#######...#######..###',
   '##.....####...#######..###',
   '##.....####...#####.....##',
-  '##.Z...####...#####..S..##',
+  '##.Z...####...#####..D..##',
   '##.....##........##.....##',
   '#########........##.....##',
   '#########........#########',
   '#########...o....#########',
   '#########........#########',
   '############E#############'] };
+MAPS.cave0 = { name: '霧島山 洞窟・地底', kind: 'cave', bgm: 'cave', rows: [
+  '################',
+  '#..U...#########',
+  '#......#########',
+  '####...#########',
+  '####...........#',
+  '####...........#',
+  '##########...###',
+  '#######.......##',
+  '#######...S...##',
+  '#######.......##',
+  '################'] };
 MAPS.cave2 = { name: '霧島山 洞窟・上', kind: 'cave', bgm: 'cave', enc: () => 'cave2', rows: [
   '##########################',
   '############E#############',
@@ -3154,7 +3166,7 @@ async function victory() {
     await BUI.wait(900);
     panel.remove();
   }
-  if (gold > 0) { G.gold += gold; await out(gold + '文を 手に入れた！', 500); }
+  G.gold += gold; await out((gold > 0 ? gold + '文を 手に入れた！\n' : '') + '所持金 ' + G.gold + '文', 700);
   // 宝箱：1戦で1つまで。強い妖怪ほど落としやすく、まれに当たりの品が入っている
   for (const e of B.en) {
     const c = e.d.chest; if (!c || rand() >= 1 / c[0]) continue;
@@ -3415,6 +3427,14 @@ function addItem(id, n = 1) { G.bag[id] = (G.bag[id] || 0) + n; }
 function removeItem(id, n = 1) { G.bag[id] = (G.bag[id] || 0) - n; if (G.bag[id] <= 0) delete G.bag[id]; }
 const hasItem = id => (G.bag[id] || 0) > 0 || G.party.some(m => m.w === id || m.a === id);
 const itemName = id => ITEMS[id].name;
+// 武器の使い手：仲間ごとのジョブ名（まだ会っていない仲間も名前を出さずにジョブで示す）
+const JOB = { shino: '剣士', sosuke: '棒術使い', dosetsu: '火遁使い' };
+function wieldText(id) {
+  const it = ITEMS[id]; if (it.kind !== 'w') return '';
+  const ids = Object.keys(MEMBERS).filter(k => canEquip({ id: k }, id));
+  if (!ids.length) return 'そうびできる者が いない';
+  return 'そうび：' + ids.map(k => JOB[k] + (G.party.some(m => m.id === k) ? '（' + MEMBERS[k].name + '）' : '')).join('・');
+}
 function joinParty(id, lv) {
   if (G.party.some(m => m.id === id)) return null;
   const m = newMember(id, lv); G.party.push(m);
@@ -3467,8 +3487,8 @@ async function fieldMenu() {
   try {
     for (;;) {
       pp.redraw(); gp.redraw();
-      const c = await UI.choose(['どうぐ', 'わざ', 'そうび', 'つよさ', '八犬士', '記録', '設定'], { x: 148, y: 8, w: 84, start: last });
-      if (c < 0) break; last = c;
+      const c = await UI.choose(['どうぐ', 'わざ', 'そうび', 'つよさ', '八犬士', '記録', '設定', 'やめる'], { x: 148, y: 8, w: 84, start: last });
+      if (c < 0 || c === 7) break; last = c;
       pp.style.display = gp.style.display = 'none';
       if (c === 0) await menuItems(pp);
       else if (c === 1) await menuSkills(pp);
@@ -3496,14 +3516,15 @@ async function menuItems(pp) {
   for (;;) {
     const ids = bagList();
     const desc = UI.info({ x: 8, y: 180, w: 224, cls: 'desc' });
-    const i = await UI.choose(ids.map(id => ({ label: itemName(id), right: ITEMS[id].kind === 'key' ? '' : '×' + G.bag[id] })), { x: 8, y: 8, w: 224, rows: 9, start, empty: '袋は からっぽだ', onMove: k => { desc.textContent = ids[k] ? ITEMS[ids[k]].desc : ''; } });
-    desc.remove();
-    if (i < 0) return; start = i;
+    const dtext = id => ITEMS[id].desc + (ITEMS[id].kind === 'w' ? '\n' + wieldText(id) : '');
+    const i = await UI.choose(ids.map(id => ({ label: itemName(id), right: ITEMS[id].kind === 'key' ? '' : '×' + G.bag[id] })), { x: 8, y: 8, w: 224, rows: 9, start, empty: '袋は からっぽだ', onMove: k => { desc.textContent = ids[k] ? dtext(ids[k]) : ''; } });
+    if (i < 0) { desc.remove(); return; } start = i;
     const id = ids[i], it = ITEMS[id];
-    if (it.kind === 'key') { await say(it.desc); continue; }
-    const acts = it.kind === 'use' ? ['つかう', 'すてる'] : ['そうび', 'すてる'];
-    const a = await UI.choose(acts, { x: 150, y: 120, w: 72 });
-    if (a < 0) continue;
+    if (it.kind === 'key') { desc.remove(); await say(it.desc); continue; }
+    const acts = it.kind === 'use' ? ['つかう', 'すてる', 'やめる'] : ['そうび', 'すてる', 'やめる'];
+    const a = await UI.choose(acts, { x: 150, y: 96, w: 72 });
+    desc.remove();
+    if (a < 0 || a === 2) continue;
     if (a === 1) {
       if (it.nosell) { await say('それを すてるなんて とんでもない！'); continue; }
       const k = await ask(itemName(id) + 'を すてますか？'); if (k === 0) { removeItem(id); await say(itemName(id) + 'を すてた。'); }
@@ -3914,7 +3935,7 @@ STORY.otsuka = {
     } },
     { id: 'old', sprite: 'oldman', name: '長老', x: 12, y: 20, dir: 'up', talk: async () => {
       if (!flag('sosuke')) return elderRumor();
-      if (!flag('ch1')) await say('霧島山の 洞窟は 入り組んでおる。|宝箱を 見つけたら 開けておくのじゃ。|奥の 泉の 水は 傷を いやすと 聞く。', { name: '長老' });
+      if (!flag('ch1')) await say('霧島山の 洞窟は 入り組んでおる。|宝箱を 見つけたら 開けておくのじゃ。|地の底に わく 泉の 水は|傷を いやすと 聞く。', { name: '長老' });
       else await say('村の外には 妖怪が うろついておる。|傷ついたら 宿屋で 休むのじゃぞ。|道具屋の 薬草も 忘れずにな。', { name: '長老' });
     } },
     { id: 'fisher', sprite: 'man2', name: '釣り人', x: 23, y: 16, dir: 'right', talk: async () => {
@@ -4275,16 +4296,22 @@ STORY.cave1 = {
   warps: [
     { x: 12, y: 21, to: 'world', tx: WP.cave[0] + 1, ty: WP.cave[1], dir: 'right', sfx: 'stairs' },
     { x: 4, y: 2, to: 'cave2', tx: 4, ty: 17, dir: 'right', sfx: 'stairs' },
+    { x: 21, y: 15, to: 'cave0', tx: 3, ty: 2, dir: 'down', sfx: 'stairs' },
   ],
   objects: [
     chest('c_cave1a', 15, 1, { item: 'hangontan' }),
     chest('c_cave1b', 3, 15, { item: 'mamori' }),
-    look(21, 15, async () => { SND.sfx('heal'); healAll(); G.whiteFlash = 0.15; await say('ふしぎな 泉だ。|水を すくって 飲むと 力が わいてきた！|（HPと 気が すべて 回復した）'); }),
     look(16, 4, ['旅人の ものらしい 骨が|ころがっている……。'], { block: false }),
     look(8, 7, rockEvent, { cond: () => !flag('rock') }), look(9, 7, rockEvent, { cond: () => !flag('rock') }),
     ...[19, 21].map(x => look(x, 3, async () => { if (flag('sosuke')) await say('からっぽの 牢だ。'); else if (flag('cellTalk')) await say('格子の 向こうで 額蔵が|こちらを 見ている。'); else await cellTalk(); })),
   ],
   onEnter: async () => { if (!flag('caveIn')) { setFlag('caveIn'); await say('洞窟の 奥から 冷たい 風が|吹いてくる……||山頂へは この洞窟を|登っていくようだ。'); } },
+};
+STORY.cave0 = {
+  warps: [{ x: 3, y: 1, to: 'cave1', tx: 21, ty: 16, dir: 'down', sfx: 'stairs' }],
+  objects: [
+    look(10, 8, async () => { SND.sfx('heal'); healAll(); G.whiteFlash = 0.15; await say('ふしぎな 泉だ。|水を すくって 飲むと 力が わいてきた！|（HPと 気が すべて 回復した）'); }),
+  ],
 };
 STORY.cave2 = {
   warps: [
