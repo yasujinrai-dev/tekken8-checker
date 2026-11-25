@@ -4499,6 +4499,7 @@ async function endingEvent() {
 /* =====================================================================
    60 MAIN  記録・題名・操作盤・起動
    ===================================================================== */
+const TEST_NO_AUTOSAVE = true;   // 販売版では false に戻す
 const Save = (() => {
   const KEY = 'shinhakkenden.save.v1', PKEY = 'shinhakkenden.prefs';
   let cloud = null, cloudState = 'pending', cloudData = null, lastCloud = 0, cloudTimer = null;
@@ -4547,6 +4548,7 @@ const Save = (() => {
     data, initCloud, waitCloud, newest, hasAny: () => !!newest(),
     async save() { if (!G.pl) return; const d = data(); writeLocal(d); cloudData = d; writeCloud(d); for (let i = 0; i < 40 && writing; i++) await new Promise(r => setTimeout(r, 100)); },
     auto() {
+      if (TEST_NO_AUTOSAVE) return;   // テスト中は自動記録しない（メニューの「記録」だけで残す）
       if (!G.pl || !G.party.length || G.mode === 'title' || G.mode === 'prologue') return;
       const d = data(); writeLocal(d); cloudData = d; writeCloud(d);
     },
