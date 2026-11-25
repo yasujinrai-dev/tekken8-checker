@@ -1781,6 +1781,14 @@ const ITEMS = {
   rokushaku: { name: '六尺棒', kind: 'w', wt: 'staff', atk: 4, price: 15, desc: '樫でない、ふつうの棒' },
   kashibo:   { name: '樫の棒', kind: 'w', wt: 'staff', atk: 9, price: 50, desc: '固い樫の木の棒' },
   tetsubo:   { name: '鉄棒', kind: 'w', wt: 'staff', atk: 15, price: 200, desc: '鉄を巻いた重い棒' },
+  // 妖怪の落とし物（店では売っていない。売値はどれも5文）
+  kazenoha:  { name: '風の刃', kind: 'w', wt: 'sword', atk: 24, price: 0, sell: 5, desc: '風をまとう薄刃の刀。山賊がどこかで奪った業物' },
+  kurouchi:  { name: '黒打ちの刀', kind: 'w', wt: 'sword', atk: 21, price: 0, sell: 5, desc: '浪人が手放さなかった黒鉄の刀' },
+  kama:      { name: 'かま', kind: 'w', wt: 'sickle', who: ['sosuke'], atk: 13, price: 0, sell: 5, desc: '鎌鼬の前足のような鋭い鎌。荘助が使える' },
+  dorobo:    { name: '泥棒頭巾', kind: 'a', def: 7, price: 0, sell: 5, desc: '山賊の頭巾。身をかわしやすい' },
+  kappako:   { name: '河童の甲羅', kind: 'a', def: 10, price: 0, sell: 5, desc: '固い甲羅を胴に当てた防具' },
+  haramaki:  { name: '狸の腹巻', kind: 'a', def: 8, price: 0, sell: 5, desc: '化け狸の毛で編んだ腹巻。ほかほか' },
+  gamagawa:  { name: '蝦蟇皮の陣羽織', kind: 'a', def: 14, price: 0, sell: 5, desc: '大蝦蟇の厚い皮を張った陣羽織' },
   dosetsuto: { name: '道節の太刀', kind: 'w', wt: 'dsword', atk: 20, price: 0, nosell: true, desc: '道節が愛用する太刀' },
   // 防具
   nuno:      { name: '布の着物', kind: 'a', def: 2, price: 10, desc: 'ふだん着の着物' },
@@ -1827,16 +1835,16 @@ const MAX_LV = EXP_TABLE.length - 1;
 const ENEMIES = {
   onibi:      { name: '鬼火', spr: 'onibi', hp: 11, atk: 11, def: 3, agi: 6, exp: 3, gold: 3, weak: ['water'], resist: ['fire'], chest: [10, 'yakusou', 'reisui', 8], act: [[3, 'attack'], [1, 'hinoko']] },
   karakasa:   { name: '唐傘小僧', spr: 'karakasa', hp: 17, atk: 13, def: 5, agi: 5, exp: 4, gold: 5, weak: ['fire'], chest: [10, 'yakusou', 'mayoke', 6], act: [[3, 'attack'], [1, 'nameru']] },
-  sanzoku:    { name: '山賊', spr: 'sanzoku', hp: 26, atk: 17, def: 6, agi: 6, exp: 8, gold: 14, chest: [6, 'yakusou', 'wakizashi', 10], act: [[4, 'attack'], [1, 'nusumu']] },
+  sanzoku:    { name: '山賊', spr: 'sanzoku', drops: [[160, 'kazenoha'], [96, 'dorobo'], [40, 'uchigatana'], [30, 'wakizashi'], [30, 'kawado']], hp: 26, atk: 17, def: 6, agi: 6, exp: 8, gold: 14, chest: [6, 'yakusou', 'wakizashi', 10], act: [[4, 'attack'], [1, 'nusumu']] },
   chochin:    { name: '提灯お化け', spr: 'chochin', hp: 23, atk: 19, def: 7, agi: 7, exp: 9, gold: 7, weak: ['water'], chest: [9, 'dokukeshi', 'reisui', 6], act: [[3, 'attack'], [1, 'ayashi']] },
-  kappa:      { name: '河童', spr: 'kappa', hp: 32, atk: 24, def: 9, agi: 8, exp: 12, gold: 10, weak: ['fire'], resist: ['water'], chest: [8, 'yakusou', 'kawado', 10], act: [[3, 'attack'], [1, 'sumo']] },
-  tanuki:     { name: '化け狸', spr: 'tanuki', hp: 36, atk: 21, def: 8, agi: 9, exp: 14, gold: 16, chest: [6, 'yakusou', 'hangontan', 8], act: [[3, 'attack'], [1, 'haratsuzumi']] },
-  kamaitachi: { name: '鎌鼬', spr: 'kamaitachi', hp: 24, atk: 25, def: 7, agi: 16, exp: 14, gold: 9, chest: [8, 'dokukeshi', 'kashibo', 8], act: [[3, 'attack'], [1, 'renzan']] },
+  kappa:      { name: '河童', spr: 'kappa', drops: [[96, 'kappako']], hp: 32, atk: 24, def: 9, agi: 8, exp: 12, gold: 10, weak: ['fire'], resist: ['water'], chest: [8, 'yakusou', 'kawado', 10], act: [[3, 'attack'], [1, 'sumo']] },
+  tanuki:     { name: '化け狸', spr: 'tanuki', drops: [[96, 'haramaki']], hp: 36, atk: 21, def: 8, agi: 9, exp: 14, gold: 16, chest: [6, 'yakusou', 'hangontan', 8], act: [[3, 'attack'], [1, 'haratsuzumi']] },
+  kamaitachi: { name: '鎌鼬', spr: 'kamaitachi', drops: [[48, 'kama']], hp: 24, atk: 25, def: 7, agi: 16, exp: 14, gold: 9, chest: [8, 'dokukeshi', 'kashibo', 8], act: [[3, 'attack'], [1, 'renzan']] },
   hitotsume:  { name: '一つ目小僧', spr: 'hitotsume', hp: 46, atk: 30, def: 11, agi: 10, exp: 22, gold: 15, chest: [6, 'reisui', 'mamori', 6], act: [[3, 'attack'], [1, 'niramu']] },
   uramibi:    { name: '怨み火', spr: 'uramibi', hp: 30, atk: 30, def: 10, agi: 12, exp: 20, gold: 12, weak: ['water'], resist: ['fire'], chest: [6, 'reisui', 'hangontan', 6], act: [[2, 'attack'], [1, 'onnen']] },
-  ogama:      { name: '大蝦蟇', spr: 'ogama', hp: 74, atk: 35, def: 14, agi: 6, exp: 36, gold: 22, chest: [4, 'dokukeshi', 'kusari', 8], act: [[3, 'attack'], [1, 'dokugiri']] },
+  ogama:      { name: '大蝦蟇', spr: 'ogama', drops: [[128, 'gamagawa']], hp: 74, atk: 35, def: 14, agi: 6, exp: 36, gold: 22, chest: [4, 'dokukeshi', 'kusari', 8], act: [[3, 'attack'], [1, 'dokugiri']] },
   kashira:    { name: '山賊の頭', spr: 'sanzoku', hp: 190, atk: 40, def: 11, agi: 8, exp: 70, gold: 60, boss: true, act: [[4, 'attack'], [1, 'nusumu']] },
-  ronin:      { name: '浪人', spr: 'ronin', hp: 50, atk: 35, def: 13, agi: 11, exp: 30, gold: 30, chest: [5, 'hangontan', 'uchigatana', 8], act: [[3, 'attack'], [1, 'iai']] },
+  ronin:      { name: '浪人', spr: 'ronin', drops: [[140, 'kazenoha'], [110, 'kurouchi'], [32, 'uchigatana'], [36, 'kusari']], hp: 50, atk: 35, def: 13, agi: 11, exp: 30, gold: 30, chest: [5, 'hangontan', 'uchigatana', 8], act: [[3, 'attack'], [1, 'iai']] },
   tsuchigumo: { name: '土蜘蛛', spr: 'tsuchigumo', hp: 320, atk: 32, def: 16, agi: 12, exp: 150, gold: 120, boss: true, acts: 2, weak: ['fire'], act: [[4, 'attack'], [2, 'dokuga'], [1, 'ito']] },
   samojiro:   { name: '網乾左母二郎', spr: 'samojiro', hp: 270, atk: 31, def: 18, agi: 15, exp: 260, gold: 240, boss: true, acts: 2, act: [[4, 'attack'], [2, 'iaigiri'], [1, 'shibuki']] },
   tamazusa:   { name: '玉梓の影', spr: 'tamazusa', hp: 540, atk: 36, def: 20, agi: 14, exp: 0, gold: 0, boss: true, acts: 2, weak: ['water'], resist: ['fire'], act: [[3, 'attack'], [2, 'onnenhono'], [1, 'noroi'], [1, 'kyukon']] },
@@ -3018,6 +3026,14 @@ async function victory() {
     await out('宝箱を 開けると……\n' + (rare ? 'なんと ' : '') + itemName(it) + 'が 入っていた！', 900);
     break;
   }
+  // 落とし物：1戦で1つまで。めったに出ない（分母が大きい品から順にくじを引く）
+  drop: for (const e of B.en) for (const [n, it] of (e.d.drops || [])) {
+    if (rand() >= 1 / n) continue;
+    addItem(it);
+    if (!B.sim) SND.sfx('chest');
+    await out(e.name.replace(/[A-E]$/, '') + 'は ' + itemName(it) + 'を 落としていった！', 900);
+    break drop;
+  }
   if (vj) { await vj; BUI.setSkipHook(null); if (cut && !DEBUG.fast) await sleep(800); }
   for (const m of ms) {
     for (const u of gainExp(m, exp)) {
@@ -3220,7 +3236,7 @@ function skillsOf(m) {
   const s = MEMBERS[m.id].learn.filter(([lv]) => m.lv >= lv).map(([, id]) => id);
   return s;
 }
-function canEquip(m, id) { const it = ITEMS[id]; if (it.kind === 'a') return true; if (it.kind === 'w') return it.wt === MEMBERS[m.id].wt; return false; }
+function canEquip(m, id) { const it = ITEMS[id]; if (it.kind === 'a') return true; if (it.kind === 'w') return it.who ? it.who.includes(m.id) : it.wt === MEMBERS[m.id].wt; return false; }
 /* 経験値を足し、上がったレベルの知らせを返す */
 function gainExp(m, n) {
   const out = []; m.exp += n;
@@ -3477,12 +3493,14 @@ async function shopBuy(list, gp, o) {
     } else await say('毎度あり！', { name: o.name });
   }
 }
+// 売値：ふつうは買値の半分。妖怪の落とし物（店にない品）は sell で決めた値（5文）
+const sellValue = id => ITEMS[id].sell != null ? ITEMS[id].sell : Math.floor(ITEMS[id].price / 2);
 async function shopSell(gp, o) {
   for (;;) {
-    const ids = bagList(id => ITEMS[id].kind !== 'key' && !ITEMS[id].nosell && ITEMS[id].price > 0);
-    const i = await UI.choose(ids.map(id => ({ label: itemName(id), right: Math.floor(ITEMS[id].price / 2) })), { x: 104, y: 8, w: 128, rows: 9, empty: '売れる物が ない' });
+    const ids = bagList(id => ITEMS[id].kind !== 'key' && !ITEMS[id].nosell && sellValue(id) > 0);
+    const i = await UI.choose(ids.map(id => ({ label: itemName(id), right: sellValue(id) })), { x: 104, y: 8, w: 128, rows: 9, empty: '売れる物が ない' });
     if (i < 0) return;
-    const id = ids[i], v = Math.floor(ITEMS[id].price / 2);
+    const id = ids[i], v = sellValue(id);
     const k = await ask(itemName(id) + 'なら ' + v + '文で\n引き取りましょう。', undefined, { name: o.name });
     if (k === 0) { removeItem(id); G.gold += v; SND.sfx('buy'); gp.redraw(); }
   }
