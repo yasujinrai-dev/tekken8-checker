@@ -119,6 +119,12 @@ ruby{ruby-position:over;ruby-align:center}rt{font-size:4.6rem;line-height:1;lett
 .btn:focus-visible,.pill:focus-visible{box-shadow:0 0 0 3px var(--kin)}
 @media (prefers-reduced-motion:reduce){.opt.sel::before,.msg .more,.title .hint{animation:none}}
 .lvup{padding:4rem 7rem;z-index:30;font-size:9.5rem;line-height:12.5rem}
+.reach{padding:5rem 8rem;z-index:30;font-size:9rem;line-height:11rem}
+.reach .rh{color:#f3d44c;margin-bottom:3rem;text-align:center}
+.reach .rr{margin:3rem 0}.reach .rn{display:flex;justify-content:space-between}
+.rbar{height:5rem;background:rgba(0,0,0,.45);border:1rem solid #6b5a3a;margin-top:1rem;position:relative}
+.rbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#ffe27a,#d9a62a);transition:width .7s ease-out}
+.status .rbar{margin:0 0 2rem}
 .lvup .lvh{margin-bottom:3rem;color:#f3d44c}
 .lvup .lvh b{font-size:1.15em}
 .lvup table{border-collapse:collapse;margin:0 auto}
@@ -1857,6 +1863,9 @@ const MEMBERS = {
 };
 const EXP_TABLE = [0, 0, 15, 50, 105, 180, 310, 590, 870, 1260, 1750, 2310, 2940, 3710, 4620, 5740, 7000, 8540, 10360, 12460, 14840];
 const MAX_LV = EXP_TABLE.length - 1;
+/* リーチバー：次のレベルまでの進み具合（0〜1）と残りの経験値 */
+const expFrac = m => m.lv >= MAX_LV ? 1 : (m.exp - EXP_TABLE[m.lv]) / (EXP_TABLE[m.lv + 1] - EXP_TABLE[m.lv]);
+const expLeft = m => m.lv >= MAX_LV ? 0 : EXP_TABLE[m.lv + 1] - m.exp;
 
 /* 妖怪。act は [重み, 行動]
    chest は宝箱：[落とす確率の分母, ふつうの中身, 当たりの中身, 当たりの確率の分母]（1戦で宝箱は1つまで。大将は落とさない） */
@@ -3116,6 +3125,7 @@ async function victory() {
     break drop;
   }
   if (vj) { await vj; BUI.setSkipHook(null); if (cut && !DEBUG.fast) await sleep(800); }
+  const reach0 = new Map(ms.map(m => [m, { lv: m.lv, f: expFrac(m) }]));
   for (const m of ms) {
     for (const u of gainExp(m, exp)) {
       if (B.sim) continue;
@@ -3128,6 +3138,12 @@ async function victory() {
       panel.remove();
       for (const s of u.learned) await out(mName(m) + 'は 「' + SKILLS[s].name + '」を\nおぼえた！', 900);
     }
+  }
+  if (exp > 0 && !B.sim) {   // リーチバー：次のレベルまでの残りを見せる
+    BUI.clear(); BUI.status();
+    const panel = BUI.reachPanel(ms, reach0);
+    await BUI.wait(1500);
+    panel.remove();
   }
   return 'win';
 }
@@ -3198,6 +3214,14 @@ const BUI = (() => {
     for (const [k, n] of nm) { const up = u.after[k] - u.before[k];
       h += '<tr' + (up > 0 ? ' class="up"' : '') + '><td>' + n + '</td><td class="n">' + u.before[k] + '</td><td>→</td><td class="n">' + u.after[k] + '</td><td class="d">' + (up > 0 ? '＋' + up : '') + '</td></tr>'; }
     e.innerHTML = h + '</table>'; return e;
+  }
+  function reachPanel(ms, before) {
+    const e = UI.info({ x: 36, y: 50, w: 168, cls: 'reach' });
+    e.innerHTML = '<div class="rh">次の レベルまで</div>' + ms.map(m => '<div class="rr"><div class="rn"><span>' + UI.ruby(mName(m)) + '　Lv' + m.lv + '</span><span>' + (m.lv >= MAX_LV ? 'これ以上 上がらない' : 'あと ' + expLeft(m)) + '</span></div><div class="rbar"><i></i></div></div>').join('');
+    const bars = e.querySelectorAll('.rbar i');
+    ms.forEach((m, i) => { const b0 = before.get(m), f0 = b0 && b0.lv === m.lv ? b0.f : 0; bars[i].style.width = (f0 * 100) + '%'; });
+    requestAnimationFrame(() => requestAnimationFrame(() => ms.forEach((m, i) => { bars[i].style.width = (expFrac(m) * 100) + '%'; })));
+    return e;
   }
   function waitA() {
     if (DEBUG.fast || DEBUG.auto) return Promise.resolve();
@@ -3293,7 +3317,7 @@ const BUI = (() => {
     }
     FX.battle(dt);
   }
-  return { enter, leave, status, log, clear, wait, skipWait, setSkipHook, levelPanel, waitA, command, hideCmd, render, fx: fxRun, tap };
+  return { enter, leave, status, log, clear, wait, skipWait, setSkipHook, levelPanel, reachPanel, waitA, command, hideCmd, render, fx: fxRun, tap };
 })();
 
 /* =====================================================================
@@ -3519,7 +3543,10 @@ async function menuStatus() {
     ['力', stat(m, 'atk')], ['守り', stat(m, 'def')], ['素早さ', stat(m, 'agi')], ['経験', m.exp], ['次まで', next],
     ['武器', m.w ? itemName(m.w) : 'なし'], ['防具', m.a ? itemName(m.a) : 'なし'], ['わざ', skillsOf(m).map(s => SKILLS[s].name).join('・') || 'なし'],
   ];
-  for (const [k, v] of rows) { const r = UI.el('div', 'srow'); r.append(UI.el('span', 'k', k), UI.el('span', 'v', String(v))); e.appendChild(r); }
+  for (const [k, v] of rows) {
+    const r = UI.el('div', 'srow'); r.append(UI.el('span', 'k', k), UI.el('span', 'v', String(v))); e.appendChild(r);
+    if (k === '次まで') { const b = UI.el('div', 'rbar'); const i = UI.el('i'); i.style.width = (expFrac(m) * 100) + '%'; b.appendChild(i); e.appendChild(b); }
+  }
   await new Promise(res => { const w = { el: e, keepEl: true, catchTaps: true, onKey: k => { if (k === 'a' || k === 'b' || k === 'menu') { UI.remove(w); res(); } } }; UI.push(w); if (DEBUG.auto) setTimeout(() => w.onKey('a'), 0); });
   e.remove();
 }
