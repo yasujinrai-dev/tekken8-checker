@@ -2088,7 +2088,8 @@ const WP = {
   village: [136, 83], gate: [136, 78], town: [136, 72],          // 日向村・豊後の関所・府内の町
   doso: [134, 92], tea: [124, 100], cave: [112, 104],             // 道祖神の辻・峠の茶屋・霧島山の洞窟
   pine: [146, 86], sign: [149, 96], castle: [153, 96],            // 浜の一本松・青島の立て札・青島
-  temple: [118, 85], shrine: [122, 116],                          // 妖の森の荒れ寺・大隅の沼の祠
+  temple: [118, 85], shrine: [122, 116],
+  warnW: [116, 107], warnS: [124, 108], warnF: [125, 84],          // 強い妖怪の立て看板（薩摩・大隅・妖の森の手前）                          // 妖の森の荒れ寺・大隅の沼の祠
   gate2: [98, 96], town2: [98, 91],                             // 肥後の関所・人吉の町
   kago: [92, 110],                                                // 鹿児島の城下
   kumamoto: [90, 72], fukuoka: [96, 46], moji: [118, 37], karatsu: [70, 44], funai: [140, 62],
@@ -2187,7 +2188,7 @@ function buildWorldRows() {
   // 目印
   const mark = (k, c) => set(WP[k][0], WP[k][1], c);
   mark('village', 'O'); mark('doso', 'J'); mark('tea', 'Q'); mark('cave', 'C'); mark('gate', 'G'); mark('town', 'K'); mark('gate2', 'G'); mark('town2', 'K');
-  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('castle', 'X'); mark('kago', 'K');
+  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('warnW', 'I'); mark('warnS', 'I'); mark('warnF', 'I'); mark('castle', 'X'); mark('kago', 'K');
   for (const k of ['kumamoto', 'fukuoka', 'moji', 'karatsu', 'funai', 'tsushima', 'busan', 'jeju']) { const [x, y] = WP[k]; blob(x, y, 2, 2, '.', 3, ['~']); set(x, y, 'K'); }
   for (const [x, y] of [[135, 82], [137, 82], [134, 82], [138, 82]]) set(x, y, 'T');
   // 関所の両わきは山（すり抜け防止）
@@ -3969,28 +3970,11 @@ STORY.teahouse = {
 
 /* ---------------- 日向の国（九州） ---------------- */
 STORY.world = {
-  // 強い妖怪が出る所の手前に立つ人（ここから先は危ないと教える）
-  npcs: [
-    { id: 'samurai', sprite: 'guard', name: '旅の侍', x: 116, y: 107, dir: 'up', talk: async () => {
-      await say('ここから 西は 薩摩の 国。|地面が 黒い 土に 変わるだろう。|あれは 霧島の 火山灰だ。', { name: '旅の侍' });
-      await say('黒い 土の 上には|手ごわい 妖怪が 群れで 出る。|腕に 覚えが なければ 近づくな。', { name: '旅の侍' });
-    } },
-    { id: 'hunter', sprite: 'man2', name: '猟師', x: 124, y: 108, dir: 'up', talk: async () => {
-      await say('この先は 大隅の 沼地だ。|黒い 土が 見えたら 引き返せ。||大蝦蟇が 二匹 三匹と 出てきて|わしでも 手に 負えん。', { name: '猟師' });
-    } },
-    { id: 'woodcutter', sprite: 'oldman', name: '木こり', x: 125, y: 84, dir: 'left', talk: async () => {
-      await say('西の 森は 妖の森じゃ。|昼でも 暗く、一つ目小僧が うろついておる。||わしは もう 何年も|あそこへは 入っておらん。', { name: '木こり' });
-    } },
-  ],
   // はじめて 危ない所に 足を ふみ入れたときの 知らせ
   triggers: [
     { test: (x, y) => ASHY(x, y), cond: () => !flag('warn_ash'), run: async () => {
       setFlag('warn_ash'); SND.sfx('dark');
       await say('足もとの 土が 黒く 変わった。|妖怪の 気配が ぐっと 濃い……||（黒い 土の 上では|強い 妖怪が 出る）');
-    } },
-    { test: (x, y) => kuni(x, y) === 'y' && x > 118 && y > OYODO_Y(x) + 1 && y < 99, cond: () => !flag('warn_river'), run: async () => {
-      setFlag('warn_river');
-      await say('大淀川を 渡った。|川の こちら側は 妖怪が|すこし 手ごわく なるようだ。');
     } },
   ],
   warps: [
@@ -4009,6 +3993,9 @@ STORY.world = {
     }),
     look(...WP.temple, ['荒れはてた 寺だ。|扉には 太い かんぬきが かかり、|中から 低い 読経のような 声が する……||（今は 開けられない）']),
     look(...WP.shrine, ['沼の まん中の 古い 祠だ。|石の 扉に 札が 何枚も|貼りつけてある。||何かを 封じているようだ……']),
+    look(...WP.warnW, ['立て札だ。|『これより 西 薩摩|黒き 土に 強き 妖怪 群れなす|腕に 覚え なき者 立ち入るべからず』']),
+    look(...WP.warnS, ['立て札だ。|『これより 南 大隅の 沼|大蝦蟇 出る　近づくべからず』']),
+    look(...WP.warnF, ['立て札だ。|『これより 西 妖の森|一つ目小僧 出る　入るべからず』']),
     look(...WP.sign, ['立て札だ。|『青島 渡し舟|波 荒きにつき 休み』||沖の 小さな 島に|鳥居が かすんで 見える。']),
   ],
 };
