@@ -1847,7 +1847,7 @@ const MEMBERS = {
   sosuke:  { name: '荘助', full: '犬川荘助', bead: '義', sprite: 'sosuke', wt: 'staff',
     base: { hp: 36, mp: 5, atk: 7, def: 7, agi: 5 }, grow: { hp: 8.2, mp: 1.9, atk: 2.2, def: 1.9, agi: 1.15 },
     learn: [],     // 肉弾戦：わざは持たない
-    cls: [{ name: '下男' }, { name: '義の棒術使い', bonus: { hp: 8, atk: 1, def: 3 } }],
+    cls: [{ name: '下男', noMp: true }, { name: '義の棒術使い', bonus: { hp: 8, atk: 1, def: 3 }, learn: ['kamae'] }],
     clsDef: () => flag('tsuchigumo') ? 1 : 0 },
   dosetsu: { name: '道節', full: '犬山道節', bead: '忠', sprite: 'dosetsu', wt: 'dsword',
     base: { hp: 40, mp: 14, atk: 9, def: 6, agi: 8 }, grow: { hp: 7.6, mp: 3.2, atk: 2.2, def: 1.5, agi: 1.35 },
