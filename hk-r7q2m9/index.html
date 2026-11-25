@@ -1841,7 +1841,7 @@ const MEMBERS = {
   shino:   { name: '信乃', full: '犬塚信乃', bead: '孝', sprite: 'shino', wt: 'sword',
     base: { hp: 32, mp: 6, atk: 8, def: 5, agi: 7 }, grow: { hp: 7.5, mp: 2.4, atk: 2.4, def: 1.6, agi: 1.4 },
     learn: [],     // 肉弾戦の剣士：わざは玉を取り返してクラスが上がると覚える
-    cls: [{ name: '素浪人' }, { name: '孝の剣士', bonus: { hp: 6, atk: 2, agi: 3 }, learn: ['jinsoku', 'shuchu'] },
+    cls: [{ name: '素浪人', noMp: true }, { name: '孝の剣士', bonus: { hp: 6, atk: 2, agi: 3 }, learn: ['jinsoku', 'shuchu'] },
           { name: '孝の剣豪', bonus: { hp: 6, atk: 2, def: 2 } }, { name: '孝の剣聖', bonus: { hp: 8, atk: 2, agi: 3 } }],
     clsDef: () => flag('samojiroDone') ? 1 : 0 },
   sosuke:  { name: '荘助', full: '犬川荘助', bead: '義', sprite: 'sosuke', wt: 'staff',
@@ -3314,9 +3314,10 @@ function clsBonus(m, k) { const c = MEMBERS[m.id].cls; let v = 0; if (c) for (le
 function setCls(m, n) {
   const before = { hp: stat(m, 'hp'), mp: stat(m, 'mp') };
   m.cls = n;
-  if (m.hp > 0) { m.hp += stat(m, 'hp') - before.hp; m.mp += stat(m, 'mp') - before.mp; }
+  if (m.hp > 0) { m.hp += stat(m, 'hp') - before.hp; m.mp = Math.min(m.mp + stat(m, 'mp') - before.mp, stat(m, 'mp')); }
 }
 function stat(m, k) {
+  if (k === 'mp') { const c = MEMBERS[m.id].cls; if (c && c[Math.min(clsOf(m), c.length - 1)].noMp) return 0; }   // 技を持たないうちは気が無い
   let v = baseStat(m, k) + (m.bonus[k] || 0) + clsBonus(m, k);
   if (k === 'atk' && m.w) v += ITEMS[m.w].atk || 0;
   if (k === 'def' && m.a) v += ITEMS[m.a].def || 0;
@@ -4435,6 +4436,7 @@ function applySave(d) {
   G.party = d.party; G.bag = d.bag || {}; G.gold = d.gold || 0; G.flags = d.flags || {}; G.opened = d.opened || {};
   G.steps = d.steps || 0; G.playTime = d.playTime || 0; G.lastInn = d.lastInn || 'otsuka'; G.mayoke = d.mayoke || 0;
   for (const m of G.party) { m.bonus = m.bonus || { atk: 0, def: 0 }; m.sleep = 0; }
+  for (const m of G.party) m.mp = Math.min(m.mp, stat(m, 'mp'));   // 気の上限が変わった古い記録
 }
 function resetGame() {
   G.party = [newMember('shino', 1)]; G.party[0].w = 'bokuto'; G.party[0].a = 'nuno';
