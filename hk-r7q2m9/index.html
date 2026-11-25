@@ -1804,6 +1804,8 @@ const ITEMS = {
   mayoke:    { name: '魔除けの香', kind: 'use', price: 20, target: 'none', field: true, battle: false, eff: { mayoke: 80 }, desc: 'しばらく妖怪を寄せつけない' },
   modorisuzu:{ name: '戻り鈴', kind: 'use', price: 25, target: 'none', field: true, battle: false, eff: { warp: 'otsuka' }, desc: '日向村へ一瞬で戻る' },
   chikara:   { name: '力の丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['atk', 3] }, desc: '飲んだ者の力が3上がる' },
+  yomishizuku:{ name: '黄泉の雫', kind: 'use', price: 0, sell: 5, target: 'ally', eff: { yomi: [44, 56] }, desc: '黄泉からしたたる黒い雫。良心ある者には毒' },
+  yomigaeri: { name: '黄泉がえりの香', kind: 'use', price: 0, sell: 5, target: 'dead', eff: { yomirev: 0.5 }, desc: '倒れた者を呼び戻す香。良心ある者が焚くと…' },
   mamori:    { name: '守りの丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['def', 3] }, desc: '飲んだ者の守りが3上がる' },
   // 武器
   nisemura:  { name: '村雨丸？', kind: 'w', wt: 'sword', atk: 2, price: 0, nosell: true, desc: '村雨丸…のはずの刀。どこか軽い' },
@@ -1819,6 +1821,9 @@ const ITEMS = {
   kurouchi:  { name: '黒打ちの刀', kind: 'w', wt: 'sword', atk: 21, price: 0, sell: 5, desc: '浪人が手放さなかった黒鉄の刀' },
   kama:      { name: 'かま', kind: 'w', wt: 'sickle', who: ['sosuke'], atk: 13, price: 0, sell: 5, desc: '鎌鼬の前足のような鋭い鎌。荘助が使える' },
   ono:       { name: '炭焼きの斧', kind: 'w', wt: 'axe', who: ['sosuke'], atk: 10, price: 0, sell: 5, desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
+  // 呪われた武器（良心が曇った者だけ装備できる。代償はない）
+  chisui:    { name: '妖刀 血吸', kind: 'w', wt: 'sword', atk: 36, curse: true, price: 0, sell: 5, desc: '血を吸うたびに 刃が赤く光る妖刀' },
+  kikoku:    { name: '鬼哭の棒', kind: 'w', wt: 'staff', atk: 27, curse: true, price: 0, sell: 5, desc: '振るたびに 鬼の泣き声が聞こえる棒' },
   dorobo:    { name: '泥棒頭巾', kind: 'a', def: 7, price: 0, sell: 5, desc: '山賊の頭巾。身をかわしやすい' },
   kappako:   { name: '河童の甲羅', kind: 'a', def: 10, price: 0, sell: 5, desc: '固い甲羅を胴に当てた防具' },
   haramaki:  { name: '狸の腹巻', kind: 'a', def: 8, price: 0, sell: 5, desc: '化け狸の毛で編んだ腹巻。ほかほか' },
@@ -1883,16 +1888,16 @@ const expLeft = m => m.lv >= MAX_LV ? 0 : EXP_TABLE[m.lv + 1] - m.exp;
 /* 妖怪。act は [重み, 行動]
    chest は宝箱：[落とす確率の分母, ふつうの中身, 当たりの中身, 当たりの確率の分母]（1戦で宝箱は1つまで。大将は落とさない） */
 const ENEMIES = {
-  onibi:      { name: '鬼火', spr: 'onibi', hp: 11, atk: 11, def: 3, agi: 6, exp: 3, gold: 3, weak: ['water'], resist: ['fire'], chest: [10, 'yakusou', 'reisui', 8], act: [[3, 'attack'], [1, 'hinoko']] },
+  onibi:      { name: '鬼火', spr: 'onibi', drops: [[28, 'yomishizuku']], hp: 11, atk: 11, def: 3, agi: 6, exp: 3, gold: 3, weak: ['water'], resist: ['fire'], chest: [10, 'yakusou', 'reisui', 8], act: [[3, 'attack'], [1, 'hinoko']] },
   karakasa:   { name: '唐傘小僧', spr: 'karakasa', hp: 17, atk: 13, def: 5, agi: 5, exp: 4, gold: 5, weak: ['fire'], chest: [10, 'yakusou', 'mayoke', 6], act: [[3, 'attack'], [1, 'nameru']] },
   sanzoku:    { name: '山賊', spr: 'sanzoku', drops: [[160, 'kazenoha'], [96, 'dorobo'], [40, 'uchigatana'], [30, 'wakizashi'], [30, 'kawado']], hp: 26, atk: 17, def: 6, agi: 6, exp: 8, gold: 14, chest: [6, 'yakusou', 'wakizashi', 10], act: [[4, 'attack'], [1, 'nusumu']] },
-  chochin:    { name: '提灯お化け', spr: 'chochin', hp: 23, atk: 19, def: 7, agi: 7, exp: 9, gold: 7, weak: ['water'], chest: [9, 'dokukeshi', 'reisui', 6], act: [[3, 'attack'], [1, 'ayashi']] },
+  chochin:    { name: '提灯お化け', spr: 'chochin', drops: [[24, 'yomishizuku']], hp: 23, atk: 19, def: 7, agi: 7, exp: 9, gold: 7, weak: ['water'], chest: [9, 'dokukeshi', 'reisui', 6], act: [[3, 'attack'], [1, 'ayashi']] },
   kappa:      { name: '河童', spr: 'kappa', drops: [[96, 'kappako']], hp: 32, atk: 24, def: 9, agi: 8, exp: 12, gold: 10, weak: ['fire'], resist: ['water'], chest: [8, 'yakusou', 'kawado', 10], act: [[3, 'attack'], [1, 'sumo']] },
   tanuki:     { name: '化け狸', spr: 'tanuki', drops: [[96, 'haramaki']], hp: 36, atk: 21, def: 8, agi: 9, exp: 14, gold: 16, chest: [6, 'yakusou', 'hangontan', 8], act: [[3, 'attack'], [1, 'haratsuzumi']] },
   kamaitachi: { name: '鎌鼬', spr: 'kamaitachi', drops: [[48, 'kama']], hp: 24, atk: 25, def: 7, agi: 16, exp: 14, gold: 9, chest: [8, 'dokukeshi', 'kashibo', 8], act: [[3, 'attack'], [1, 'renzan']] },
-  hitotsume:  { name: '一つ目小僧', spr: 'hitotsume', hp: 46, atk: 30, def: 11, agi: 10, exp: 22, gold: 15, chest: [6, 'reisui', 'mamori', 6], act: [[3, 'attack'], [1, 'niramu']] },
-  uramibi:    { name: '怨み火', spr: 'uramibi', hp: 30, atk: 30, def: 10, agi: 12, exp: 20, gold: 12, weak: ['water'], resist: ['fire'], chest: [6, 'reisui', 'hangontan', 6], act: [[2, 'attack'], [1, 'onnen']] },
-  ogama:      { name: '大蝦蟇', spr: 'ogama', drops: [[128, 'gamagawa']], hp: 74, atk: 35, def: 14, agi: 6, exp: 36, gold: 22, chest: [4, 'dokukeshi', 'kusari', 8], act: [[3, 'attack'], [1, 'dokugiri']] },
+  hitotsume:  { name: '一つ目小僧', spr: 'hitotsume', drops: [[72, 'chisui']], hp: 46, atk: 30, def: 11, agi: 10, exp: 22, gold: 15, chest: [6, 'reisui', 'mamori', 6], act: [[3, 'attack'], [1, 'niramu']] },
+  uramibi:    { name: '怨み火', spr: 'uramibi', drops: [[36, 'yomigaeri']], hp: 30, atk: 30, def: 10, agi: 12, exp: 20, gold: 12, weak: ['water'], resist: ['fire'], chest: [6, 'reisui', 'hangontan', 6], act: [[2, 'attack'], [1, 'onnen']] },
+  ogama:      { name: '大蝦蟇', spr: 'ogama', drops: [[128, 'gamagawa'], [72, 'kikoku']], hp: 74, atk: 35, def: 14, agi: 6, exp: 36, gold: 22, chest: [4, 'dokukeshi', 'kusari', 8], act: [[3, 'attack'], [1, 'dokugiri']] },
   kashira:    { name: '山賊の頭', spr: 'sanzoku', hp: 190, atk: 40, def: 11, agi: 8, exp: 70, gold: 60, boss: true, act: [[4, 'attack'], [1, 'nusumu']] },
   ronin:      { name: '浪人', spr: 'ronin', drops: [[140, 'kazenoha'], [110, 'kurouchi'], [32, 'uchigatana'], [36, 'kusari']], hp: 50, atk: 35, def: 13, agi: 11, exp: 30, gold: 30, chest: [5, 'hangontan', 'uchigatana', 8], act: [[3, 'attack'], [1, 'iai']] },
   tsuchigumo: { name: '土蜘蛛', spr: 'tsuchigumo', hp: 320, atk: 32, def: 16, agi: 12, exp: 150, gold: 120, boss: true, acts: 2, weak: ['fire'], act: [[4, 'attack'], [2, 'dokuga'], [1, 'ito']] },
@@ -2769,7 +2774,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '鉄吉': 'てつきち', '権太': 'ごんた', '巴': 'ともえ', 'お銀': 'おぎん', '博多': 'はかた', '筑前': 'ちくぜん', '鹿児島': 'かごしま', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '炭俵': 'すみだわら', '砂鉄': 'さてつ', '玉鋼': 'たまはがね', '合鍵': 'あいかぎ', '炭焼き': 'すみやき', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '霧島山': 'きりしまやま', '黄泉': 'よみ', '血吸': 'ちすい', '鬼哭': 'きこく', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '炭俵': 'すみだわら', '砂鉄': 'さてつ', '玉鋼': 'たまはがね', '合鍵': 'あいかぎ', '炭焼き': 'すみやき', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -2916,7 +2921,10 @@ function makeEnemies(ids, mul = 1) {
     return { id, d, name: label, hp, max: hp, mul, atk: Math.round(d.atk * mul), sleep: 0, poison: false, alpha: 1, flash: 0, shake: 0 };
   });
 }
-const liveEn = () => B.en.filter(e => e.hp > 0);
+const liveEn = () => B.en.filter(e => e.hp > 0 && !e.left);
+const allGood = () => !B.en.some(e => !e.good);   // 善玉だけの戦い：1回りしたら去る
+const evilLeft = () => allGood() ? liveEn().length > 0 : liveEn().some(e => !e.good);
+async function goodsLeave() { for (const e of liveEn()) { e.left = true; await fx('edie', e); await out(e.name + 'は どこかへ 去っていった。', 600); } }
 const liveP = () => B.party.filter(m => m.hp > 0);
 const elemMul = (d, el) => !el ? 1 : (d.weak || []).includes(el) ? 1.5 : (d.resist || []).includes(el) ? 0.5 : 1;
 function physDamage(atk, def, mult = 1) {
@@ -2939,6 +2947,8 @@ async function startRandomBattle(zone) {
 }
 async function battle(ids, opt = {}) {
   B = { en: makeEnemies(ids, opt.solo ? 0.8 : 1), party: G.party, bg: opt.bg || 'field', boss: !!opt.boss, kamae: false, guard: new Set(), agiUp: new Set(), focus: new Map(), runFails: 0, sim: !!opt.sim, policy: opt.policy, round: 0, opt };
+  if (opt.mixGood) for (const e of B.en) if (GOOD_OK.includes(e.id) && rand() < 1 / 8) e.good = true;
+  const ryo0 = ryo();
   if (!B.sim) { G.mode = 'battle'; await BUI.enter(opt); }
   let result;
   try {
@@ -2946,7 +2956,9 @@ async function battle(ids, opt = {}) {
     await out(opt.intro || (names.length === 1 ? names[0] + 'が ' + (B.en.length > 1 ? B.en.length + 'ひき ' : '') + 'あらわれた！' : '妖怪の むれが あらわれた！'), 900);
     result = await battleLoop();
   } finally { if (!B.sim) await BUI.leave(result, opt); }
-  const r = result; B = null; return r;
+  const sim = B.sim, r = result; B = null;
+  if (!sim && r !== 'lose') await ryoCheck(ryo0);
+  return r;
 }
 async function battleLoop() {
   for (;;) {
@@ -2987,7 +2999,7 @@ async function battleLoop() {
       if (!B.sim) BUI.clear();
       if (a.side === 'p') await partyAct(a); else await enemyAct(a.who);
       if (!B.sim) BUI.status();
-      if (!liveEn().length) return await victory();
+      if (!evilLeft()) { await goodsLeave(); return await victory(); }
       if (!liveP().length) return await defeat();
       if (B.opt.rescue && !B.rescued && (B.party[0].hp <= stat(B.party[0], 'hp') * 0.3 || B.round >= 4)) { B.rescued = true; await B.opt.rescue(); if (!B.sim) BUI.status(); break; }
     }
@@ -2999,6 +3011,7 @@ async function battleLoop() {
     for (const e of liveEn()) if (e.sleep > 0 && --e.sleep === 0) await out(e.name + 'は 目をさました！', 400);
     if (!B.sim) BUI.status();
     if (!liveP().length) return await defeat();
+    if (!evilLeft() || allGood()) { if (!B.sim) BUI.clear(); await goodsLeave(); return await victory(); }
   }
 }
 /* -------- 味方の行動 -------- */
@@ -3018,7 +3031,10 @@ async function damageEnemy(t, v) {
   t.hp = Math.max(0, t.hp - v); if (t.sleep && v > 0 && rand() < 0.6) t.sleep = 0;
   await fx('ehit', t);
   await out(v > 0 ? t.name + 'に ' + v + 'の ダメージ！' : 'ミス！ ' + t.name + 'に ダメージを あたえられない！', 550);
-  if (t.hp <= 0) { SND.sfx('die'); await fx('edie', t); await out(t.name + 'を たおした！', 600); }
+  if (t.hp <= 0) {
+    SND.sfx('die'); await fx('edie', t); await out(t.name + 'を たおした！', 600);
+    if (!B.sim) { G.flags.ryo = ryo() + (t.good ? -8 : 1); if (t.good) await out('……なにか いやな 手ごたえが のこった。', 700); }
+  }
 }
 async function partyAct(a) {
   const m = a.who;
@@ -3030,15 +3046,22 @@ async function partyAct(a) {
   if (m.sleep > 0) { await out(mName(m) + 'は 動けない！', 500); return; }
   if (a.type === 'attack') { await out(mName(m) + 'の こうげき！', 350); await hitEnemy(m, a.target, 1, { elem: m.w && ITEMS[m.w].elem }); return; }
   if (a.type === 'guard') { await out(mName(m) + 'は 身を まもっている。', 500); return; }
+  if (a.type === 'talk') {
+    const t = retarget(a.target); if (!t) return;
+    await out(mName(m) + 'は ' + t.name + 'に 話しかけた。', 500);
+    if (!t.good) { await out(t.name + 'は 聞く耳を もたない！', 600); return; }
+    for (const line of pick(GOOD_TALK).split('|')) await out(line, 700);
+    t.left = true; await fx('edie', t); await out(t.name + 'は 頭を さげて 去っていった。', 600); return;
+  }
   if (a.type === 'item') {
     const it = ITEMS[a.item];
     if (!G.bag[a.item]) { await out(mName(m) + 'は ' + it.name + 'を さがしたが\nもう なかった！', 600); return; }
     await out(mName(m) + 'は ' + it.name + 'を つかった！', 450);
     let tgt = a.target; if (it.target === 'ally' && tgt && tgt.hp <= 0) tgt = null;
-    const r = tgt || it.target === 'dead' ? applyItem(a.item, tgt) : null;
+    const r = tgt || it.target === 'dead' ? applyItem(a.item, tgt, m) : null;
     if (!r) { await out('しかし なにも おこらなかった。', 500); return; }
     if (!r.fail) removeItem(a.item);
-    if (r.sfx) { SND.sfx(r.sfx); await fx('heal', tgt); }
+    if (r.sfx) { SND.sfx(r.sfx); if (r.sfx === 'heal') await fx('heal', tgt); }
     await out(r.text, 600); return;
   }
   if (a.type === 'skill') {
@@ -3090,7 +3113,8 @@ async function hurtMember(t, v) {
   if (t.hp <= 0) { t.sleep = 0; t.poison = false; await out(mName(t) + 'は 倒れた……', 650); }
 }
 async function enemyAct(e) {
-  if (e.hp <= 0) return;
+  if (e.hp <= 0 || e.left) return;
+  if (e.good) { await out(pick(GOOD_IDLE).replace('{e}', e.name), 600); return; }
   if (e.sleep > 0) { await out(e.name + 'は 動けない。', 400); return; }
   const act = wpick(e.d.act);
   if (act === 'attack') {
@@ -3125,13 +3149,14 @@ async function enemyAct(e) {
 }
 /* -------- 勝ち負け -------- */
 async function victory() {
-  const exp = B.en.reduce((s, e) => s + e.d.exp, 0), gold = B.en.reduce((s, e) => s + e.d.gold, 0);
+  const dead = B.en.filter(e => e.hp <= 0 && !e.left);
+  const exp = dead.reduce((s, e) => s + e.d.exp, 0), gold = dead.reduce((s, e) => s + e.d.gold, 0);
   if (!B.sim) { BUI.clear(); SND.stopBgm(); }
   let vj = (!B.sim && !B.opt.noJingle) ? SND.jingle('victory') : null;
   // 勝利の曲：鳴り始めて1秒たてばAで切れる。切ったときは0.8秒の間（切れない）を置く
   let cut = false;
   if (vj) { const t0 = performance.now(); BUI.setSkipHook(() => { if (!cut && performance.now() - t0 >= 1000) { cut = true; SND.cutJingle(); } }); }
-  await out(B.opt.winText || (B.en.length > 1 ? '妖怪たちを やっつけた！' : B.en[0].name.replace(/[A-E]$/, '') + 'を やっつけた！'), 600);
+  if (dead.length) await out(B.opt.winText || (dead.length > 1 ? '妖怪たちを やっつけた！' : dead[0].name.replace(/[A-E]$/, '') + 'を やっつけた！'), 600);
   const ms = liveP();
   const expMsg = (ms.length > 1 ? 'それぞれ ' : '') + '経験値を ' + exp + ' かくとく！';
   // リーチバー：経験値がバーに注がれ、満たされたらレベルアップ。余りはまた0から注がれる
@@ -3168,7 +3193,7 @@ async function victory() {
   }
   G.gold += gold; await out((gold > 0 ? gold + '文を 手に入れた！\n' : '') + '所持金 ' + G.gold + '文', 700);
   // 宝箱：1戦で1つまで。強い妖怪ほど落としやすく、まれに当たりの品が入っている
-  for (const e of B.en) {
+  for (const e of dead) {
     const c = e.d.chest; if (!c || rand() >= 1 / c[0]) continue;
     const rare = rand() < 1 / c[3], it = rare ? c[2] : c[1];
     addItem(it);
@@ -3178,7 +3203,7 @@ async function victory() {
     break;
   }
   // 落とし物：1戦で1つまで。めったに出ない（分母が大きい品から順にくじを引く）
-  drop: for (const e of B.en) for (const [n, it] of (e.d.drops || [])) {
+  drop: for (const e of dead) for (const [n, it] of (e.d.drops || [])) {
     if (rand() >= 1 / n) continue;
     addItem(it);
     if (!B.sim) SND.sfx('chest');
@@ -3287,8 +3312,10 @@ const BUI = (() => {
     const sub = async f => { if (enemyListEl) enemyListEl.style.visibility = 'hidden'; try { return await f(); } finally { if (enemyListEl) enemyListEl.style.visibility = ''; } };
     for (;;) {
       const hasSk = skillsOf(m).length > 0;
-      const c0 = await UI.choose(hasSk ? ['たたかう', 'わざ', 'どうぐ', 'ぼうぎょ', 'にげる'] : ['たたかう', 'どうぐ', 'ぼうぎょ', 'にげる'], { x: 4, b: 4, w: 96, cancel: true, cls: 'bcmd' });
-      const c = (hasSk || c0 < 1) ? c0 : c0 + 1;
+      const c0 = await UI.choose(hasSk ? ['たたかう', 'わざ', 'どうぐ', 'はなす', 'ぼうぎょ', 'にげる'] : ['たたかう', 'どうぐ', 'はなす', 'ぼうぎょ', 'にげる'], { x: 4, b: 4, w: 96, rows: 6, cancel: true, cls: 'bcmd' });
+      const c1 = (hasSk || c0 < 1) ? c0 : c0 + 1;
+      if (c1 === 3) { const t = await sub(pickEnemy); if (t) return { type: 'talk', target: t }; continue; }
+      const c = c1 > 3 ? c1 - 1 : c1;
       if (c < 0) { if (idx > 0) return 'back'; continue; }
       if (c === 0) { const t = await sub(pickEnemy); if (t) return { type: 'attack', target: t }; continue; }
       if (c === 1) {
@@ -3399,7 +3426,7 @@ function skillsOf(m) {
   if (c) for (let i = 1; i <= clsOf(m) && i < c.length; i++) for (const id of c[i].learn || []) if (!s.includes(id)) s.push(id);
   return s;
 }
-function canEquip(m, id) { const it = ITEMS[id]; if (it.kind === 'a') return true; if (it.kind === 'w') return it.who ? it.who.includes(m.id) : it.wt === MEMBERS[m.id].wt; return false; }
+function canEquip(m, id) { const it = ITEMS[id]; if (it.curse && ryo() >= 0) return false; if (it.kind === 'a') return true; if (it.kind === 'w') return it.who ? it.who.includes(m.id) : it.wt === MEMBERS[m.id].wt; return false; }
 /* 経験値を足し、上がったレベルの知らせを返す */
 function gainExp(m, n) {
   const out = []; m.exp += n;
@@ -3427,13 +3454,26 @@ function addItem(id, n = 1) { G.bag[id] = (G.bag[id] || 0) + n; }
 function removeItem(id, n = 1) { G.bag[id] = (G.bag[id] || 0) - n; if (G.bag[id] <= 0) delete G.bag[id]; }
 const hasItem = id => (G.bag[id] || 0) > 0 || G.party.some(m => m.w === id || m.a === id);
 const itemName = id => ITEMS[id].name;
+/* 良心：悪玉を倒すと上がり、善玉を倒すと下がる。数値は画面に出さない */
+const ryo = () => G.flags.ryo == null ? 10 : G.flags.ryo;
+const GOOD_OK = ['onibi', 'karakasa', 'chochin', 'kappa', 'tanuki', 'kamaitachi', 'hitotsume', 'uramibi', 'ogama'];
+const GOOD_TALK = ['わたしは 人を おそいません……|どうか 見のがして ください。', 'ひっ……！|わたしは ただ ここに 住んでいるだけで……', '人の子よ、わしに 争う 気は ない。|道中 気をつけて 行きなされ。', 'こ、こわかった……|ありがとう、やさしい おさむらいさん。'];
+const GOOD_IDLE = ['{e}は こちらの 様子を うかがっている。', '{e}は 身を すくめている。', '{e}は おびえたように ふるえている。'];
+async function ryoCheck(before) {
+  const now = ryo();
+  if (before >= 0 && now < 0) { SND.sfx('dark'); await say('……犬士たちの 玉が|にごった色に 曇っていく。'); }
+  if (before < 0 && now >= 0) {
+    SND.sfx('heal'); await say('玉の 曇りが 晴れていく……');
+    for (const m of G.party) if (m.w && ITEMS[m.w].curse) { addItem(m.w); await say(mName(m) + 'の 手から|' + itemName(m.w) + 'が はなれた。'); m.w = null; }
+  }
+}
 // 武器の使い手：仲間ごとのジョブ名（まだ会っていない仲間も名前を出さずにジョブで示す）
 const JOB = { shino: '剣士', sosuke: '棒術使い', dosetsu: '火遁使い' };
 function wieldText(id) {
   const it = ITEMS[id]; if (it.kind !== 'w') return '';
-  const ids = Object.keys(MEMBERS).filter(k => canEquip({ id: k }, id));
+  const ids = Object.keys(MEMBERS).filter(k => it.who ? it.who.includes(k) : it.wt === MEMBERS[k].wt);
   if (!ids.length) return 'そうびできる者が いない';
-  return 'そうび：' + ids.map(k => JOB[k] + (G.party.some(m => m.id === k) ? '（' + MEMBERS[k].name + '）' : '')).join('・');
+  return 'そうび：' + ids.map(k => JOB[k] + (G.party.some(m => m.id === k) ? '（' + MEMBERS[k].name + '）' : '')).join('・') + (it.curse && ryo() >= 0 ? '\n呪われていて 今は そうびできない' : '');
 }
 function joinParty(id, lv) {
   if (G.party.some(m => m.id === id)) return null;
@@ -3447,8 +3487,22 @@ function joinParty(id, lv) {
 const alive = () => G.party.filter(m => m.hp > 0);
 function healAll() { for (const m of G.party) { m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp'); m.poison = false; } }
 /* 道具の効き目（戦闘でも野原でも使う） */
-function applyItem(id, tgt) {
+function applyItem(id, tgt, user) {
   const e = ITEMS[id].eff, nm = tgt ? mName(tgt) : '';
+  if (e.yomi) {
+    if (!tgt || tgt.hp <= 0) return null;
+    if (ryo() < 0) { const v = Math.min(stat(tgt, 'hp') - tgt.hp, ri(e.yomi[0], e.yomi[1])); tgt.hp += v; return { text: nm + 'の HPが ' + v + ' 回復した！', sfx: 'heal' }; }
+    const v = Math.min(tgt.hp - 1, ri(14, 20)); tgt.hp -= v; return { text: '黒い 雫が 体を 焼いた！\n' + nm + 'は ' + v + 'の ダメージを うけた！', sfx: 'hurt' };
+  }
+  if (e.yomirev) {
+    if (!tgt || tgt.hp > 0) return { text: nm + 'は 倒れていない。', fail: true };
+    if (ryo() < 0) { tgt.hp = Math.ceil(stat(tgt, 'hp') * e.yomirev); tgt.poison = false; return { text: '黄泉の けむりが 立ちこめ……\n' + nm + 'が 生き返った！', sfx: 'heal' }; }
+    const u = user && user.hp > 0 ? user : G.party.find(m => m.hp > 0);
+    if (!u) return null;
+    const others = G.party.filter(m => m.hp > 0 && m !== u).length;
+    u.hp = (B || others) ? 0 : 1; u.poison = false;
+    return { text: '黄泉の けむりが ' + mName(u) + 'を つつんだ！\n' + mName(u) + 'は ' + (u.hp ? 'ひざから くずれおちた……' : '倒れた……'), sfx: 'dark' };
+  }
   if (e.heal) { if (!tgt || tgt.hp <= 0) return null; const v = Math.min(stat(tgt, 'hp') - tgt.hp, ri(e.heal[0], e.heal[1])); tgt.hp += v; return { text: nm + 'の HPが ' + v + ' 回復した！', sfx: 'heal' }; }
   if (e.mp) { if (!tgt || tgt.hp <= 0) return null; const v = Math.min(stat(tgt, 'mp') - tgt.mp, ri(e.mp[0], e.mp[1])); tgt.mp += v; return { text: nm + 'の 気が ' + v + ' 回復した！', sfx: 'heal' }; }
   if (e.cure) { if (!tgt || tgt.hp <= 0) return null; if (!tgt.poison) return { text: nm + 'は 毒を うけていない。', fail: true }; tgt.poison = false; return { text: nm + 'の 毒が 消えた！', sfx: 'heal' }; }
@@ -3640,6 +3694,7 @@ async function menuSettings() {
 }
 /* -------- 店 -------- */
 async function shop(list, o = {}) {
+  if (ryo() < 0) { await say('……あんたに 売る物は ないよ。|（目を そらされた）', { name: o.name }); return; }
   if (o.pic) await Pic.scene(o.pic[0], o.pic[1]);
   const gp = goldPanel(o.pic && Pic.has(o.pic[0]) ? 136 : 8);
   try {
@@ -3686,6 +3741,7 @@ async function shopSell(gp, o) {
   }
 }
 async function inn(price, o = {}) {
+  if (ryo() < 0) { await say('……うちは 満室だよ。|よそを あたっとくれ。|（冷たい 目で 見られている）', { name: o.name }); return; }
   const n = G.party.length, total = price * n;
   if (o.pic) await Pic.scene(o.pic[0], o.pic[1]);
   const gp = goldPanel(o.pic && Pic.has(o.pic[0]) ? 136 : 8);
@@ -3881,7 +3937,7 @@ function pot(id, x, y, item) {
 async function randomFight(zone) {
   const z = ENC[zone], solo = G.party.length === 1;
   let ids = wpick(z.groups); if (solo && !z.full) ids = ids.slice(0, zone.startsWith('cave') ? 2 : 1);
-  return fight(ids, { bg: z.bg, solo });
+  return fight(ids, { bg: z.bg, solo, mixGood: true });
 }
 async function fight(ids, opt = {}) {
   for (;;) {
