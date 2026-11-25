@@ -4619,8 +4619,8 @@ const Title = (() => {
     dom.querySelector('.hint').style.display = 'none';
     for (;;) {
       await Save.waitCloud(1500);
-      const has = Save.hasAny();
-      const d = Save.newest(), info = d ? 'Lv' + d.party[0].lv + ' ' + (MAPS[d.map] ? MAPS[d.map].name : '') : '記録なし';
+      const has = Save.hasAny(), tp = testPreset();
+      const d = tp || Save.newest(), info = tp ? 'テスト' : d ? 'Lv' + d.party[0].lv + ' ' + (MAPS[d.map] ? MAPS[d.map].name : '') : '記録なし';
       const c = await UI.choose([{ label: 'はじめから' }, { label: 'つづきから', right: info }], { x: 50, y: 150, w: 140, cancel: false, start: 0, cls: 'tmenu' });
       if (c === 0) {
         if (has) { const k = await ask('記録を 消して はじめから|遊びますか？', ['はい', 'いいえ']); if (k !== 0) continue; }
@@ -4628,7 +4628,7 @@ const Title = (() => {
       }
       if (c === 1) {
         await Save.waitCloud(10000);
-        if (!Save.hasAny()) { await say('記録が 見つかりません。'); continue; }
+        if (!tp && !Save.hasAny()) { await say('記録が 見つかりません。'); continue; }
         dom.remove(); await continueGame(); return;
       }
     }
@@ -4676,10 +4676,19 @@ async function newGame() {
   await runEvent(openingEvent);
   Save.auto();
 }
+/* テスト用の始まり：URLに ?test=sosuke を付けると、荘助を助ける前（洞窟の前）から始まる。記録には書かない */
+function testPreset() {
+  const t = new URLSearchParams(location.search).get('test');
+  if (t !== 'sosuke') return null;
+  const m = newMember('shino', 6); m.w = 'uchigatana'; m.a = 'kawado'; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp');
+  return { v: 1, wv: 2, map: 'world', x: WP.cave[0] + 1, y: WP.cave[1], dir: 'right', party: [m], gold: 300,
+    bag: { yakusou: 6, dokukeshi: 2, modorisuzu: 2 }, flags: { dog: true, opening: true, askGaku: true, askBanya: true, gakuCave: true },
+    opened: {}, steps: 0, playTime: 0, lastInn: 'otsuka', mayoke: 0 };
+}
 async function continueGame() {
   UI.root.querySelectorAll('.title').forEach(e => e.remove());
   await Save.waitCloud(2500);
-  const d = Save.newest(); if (!d) { await newGame(); return; }
+  const d = testPreset() || Save.newest(); if (!d) { await newGame(); return; }
   await fadeTo(1, 300);
   applySave(d);
   // 九州の地図に描き替える前の記録は、野原の位置が合わないので日向村の前から始める
