@@ -3098,13 +3098,45 @@ async function enemyAct(e) {
 async function victory() {
   const exp = B.en.reduce((s, e) => s + e.d.exp, 0), gold = B.en.reduce((s, e) => s + e.d.gold, 0);
   if (!B.sim) { BUI.clear(); SND.stopBgm(); }
-  const vj = (!B.sim && !B.opt.noJingle) ? SND.jingle('victory') : null;
+  let vj = (!B.sim && !B.opt.noJingle) ? SND.jingle('victory') : null;
   // 勝利の曲：鳴り始めて1秒たてばAで切れる。切ったときは0.8秒の間（切れない）を置く
   let cut = false;
   if (vj) { const t0 = performance.now(); BUI.setSkipHook(() => { if (!cut && performance.now() - t0 >= 1000) { cut = true; SND.cutJingle(); } }); }
   await out(B.opt.winText || (B.en.length > 1 ? '妖怪たちを やっつけた！' : B.en[0].name.replace(/[A-E]$/, '') + 'を やっつけた！'), 600);
   const ms = liveP();
-  if (exp > 0) await out((ms.length > 1 ? 'それぞれ ' : '') + '経験値を ' + exp + ' かくとく！', 500);
+  const expMsg = (ms.length > 1 ? 'それぞれ ' : '') + '経験値を ' + exp + ' かくとく！';
+  // リーチバー：経験値がバーに注がれ、満たされたらレベルアップ。余りはまた0から注がれる
+  const r0 = ms.map(m => ({ m, lv: m.lv, f: expFrac(m) }));
+  const ups = ms.map(m => gainExp(m, exp));
+  if (exp > 0 && !B.sim) {
+    BUI.log(expMsg);
+    const panel = BUI.reachPanel(ms);
+    const st = r0.map((r, i) => ({ ...r, q: ups[i].slice() }));
+    const show = (s, f, anim) => panel.setBar(ms.indexOf(s.m), f, s.lv, s.lv === s.m.lv ? expLeft(s.m) : 0, anim);
+    for (const s of st) show(s, s.f, false);
+    await sleep(DEBUG.fast ? 0 : 250);
+    for (;;) {
+      for (const s of st) show(s, s.q.length ? 1 : expFrac(s.m), true);
+      await sleep(DEBUG.fast ? 0 : 800);
+      const full = st.filter(s => s.q.length); if (!full.length) break;
+      for (const s of full) {
+        const u = s.q.shift(), m = s.m;
+        if (vj) { await vj; BUI.setSkipHook(null); vj = null; }
+        panel.style.display = 'none';
+        const lp = BUI.levelPanel(m, u);
+        BUI.log(mName(m) + 'は レベル' + u.lv + 'に あがった！');
+        await SND.jingle('levelup');
+        await BUI.waitA();
+        lp.remove();
+        for (const k of u.learned) await out(mName(m) + 'は 「' + SKILLS[k].name + '」を\nおぼえた！', 900);
+        BUI.clear(); BUI.status(); BUI.log(expMsg); panel.style.display = '';
+        s.lv = u.lv; show(s, 0, false);
+      }
+      await sleep(DEBUG.fast ? 0 : 120);
+    }
+    await BUI.wait(900);
+    panel.remove();
+  }
   if (gold > 0) { G.gold += gold; await out(gold + '文を 手に入れた！', 500); }
   // 宝箱：1戦で1つまで。強い妖怪ほど落としやすく、まれに当たりの品が入っている
   for (const e of B.en) {
@@ -3125,37 +3157,6 @@ async function victory() {
     break drop;
   }
   if (vj) { await vj; BUI.setSkipHook(null); if (cut && !DEBUG.fast) await sleep(800); }
-  // リーチバー：経験値がバーに注がれ、満たされたらレベルアップ。余りはまた0から注がれる
-  const r0 = ms.map(m => ({ m, lv: m.lv, f: expFrac(m) }));
-  const ups = ms.map(m => gainExp(m, exp));
-  if (!B.sim && exp > 0) {
-    BUI.clear(); BUI.status();
-    const panel = BUI.reachPanel(ms);
-    const st = r0.map((r, i) => ({ ...r, q: ups[i].slice() }));
-    const show = (s, f, anim) => panel.setBar(ms.indexOf(s.m), f, s.lv, s.lv === s.m.lv ? expLeft(s.m) : 0, anim);
-    for (const s of st) show(s, s.f, false);
-    await sleep(DEBUG.fast ? 0 : 250);
-    for (;;) {
-      for (const s of st) show(s, s.q.length ? 1 : expFrac(s.m), true);
-      await sleep(DEBUG.fast ? 0 : 800);
-      const full = st.filter(s => s.q.length); if (!full.length) break;
-      for (const s of full) {
-        const u = s.q.shift(), m = s.m;
-        panel.style.display = 'none';
-        const lp = BUI.levelPanel(m, u);
-        BUI.log(mName(m) + 'は レベル' + u.lv + 'に あがった！');
-        await SND.jingle('levelup');
-        await BUI.waitA();
-        lp.remove();
-        for (const k of u.learned) await out(mName(m) + 'は 「' + SKILLS[k].name + '」を\nおぼえた！', 900);
-        BUI.clear(); BUI.status(); panel.style.display = '';
-        s.lv = u.lv; show(s, 0, false);
-      }
-      await sleep(DEBUG.fast ? 0 : 120);
-    }
-    await BUI.wait(1100);
-    panel.remove();
-  }
   return 'win';
 }
 async function defeat() {
