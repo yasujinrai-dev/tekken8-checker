@@ -1824,6 +1824,12 @@ const ITEMS = {
   // 呪われた武器（良心が曇った者だけ装備できる。代償はない）
   chisui:    { name: '妖刀 血吸', kind: 'w', wt: 'sword', atk: 36, curse: true, price: 0, sell: 5, desc: '血を吸うたびに 刃が赤く光る妖刀' },
   kikoku:    { name: '鬼哭の棒', kind: 'w', wt: 'staff', atk: 27, curse: true, price: 0, sell: 5, desc: '振るたびに 鬼の泣き声が聞こえる棒' },
+  // 終章で手に入る信乃の最後の刀（finalWeapon() で一振りに決まる）
+  shiratsuyu:{ name: '伏姫の白露', kind: 'w', wt: 'sword', atk: 120, elem: 'water', price: 0, nosell: true, desc: '一度も善き者を斬らなかった者にだけ 伏姫が授ける刀' },
+  shinuchi:  { name: '村雨丸 真打', kind: 'w', wt: 'sword', atk: 105, elem: 'water', price: 0, nosell: true, desc: '村雨丸を打ち直した真の姿' },
+  nibui:     { name: '曇り村雨', kind: 'w', wt: 'sword', atk: 85, price: 0, nosell: true, desc: '露の宿らなくなった村雨丸。迷いが刃を鈍らせた' },
+  kuromura:  { name: '黒村雨', kind: 'w', wt: 'sword', atk: 112, elem: 'dark', curse: true, price: 0, nosell: true, desc: '血の露が宿る村雨丸。妖の側に立つ者の刀' },
+  mukuro:    { name: '妖刀 骸丸', kind: 'w', wt: 'sword', atk: 130, elem: 'dark', curse: true, price: 0, nosell: true, desc: '玉梓すら恐れる 闇の底の刀' },
   dorobo:    { name: '泥棒頭巾', kind: 'a', def: 7, price: 0, sell: 5, desc: '山賊の頭巾。身をかわしやすい' },
   kappako:   { name: '河童の甲羅', kind: 'a', def: 10, price: 0, sell: 5, desc: '固い甲羅を胴に当てた防具' },
   haramaki:  { name: '狸の腹巻', kind: 'a', def: 8, price: 0, sell: 5, desc: '化け狸の毛で編んだ腹巻。ほかほか' },
@@ -2606,7 +2612,11 @@ async function interact() {
   const o = objAt(fx, fy) || objAt(G.pl.x, G.pl.y);
   if (o && o.run) { await runEvent(o.run, o); return; }
 }
+const SHUN_FREE = ['bandit', 'sosuke', 'dosetsu', 'samojiro', 'shino'];   // 総スカンでも口をきく者（浪人・山賊・犬士）
 async function talkTo(n) {
+  if (ryo() < 0 && G.map && ['out', 'in'].includes(G.map.def.kind) && !SHUN_FREE.includes(n.def.sprite)) {
+    await say(pick(['……。|（目を そらされた）', '……あっちへ 行っとくれ。', '……。|（口を きいて もらえない）']), { name: n.def.name }); return;
+  }
   const t = n.def.talk, pic = n.def.pic;
   if (pic) await Pic.scene(pic[0], pic[1]);
   try {
@@ -2774,7 +2784,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '鉄吉': 'てつきち', '権太': 'ごんた', '巴': 'ともえ', 'お銀': 'おぎん', '博多': 'はかた', '筑前': 'ちくぜん', '鹿児島': 'かごしま', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '霧島山': 'きりしまやま', '黄泉': 'よみ', '血吸': 'ちすい', '鬼哭': 'きこく', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '炭俵': 'すみだわら', '砂鉄': 'さてつ', '玉鋼': 'たまはがね', '合鍵': 'あいかぎ', '炭焼き': 'すみやき', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '霧島山': 'きりしまやま', '黄泉': 'よみ', '血吸': 'ちすい', '鬼哭': 'きこく', '伏姫': 'ふせひめ', '白露': 'しらつゆ', '真打': 'しんうち', '骸丸': 'むくろまる', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '炭俵': 'すみだわら', '砂鉄': 'さてつ', '玉鋼': 'たまはがね', '合鍵': 'あいかぎ', '炭焼き': 'すみやき', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -3033,7 +3043,10 @@ async function damageEnemy(t, v) {
   await out(v > 0 ? t.name + 'に ' + v + 'の ダメージ！' : 'ミス！ ' + t.name + 'に ダメージを あたえられない！', 550);
   if (t.hp <= 0) {
     SND.sfx('die'); await fx('edie', t); await out(t.name + 'を たおした！', 600);
-    if (!B.sim) { G.flags.ryo = ryo() + (t.good ? -8 : 1); if (t.good) await out('……なにか いやな 手ごたえが のこった。', 700); }
+    if (!B.sim) {
+      G.flags.ryo = ryo() + (t.good ? -10 : 1) * t.d.exp;
+      if (t.good) { G.flags.goodKills = (G.flags.goodKills || 0) + 1; await out('……なにか いやな 手ごたえが のこった。', 700); }
+    }
   }
 }
 async function partyAct(a) {
@@ -3455,7 +3468,16 @@ function removeItem(id, n = 1) { G.bag[id] = (G.bag[id] || 0) - n; if (G.bag[id]
 const hasItem = id => (G.bag[id] || 0) > 0 || G.party.some(m => m.w === id || m.a === id);
 const itemName = id => ITEMS[id].name;
 /* 良心：悪玉を倒すと上がり、善玉を倒すと下がる。数値は画面に出さない */
-const ryo = () => G.flags.ryo == null ? 10 : G.flags.ryo;
+const ryo = () => G.flags.ryo == null ? 100 : G.flags.ryo;
+/* 最終の武器：善玉を倒した数と良心で5段階（終章で渡す） */
+const FINAL_WEAPONS = [
+  { cond: () => ryo() <= -10000, id: 'mukuro' },
+  { cond: () => ryo() <= -3000, id: 'kuromura' },
+  { cond: () => (G.flags.goodKills || 0) >= 4, id: 'nibui' },
+  { cond: () => (G.flags.goodKills || 0) >= 1, id: 'shinuchi' },
+  { cond: () => true, id: 'shiratsuyu' },
+];
+const finalWeapon = () => FINAL_WEAPONS.find(f => f.cond()).id;
 const GOOD_OK = ['onibi', 'karakasa', 'chochin', 'kappa', 'tanuki', 'kamaitachi', 'hitotsume', 'uramibi', 'ogama'];
 const GOOD_TALK = ['わたしは 人を おそいません……|どうか 見のがして ください。', 'ひっ……！|わたしは ただ ここに 住んでいるだけで……', '人の子よ、わしに 争う 気は ない。|道中 気をつけて 行きなされ。', 'こ、こわかった……|ありがとう、やさしい おさむらいさん。'];
 const GOOD_IDLE = ['{e}は こちらの 様子を うかがっている。', '{e}は 身を すくめている。', '{e}は おびえたように ふるえている。'];
