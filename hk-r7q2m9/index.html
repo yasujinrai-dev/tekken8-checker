@@ -539,7 +539,7 @@ function buildTiles() {
     p.fill('#8c7a62'); p.rect(1, 3, 14, 12, 'k'); p.rect(2, 4, 12, 10, 'e'); p.hl(2, 4, 12, 'W'); p.rect(5, 9, 6, 5, 'k'); p.rect(6, 11, 4, 3, 'o'); p.set(7, 10, 'y'); p.set(8, 11, 'y');
     p.ell(7.5, 3.5, 4, 1.6, 'K');
   });
-  /* ---- 洞窟（円塚山） ---- */
+  /* ---- 洞窟（霧島山） ---- */
   defTile('cfloor', (p, r) => { p.fill('#5a4d66'); p.speck('#4b3e5c', 12, r); p.speck('#6c5c7d', 6, r); p.set(4, 11, '#3b2c4c'); p.set(5, 11, '#3b2c4c'); });
   defTile('cfloor2', (p, r) => { p.fill('#5a4d66'); p.speck('#4b3e5c', 9, r); p.speck('#6c5c7d', 8, r); p.ell(10, 6, 2, 1, '#6c5c7d'); p.set(9, 7, '#3b2c4c'); p.set(11, 7, '#3b2c4c'); });
   defTile('cwallTop', (p, r) => { p.fill('U'); p.speck('#1b1326', 14, r); p.speck('u', 5, r); });
@@ -625,8 +625,8 @@ function buildTiles() {
       '.kdGGGdNdGGddk..', '..kkkkkNkkkkk...', '......kNk.......', '......kNNk......', '.......kNk......', '......kNNk......', '.....kNNNNk.....', '......kkkk......']);
   });
 
-  /* ---- 広げた武蔵野の目印 ---- */
-  defTile('swamp', (p, r) => {                 // 夜叉沼のぬかるみ
+  /* ---- 九州の地図の目印 ---- */
+  defTile('swamp', (p, r) => {                 // 大隅の沼のぬかるみ
     p.fill('#4a5a38'); p.speck('#3a4a2c', 10, r); p.speck('#5d6e45', 6, r);
     p.ell(5, 5, 3, 1.5, '#2e4a4a'); p.ell(11, 11, 3.5, 1.6, '#2e4a4a'); p.set(4, 5, '#5f8a8a'); p.set(10, 11, '#5f8a8a'); p.vl(13, 2, 3, '#6b7a3a'); p.vl(2, 10, 3, '#6b7a3a');
   });
@@ -635,12 +635,12 @@ function buildTiles() {
     p.strs(['.......k........', '..k...kNk...k...', '..kk..kNk..kk...', '...kk.kNk.kk....', '....kkkNkkk.....', '......kNk...k...', '......kNkk.kk...', '......kNNkkk....',
       '......kNNk......', '......kNNk......', '.....kNNNk......', '.....kNNNNk.....', '....kNNNNNNk....', '................', '................', '................']);
   });
-  defTile('fTown', (p, r) => {                 // 塀に囲まれた町（古河）
+  defTile('fTown', (p, r) => {                 // 塀に囲まれた町（府内・鹿児島など）
     grassBase(p, r);
     p.strs(['................', '..NN..NN...NN...', '.NttNNttN.NttN..', 'NtTTtNtTtNtTTtN.', 'NNNNNNNNNNNNNNN.', 'kwKwkwKwkwwKwwk.', 'kkkkkkkkkkkkkkk.', 'eeeeeeeeeeeeeeee',
       'EeeeEeeeEeeeEeeE', 'eeeeeeekkeeeeeee', 'EeeeEeekNkeeEeeE', 'eeeeeeekNkeeeeee', 'EeeeEeekNkeeEeeE', 'eeeeeeekkkeeeeee', 'EEEEEEEEEEEEEEEE', '................']);
   });
-  defTile('fCastle', (p, r) => {               // 沖の島の城
+  defTile('fCastle', (p, r) => {               // 青島
     grassBase(p, r);
     p.strs(['.......kk.......', '......kwwk......', '.....kkkkkk.....', '....kwwKwwwk....', '...kkkkkkkkkk...', '...kwwKwwKwwk...', '..kkkkkkkkkkkk..', '..kwwKwwwwKwwk..',
       '.kkkkkkkkkkkkkk.', '.keeeEeeeeEeeek.', '.keEeeeekkeeEek.', 'keeeeEeekNkeeeek', 'keEeeeeekNkeEeek', 'kkkkkkkkkkkkkkkk', '................', '................']);
@@ -650,7 +650,7 @@ function buildTiles() {
     p.strs(['................', '.....kkkkkk.....', '...kkNNNNNNkk...', '.kkNNnNNnNNNNkk.', 'kNNNNNNNNNNNNNNk', 'kkkkkkkkkkkkkkkk', '.kWkWWWkkWWWkWk.', '.kWkW.WkkW.WkWk.',
       '.kWkWWWkkWWWkWk.', '.kWkkkkkkkkkkWk.', '.kWkNNNNNNNNkWk.', '.kWkNkNNNNkNkWk.', '.kWkNNNNNNNNkWk.', 'kkkkkkkkkkkkkkkk', '..eeeeeeeeeeee..', '................']);
   });
-  defTile('fShrine', (p, r) => {               // 夜叉沼の封印の祠
+  defTile('fShrine', (p, r) => {               // 大隅の沼の封印の祠
     p.fill('#4a5a38'); p.speck('#3a4a2c', 8, r);
     p.strs(['................', '.......kk.......', '.....kkRRkk.....', '...kkRRRRRRkk...', '..kRRRRRRRRRRk..', '..kkkkkkkkkkkk..', '...kekkkkkkek...', '...kek.ww.kek...',
       '...kek.wy.kek...', '...kek.ww.kek...', '...kekkkkkkek...', '..kkkkkkkkkkkk..', '..keeeeeeeeeek..', '.kkkkkkkkkkkkkk.', '................', '................']);
@@ -1988,7 +1988,7 @@ MAPS.teahouse = { name: '峠の茶屋', kind: 'in', bgm: 'village', rows: [
   'X_________X',
   'XXXXXEXXXXX'] };
 
-MAPS.cave1 = { name: '円塚山 洞窟・下', kind: 'cave', bgm: 'cave', enc: () => 'cave1', rows: [
+MAPS.cave1 = { name: '霧島山 洞窟・下', kind: 'cave', bgm: 'cave', enc: () => 'cave1', rows: [
   '##########################',
   '###........###.Z..#...####',
   '###.U......###....#...####',
@@ -2011,7 +2011,7 @@ MAPS.cave1 = { name: '円塚山 洞窟・下', kind: 'cave', bgm: 'cave', enc: (
   '#########...o....#########',
   '#########........#########',
   '############E#############'] };
-MAPS.cave2 = { name: '円塚山 洞窟・上', kind: 'cave', bgm: 'cave', enc: () => 'cave2', rows: [
+MAPS.cave2 = { name: '霧島山 洞窟・上', kind: 'cave', bgm: 'cave', enc: () => 'cave2', rows: [
   '##########################',
   '############E#############',
   '########.Z.......#########',
@@ -2034,7 +2034,7 @@ MAPS.cave2 = { name: '円塚山 洞窟・上', kind: 'cave', bgm: 'cave', enc: (
   '##....o..#################',
   '##.......#################',
   '##########################'] };
-MAPS.summit = { name: '円塚山 山頂', kind: 'summit', bgm: 'night', night: true, rows: [
+MAPS.summit = { name: '霧島山 山頂', kind: 'summit', bgm: 'night', night: true, rows: [
   'TTTTTTTTTTTTTTTTT',
   'TT.............TT',
   'T..o.........o..T',
@@ -2050,95 +2050,154 @@ MAPS.summit = { name: '円塚山 山頂', kind: 'summit', bgm: 'night', night: t
   'TTTTTT.....TTTTTT',
   'TTTTTTTTETTTTTTTT'] };
 
-/* 武蔵野：手続きで地形をつくる（84×60）
-   第一章で行く場所：日向村（北西）→ 道祖神の辻 → 神宮川の橋 → 尾根の切れ目の峠の茶屋 → 北の円塚山
-   見えるが行けない場所：南の関所の向こうの古河の町、東の湖に浮かぶ島の城
-   今は用がない場所（強い妖怪が出る）：西の妖の森と荒れ寺、北東の夜叉沼と封印の祠 */
-const WORLD_W = 84, WORLD_H = 60;
-const WP = { village: [14, 9], doso: [13, 30], tea: [47, 30], cave: [57, 12], gate: [14, 47], town: [14, 52], castle: [70, 40], temple: [6, 40], shrine: [76, 8], pine: [8, 24], sign: [65, 40] };
-const riverX = y => 34 + Math.round(2 * Math.sin(y * 0.3));
-const inYami = (x, y) => x <= 11 && y >= 31 && y <= 45;
-const inNuma = (x, y) => x >= 66 && y <= 22;
+/* 九州の地図：粗い国割り（1文字＝6×6マス）から手続きで地形をつくる（156×132）
+   国：k=朝鮮（釜山）t=対馬 j=済州島 z=肥前 c=筑前 b=豊前 g=豊後 h=肥後 y=日向 o=大隅 s=薩摩 ~=海
+   第一章で歩ける：日向（村・大淀川・峠の茶屋・霧島山）。大隅・薩摩へも行けるが妖怪が強い
+   今は行けない：豊後の関所・肥後の関所の向こう（府内・熊本・博多・門司・唐津）、海の向こう（対馬・釜山・済州島）、青島 */
+const KYU = [
+  'kkkkkkkkkkk~~~~~~~~~~~~~~~',
+  'kkkkkkkkkk~~~~~~~~~~~~~~~~',
+  'kkkkkkkkk~~t~~~~~~~~~~~~~~',
+  'kkkkk~~~~~~tt~~~~~~~~~~~~~',
+  '~~~~~~~~~~~t~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~bb~~~~~',
+  '~~~~~~~~~~zzzcccccbbbb~~~~',
+  '~~~~~~~~~zzzzzcccccbbbbg~~',
+  '~~~~~~~~~zzzzzhhhhcbbgggg~',
+  '~~~~~~~~~~zzzhhhhhhgggggg~',
+  '~~~~~~~~~zzz~hhhhhhgggggg~',
+  '~jjjjj~~~~z~~hhhhhhhggggg~',
+  '~jjjjjj~~~~~~hhhhhhyyyyyy~',
+  '~~jjjj~~~~~~~~hhhhhyyyyyy~',
+  '~~~~~~~~~~~~~~hhhhyyyyyyy~',
+  '~~~~~~~~~~~~~~ssshyyyyyyy~',
+  '~~~~~~~~~~~~~sssssooyyyyy~',
+  '~~~~~~~~~~~~~ssss~ooyyyy~~',
+  '~~~~~~~~~~~~~sss~~oooyy~~~',
+  '~~~~~~~~~~~~~~ss~~ooo~~~~~',
+  '~~~~~~~~~~~~~~~~~~~o~~~~~~',
+];
+const KS = 6, WORLD_W = KYU[0].length * KS, WORLD_H = KYU.length * KS;
+const kuni = (x, y) => { const r = KYU[Math.floor(y / KS)]; return r ? (r[Math.floor(x / KS)] || '~') : '~'; };
+const WP = {
+  village: [136, 83], gate: [136, 78], town: [136, 72],          // 日向村・豊後の関所・府内の町
+  doso: [134, 92], tea: [124, 100], cave: [112, 104],             // 道祖神の辻・峠の茶屋・霧島山の洞窟
+  pine: [146, 86], sign: [149, 96], castle: [153, 96],            // 浜の一本松・青島の立て札・青島
+  temple: [118, 85], shrine: [122, 116],                          // 妖の森の荒れ寺・大隅の沼の祠
+  gate2: [98, 96], town2: [98, 91],                             // 肥後の関所・人吉の町
+  kago: [92, 110],                                                // 鹿児島の城下
+  kumamoto: [90, 72], fukuoka: [96, 46], moji: [118, 37], karatsu: [70, 44], funai: [140, 62],
+  tsushima: [69, 18], busan: [50, 10], jeju: [18, 76],
+};
+const OYODO_Y = x => 93 + Math.round(1.5 * Math.sin(x * 0.25)) + (x < 128 ? Math.round((128 - x) * 0.15) : 0);
+const inYami = (x, y) => x >= 114 && x <= 124 && y >= 80 && y <= 90;
+const inStrong = (x, y) => { const k = kuni(x, y); return k === 'o' || k === 's'; };
 function buildWorldRows() {
   const g = [];
+  const land = (x, y) => {
+    const jx = Math.round((hash2(x >> 1, y >> 1, 7) - 0.5) * 4), jy = Math.round((hash2(x >> 1, y >> 1, 8) - 0.5) * 4);
+    return kuni(x + jx, y + jy) !== '~';
+  };
   for (let y = 0; y < WORLD_H; y++) {
     const row = [];
-    for (let x = 0; x < WORLD_W; x++) { const h = hash2(x, y, 91); row.push(h < 0.06 ? ',' : h < 0.11 ? ';' : h < 0.125 ? '*' : '.'); }
+    for (let x = 0; x < WORLD_W; x++) {
+      if (!land(x, y)) { row.push('~'); continue; }
+      const h = hash2(x, y, 91); row.push(h < 0.06 ? ',' : h < 0.11 ? ';' : h < 0.125 ? '*' : '.');
+    }
     g.push(row);
   }
   const set = (x, y, c) => { if (x >= 0 && y >= 0 && x < WORLD_W && y < WORLD_H) g[y][x] = c; };
-  const get = (x, y) => (x >= 0 && y >= 0 && x < WORLD_W && y < WORLD_H) ? g[y][x] : 'M';
-  const blob = (cx, cy, rx, ry, c, seed, keep) => {
+  const get = (x, y) => (x >= 0 && y >= 0 && x < WORLD_W && y < WORLD_H) ? g[y][x] : '~';
+  const onLand = (x, y) => get(x, y) !== '~';
+  const blob = (cx, cy, rx, ry, c, seed, keep, landOnly = true) => {
     for (let y = Math.floor(cy - ry - 2); y <= cy + ry + 2; y++) for (let x = Math.floor(cx - rx - 2); x <= cx + rx + 2; x++)
-      if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 + (hash2(x, y, seed) - 0.5) * 0.5 < 1 && (!keep || !keep.includes(get(x, y)))) set(x, y, c);
+      if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 + (hash2(x, y, seed) - 0.5) * 0.5 < 1 && (!keep || !keep.includes(get(x, y))) && (!landOnly || onLand(x, y))) set(x, y, c);
   };
-  // 外周の山
+  // 地図の端は海にする
+  for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) if (Math.min(x, y, WORLD_W - 1 - x, WORLD_H - 1 - y) < 2) set(x, y, '~');
+  // 日向の国境：豊後・肥後とのあいだに山なみ（九州山地）。大隅・薩摩とはつながっている
   for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) {
-    const d = Math.min(x, y, WORLD_W - 1 - x, WORLD_H - 1 - y);
-    if (d === 0 || (d === 1 && hash2(x, y, 5) < 0.6)) set(x, y, 'M');
-    else if (d === 2 && hash2(x, y, 6) < 0.25) set(x, y, 'T');
+    if (!onLand(x, y)) continue;
+    const k = kuni(x, y);
+    if (k !== 'y' && k !== 'o' && k !== 's') continue;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]]) {
+      const n = kuni(x + dx, y + dy);
+      if (n === 'g' || n === 'h') { set(x, y, 'M'); break; }
+    }
   }
-  // 円塚山の山なみ（北）
-  blob(58, 6, 10, 5.5, 'M', 13); blob(58, 8, 13, 7.5, 'h', 14, ['M']);
-  // 尾根（武蔵野を東西に分ける。切れ目の峠に茶屋）
-  for (let y = 1; y < WORLD_H - 1; y++) {
-    if (y >= 27 && y <= 33) continue;
-    for (let x = 44; x <= 49; x++) { const e = Math.abs(x - 46.5) + (hash2(x, y, 41) - 0.5) * 2; if (e < 2.2) set(x, y, 'M'); else if (e < 3.2) set(x, y, 'h'); }
+  for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) {
+    if (!onLand(x, y) || get(x, y) === 'M') continue;
+    const k = kuni(x, y);
+    if (k === 'g' || k === 'h') for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const n = kuni(x + dx, y + dy); if (n === 'y' || n === 'o' || n === 's') { set(x, y, 'M'); break; } }
   }
-  for (let y = 25; y <= 35; y++) for (let x = 42; x <= 51; x++) if (get(x, y) !== 'M' && hash2(x, y, 43) < 0.55) set(x, y, 'h');
-  for (const y of [26, 34]) for (let x = 44; x <= 49; x++) set(x, y, 'M');
+  // 九州山地の厚み（日向の西）
+  for (let y = 78; y <= 100; y++) for (let x = 108; x <= 115; x++) if (onLand(x, y) && hash2(x, y, 41) < 0.55 + (113 - x) * 0.12) set(x, y, 'M');
+  // 霧島山（日向・大隅・薩摩のさかい）
+  blob(110, 104, 6, 5, 'M', 13); blob(111, 105, 8.5, 7, 'h', 14, ['M']);
+  // 桜島（錦江湾に浮かぶ火山）と錦江湾
+  blob(104, 116, 4, 5, '~', 15, null, false); blob(104, 116, 2, 2, 'M', 16, null, false);
+  // 阿蘇（肥後）・九重（豊後）
+  blob(104, 70, 6, 4, 'M', 17); blob(104, 70, 9, 6, 'h', 18, ['M']);
+  blob(128, 60, 4, 3, 'M', 19); blob(128, 60, 6, 4, 'h', 20, ['M']);
+  // 尾根（日向を南北に分ける。切れ目の峠に茶屋）
+  for (let x = 114; x <= 133; x++) for (let y = 98; y <= 103; y++) {
+    if (x >= 122 && x <= 126) continue;
+    const e = Math.abs(y - 100.5) + (hash2(x, y, 42) - 0.5) * 2; if (e < 1.6) set(x, y, 'M'); else if (e < 2.6) set(x, y, 'h');
+  }
+  for (let x = 121; x <= 127; x++) for (let y = 97; y <= 104; y++) if (get(x, y) !== 'M' && hash2(x, y, 43) < 0.5) set(x, y, 'h');
+  for (const x of [121, 127]) for (let y = 98; y <= 103; y++) set(x, y, 'M');
   // 森
-  for (const [cx, cy, rx, ry] of [[24, 12, 3, 2.4], [28, 40, 4, 2.6], [40, 18, 2.6, 2], [56, 44, 3.4, 3], [20, 22, 2, 1.6], [60, 24, 2.4, 1.8]]) blob(cx, cy, rx, ry, 'F', 21, ['M']);
-  // 妖の森（西）：深い森
-  for (let y = 31; y <= 45; y++) for (let x = 2; x <= 11; x++) if (hash2(x, y, 51) < 0.82) set(x, y, 'F');
+  for (const [cx, cy, rx, ry] of [[128, 86, 3, 2.4], [142, 104, 3.4, 2.6], [130, 108, 3, 2], [140, 78, 2.4, 1.8], [96, 104, 3, 2.4], [116, 112, 3, 2],
+    [80, 50, 4, 3], [100, 56, 4, 3], [124, 50, 3, 2.4], [146, 54, 3, 3], [84, 84, 4, 3], [76, 62, 3, 3], [40, 6, 5, 2], [12, 78, 3, 2]]) blob(cx, cy, rx, ry, 'F', 21, ['M', '~']);
+  // 妖の森（日向の西、山すそ）：深い森
+  for (let y = 80; y <= 90; y++) for (let x = 114; x <= 124; x++) if (onLand(x, y) && get(x, y) !== 'M' && hash2(x, y, 51) < 0.82) set(x, y, 'F');
   // ぽつんと立つ木
   for (let y = 2; y < WORLD_H - 2; y++) for (let x = 2; x < WORLD_W - 2; x++) if ('.,;'.includes(g[y][x]) && hash2(x, y, 33) < 0.025) set(x, y, 'T');
-  // 夜叉沼（北東）
-  for (let y = 2; y <= 22; y++) for (let x = 66; x <= 81; x++) if (get(x, y) !== 'M') { const h = hash2(x, y, 61); set(x, y, h < 0.12 ? 'x' : h < 0.2 ? '~' : 's'); }
-  // 東の湖と沖の島
-  for (let y = 25; y <= 57; y++) for (let x = 64; x <= 82; x++) { const e = x - 64 - (hash2(x, y, 71) * 2) + Math.max(0, 27 - y) * 1.5; if (e > 1 && get(x, y) !== 'M') set(x, y, '~'); }
-  { const [cx, cy] = WP.castle; blob(cx + 1, cy, 3, 3, '.', 72); for (const [dx, dy] of [[-2, -1], [2, -1], [3, 1], [-1, 2], [2, 2]]) set(cx + dx, cy + dy, 'T'); set(cx, cy, 'X'); }
-  // 神宮川（関所の山で止まる）
-  for (let y = 0; y < 47; y++) { const rx = riverX(y); set(rx, y, '~'); set(rx + 1, y, '~'); }
-  // 関所の山なみ（南）と、その向こうの古河の町
-  for (let x = 1; x < 46; x++) for (const y of [47, 48]) set(x, y, 'M');
-  for (let y = 49; y < 58; y++) for (let x = 2; x < 44; x++) if (get(x, y) === 'M' && y > 49) set(x, y, '.');
+  // 大隅の沼地
+  for (let y = 110; y <= 122; y++) for (let x = 114; x <= 130; x++) if (onLand(x, y) && get(x, y) !== 'M' && kuni(x, y) === 'o') { const h = hash2(x, y, 61); set(x, y, h < 0.12 ? 'x' : h < 0.2 ? '~' : 's'); }
+  // 大淀川（九州山地から日向灘へ）
+  for (let x = 114; x < WORLD_W; x++) { const y = OYODO_Y(x); if (!onLand(x, y) && x > 140) break; set(x, y, '~'); set(x, y + 1, '~'); }
+  // 日向の浜の松林
+  for (let y = 80; y <= 112; y++) for (let x = 140; x < WORLD_W; x++) if (onLand(x, y) && !onLand(x + 2, y) && hash2(x, y, 81) < 0.35 && get(x, y) !== '~') set(x, y, 'T');
+  // 青島（沖の小島）
+  blob(WP.castle[0], WP.castle[1], 1.6, 1.6, '.', 72, null, false);
   // 田んぼ
-  for (let y = 4; y <= 6; y++) for (let x = 17; x <= 20; x++) set(x, y, 'p');
-  for (let y = 12; y <= 13; y++) for (let x = 9; x <= 12; x++) set(x, y, 'p');
+  for (let y = 84; y <= 86; y++) for (let x = 138; x <= 141; x++) set(x, y, 'p');
+  for (let y = 88; y <= 89; y++) for (let x = 139; x <= 142; x++) set(x, y, 'p');
   // 道
   const road = (x0, y0, x1, y1) => {
     let x = x0, y = y0;
     for (;;) { const c = g[y][x]; if (c === '~') set(x, y, y0 === y1 ? 'H' : 'V'); else set(x, y, '='); if (x === x1 && y === y1) break; if (x !== x1) x += Math.sign(x1 - x); else y += Math.sign(y1 - y); }
   };
-  road(14, 10, 14, 46);                    // 村から南へ、関所まで
-  road(14, 30, 46, 30); road(48, 30, 57, 30); road(57, 30, 57, 13);   // 辻から東へ、峠を越えて北の円塚山へ
-  road(14, 49, 14, 51);                    // 関所の向こう（行けない）
-  road(57, 30, 62, 30); road(62, 30, 62, 40); road(62, 40, 64, 40);  // 湖の岸へ
-  road(57, 22, 66, 22);                    // 沼への細道
+  road(136, 79, 136, 92);                                   // 関所から村をぬけて南へ
+  road(136, 92, 124, 92); road(124, 92, 124, 99); road(124, 101, 124, 106);   // 辻から西へ、川を渡り峠を越える
+  road(124, 106, 115, 106); road(115, 106, 115, 104); road(115, 104, 113, 104); // 霧島山のふもとへ
+  road(136, 92, 136, 96); road(136, 96, 148, 96);           // 浜へ（青島の渡し）
+  road(136, 73, 136, 77);                                   // 関所の向こう（行けない）
+  road(115, 106, 101, 106); road(101, 106, 101, 99); road(101, 99, 98, 99); road(98, 99, 98, 97); road(98, 95, 98, 92);       // 薩摩へ、肥後の関所へ
+  road(101, 106, 101, 110); road(101, 110, 93, 110);        // 鹿児島の城下へ
   // 目印
   const mark = (k, c) => set(WP[k][0], WP[k][1], c);
-  mark('village', 'O'); mark('doso', 'J'); mark('tea', 'Q'); mark('cave', 'C'); mark('gate', 'G'); mark('town', 'K');
-  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I');
-  for (const [x, y] of [[13, 9], [15, 9], [13, 8], [14, 8], [15, 8]]) set(x, y, 'T');
-  for (const [x, y] of [[56, 12], [58, 12], [56, 11], [57, 11], [58, 11]]) set(x, y, 'M');
-  for (const [x, y] of [[46, 29], [47, 29], [48, 29], [46, 31], [47, 31], [48, 31]]) set(x, y, 'h');
-  set(46, 30, '='); set(48, 30, '=');
-  for (const [x, y] of [[13, 47], [15, 47], [13, 48], [15, 48]]) set(x, y, 'M'); set(14, 48, 'M');
-  for (let y = 38; y <= 42; y++) for (let x = 4; x <= 8; x++) if (get(x, y) === 'F' && hash2(x, y, 52) < 0.5) set(x, y, '.');
-  set(6, 41, '.'); set(6, 42, '.');
-  for (let y = 6; y <= 10; y++) for (let x = 74; x <= 78; x++) if (get(x, y) !== 'S') set(x, y, 's');
+  mark('village', 'O'); mark('doso', 'J'); mark('tea', 'Q'); mark('cave', 'C'); mark('gate', 'G'); mark('town', 'K'); mark('gate2', 'G'); mark('town2', 'K');
+  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('castle', 'X'); mark('kago', 'K');
+  for (const k of ['kumamoto', 'fukuoka', 'moji', 'karatsu', 'funai', 'tsushima', 'busan', 'jeju']) { const [x, y] = WP[k]; blob(x, y, 2, 2, '.', 3, ['~']); set(x, y, 'K'); }
+  for (const [x, y] of [[135, 82], [137, 82], [134, 82], [138, 82]]) set(x, y, 'T');
+  // 関所の両わきは山（すり抜け防止）
+  for (const [gx, gy] of [WP.gate, WP.gate2]) for (let dx = -3; dx <= 3; dx++) for (let dy = -1; dy <= 1; dy++) if (dx || dy) set(gx + dx, gy + dy, dx ? 'M' : '=');
+  for (let y = 115; y <= 117; y++) for (let x = 120; x <= 124; x++) if (get(x, y) !== 'S') set(x, y, 's');
   return g.map(r => r.join(''));
 }
-MAPS.world = { name: '武蔵野', kind: 'world', bgm: 'field', rows: buildWorldRows(),
+MAPS.world = { name: '日向の国', kind: 'world', bgm: 'field', rows: buildWorldRows(),
   enc: (x, y, t) => {
+    const k = kuni(x, y);
+    if (k !== 'y' && k !== 'o' && k !== 's') return null;         // 関所や海の向こう（今は行けない）
+    if (x < 106 || y >= 109) return 'numa';                         // 薩摩・大隅：妖怪が強い
     if (inYami(x, y)) return 'yami';
-    if (inNuma(x, y)) return 'numa';
-    if (y > 48) return null;
     if (t === 'forest') return 'wood';
-    const rx = riverX(y);
-    if (Math.abs(x - rx) <= 1 || Math.abs(x - rx - 1) <= 1) return 'river';
-    return x < rx ? 'near' : 'far';
+    const ry = OYODO_Y(x);
+    if (Math.abs(y - ry) <= 1 || Math.abs(y - ry - 1) <= 1) return 'river';
+    return y < ry ? 'near' : 'far';
   } };
 
 /* =====================================================================
@@ -2580,7 +2639,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '円塚山': 'まるつかやま', '日向村': 'ひゅうがむら', '武蔵野': 'むさしの', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -3497,7 +3556,7 @@ const FX = (() => {
         const h = hash2(x, y, Math.floor(G.time * 2.5));
         if (h < 0.22) { const px = x * TS + 2 + Math.floor(h * 997) % 12 - camX, py = y * TS + 2 + Math.floor(h * 7919) % 12 - camY; cx.fillRect(px, py, 2, 1); cx.fillRect(px + (h < 0.08 ? 0 : 1), py - 1, 1, 3); }
       });
-      // 花びら（村）と木の葉（武蔵野）
+      // 花びら（村）と木の葉（野）
       if (rand() < dt * (kind === 'out' ? 2.2 : 1.2)) parts.push({ x: camX + rand() * VW * 1.2 - 30, y: camY - 6, vx: 10 + rand() * 8, vy: 12 + rand() * 8, sway: 2 + rand() * 2, ph: rand() * 9, life: 9, fade: 1, c: kind === 'out' ? pick(['#f7c6d9', '#fbe3ec', '#ffffff']) : pick(['#9fd26a', '#c8e08a', '#e6c46a']), s: 2, a: 0.9 });
       stepList(parts, dt, camX, camY);
       cx.save(); cx.globalCompositeOperation = 'lighter'; cx.drawImage(sunTint(), 0, 0); cx.restore();
@@ -3656,7 +3715,7 @@ STORY.otsuka = {
   npcs: [
     { id: 'm1', sprite: 'man1', name: '村人', x: 7, y: 6, wander: true, radius: 3, talk: async () => {
       if (flag('ch1')) await say('信乃さん、村雨丸を|取りもどしたんだって？|村じゅう その話で もちきりだよ。', { name: '村人' });
-      else await say('このところ 夜になると 北東の山に|あやしい火が 見えるそうだ。|くわばら くわばら……', { name: '村人' });
+      else await say('このところ 夜になると 南西の山に|あやしい火が 見えるそうだ。|くわばら くわばら……', { name: '村人' });
     } },
     { id: 'w1', sprite: 'woman1', name: '村の娘', x: 16, y: 13, wander: true, radius: 2, talk: async () => {
       if (flag('sosuke')) await say('額蔵さん、見つかったんだね！|よかった……。', { name: '村の娘' });
@@ -3667,17 +3726,17 @@ STORY.otsuka = {
     } },
     { id: 'old', sprite: 'oldman', name: '長老', x: 12, y: 20, dir: 'up', talk: async () => {
       if (!flag('sosuke')) return elderRumor();
-      if (!flag('ch1')) await say('円塚山の 洞窟は 入り組んでおる。|宝箱を 見つけたら 開けておくのじゃ。|奥の 泉の 水は 傷を いやすと 聞く。', { name: '長老' });
+      if (!flag('ch1')) await say('霧島山の 洞窟は 入り組んでおる。|宝箱を 見つけたら 開けておくのじゃ。|奥の 泉の 水は 傷を いやすと 聞く。', { name: '長老' });
       else await say('村の外には 妖怪が うろついておる。|傷ついたら 宿屋で 休むのじゃぞ。|道具屋の 薬草も 忘れずにな。', { name: '長老' });
     } },
     { id: 'fisher', sprite: 'man2', name: '釣り人', x: 23, y: 16, dir: 'right', talk: async () => {
-      await say('神宮川は 流れが 速い。|うっかり 落ちたら ひとたまりも ないぞ。', { name: '釣り人' });
+      await say('大淀川は 流れが 速い。|うっかり 落ちたら ひとたまりも ないぞ。', { name: '釣り人' });
     } },
   ],
   objects: [
     look(22, 1, ['小さな ほこらに 古い札が はってある。||『仁 義 礼 智 忠 信 孝 悌|八つの 徳 そろうとき|里見の 闇は はらわれん』']),
     look(10, 20, async () => { await say('お地蔵さまに 手を あわせた。'); await Save.save(); await say('冒険の記録を のこした。|' + Save.where()); }),
-    look(16, 21, ['立て札だ。|『この先 武蔵野。妖怪 出没 注意』']),
+    look(16, 21, ['立て札だ。|『この先 日向の 野。妖怪 出没 注意』']),
     look(16, 12, ['深い 井戸だ。|のぞきこむと 自分の顔が 映っている。']),
     look(27, 10, async () => {
       if (flag('ch1')) await say('父・犬塚番作の 墓だ。|（父上……村雨丸を 取りもどしました。|かならず 古河へ お届けします）');
@@ -3736,7 +3795,7 @@ STORY.hikiroku_house = {
     } },
     { id: 'kame', sprite: 'kamezasa', name: N.kame, x: 8, y: 2, talk: async () => {
       if (flag('ch1')) await say('村雨丸が 戻って よかったよ。|あたしらが 浅はかだったよ……。', { name: N.kame });
-      else await say('うちの人は 村雨丸を|浪人の 左母二郎に 売りつけたのさ。||左母二郎は 北東の 円塚山に|こもってるって 話だよ。', { name: N.kame });
+      else await say('うちの人は 村雨丸を|浪人の 左母二郎に 売りつけたのさ。||左母二郎は 南西の 霧島山に|こもってるって 話だよ。', { name: N.kame });
     } },
     { id: 'hamaji', sprite: 'hamaji', name: N.hamaji, x: 10, y: 4, wander: true, radius: 1, talk: async () => {
       if (flag('ch1')) await say('信乃さま……|村雨丸が 戻って 本当に よかった。', { name: N.hamaji });
@@ -3757,7 +3816,7 @@ STORY.banya = {
   warps: [{ x: 4, y: 6, to: 'otsuka', tx: 4, ty: 21, dir: 'down' }],
   npcs: [
     { id: 'guard', sprite: 'guard', name: '牢番', x: 6, y: 4, dir: 'left', talk: async () => {
-      if (flag('sosuke')) await say('額蔵が 円塚山の 牢に いたとは……|あの男、ただ者では ないと|思っておったわ。', { name: '牢番' });
+      if (flag('sosuke')) await say('額蔵が 霧島山の 牢に いたとは……|あの男、ただ者では ないと|思っておったわ。', { name: '牢番' });
       else if (flag('opening')) { await say('額蔵？ ここには おらんぞ。||三日前に 顔を 出して、|権六どのの 使いで 峠の 茶屋まで|行くと 言っておったが……', { name: '牢番' }); setFlag('askBanya'); }
       else await say('ここは 村の 番屋だ。|悪さを すると 牢に 入れるぞ。', { name: '牢番' });
     } },
@@ -3869,7 +3928,7 @@ STORY.inn = {
   warps: [{ x: 5, y: 6, to: 'otsuka', tx: 10, ty: 17, dir: 'down' }],
   npcs: [
     { id: 'okami', sprite: 'woman2', name: '宿の女将', x: 2, y: 1, talk: () => inn(4, { id: 'otsuka', name: '宿の女将', pic: ['bg_inn', 'p_okami'] }) },
-    { id: 'trav', sprite: 'traveler', name: '旅の男', x: 7, y: 4, wander: true, radius: 2, talk: talk('旅の男', 'わしは 旅の 行商人。|武蔵野の 東、峠の 茶屋には|掘り出し物が あるぞ。') },
+    { id: 'trav', sprite: 'traveler', name: '旅の男', x: 7, y: 4, wander: true, radius: 2, talk: talk('旅の男', 'わしは 旅の 行商人。|大淀川の 向こう、峠の 茶屋には|掘り出し物が あるぞ。') },
   ],
   objects: [look(6, 3, ['いろりで 鍋が ぐつぐつ 煮えている。'])],
 };
@@ -3888,18 +3947,18 @@ STORY.teahouse = {
     { id: 'tabi', sprite: 'traveler', name: '旅人', x: 3, y: 4, wander: true, radius: 2, talk: async () => {
       if (!flag('sosuke')) {
         await say('額蔵？ ああ、ゆうべの あの男か。|浪人どもに からまれた 娘を かばって|大立ち回りを してな。', { name: '旅人' });
-        await say('だが 多勢に 無勢。縄を かけられて|円塚山の ほうへ|引っ立てられて いったよ。', { name: '旅人' });
-        await say('そういえば 円塚山の 頂で|浪人が 立派な 刀を|ふりまわして いたっけな。', { name: '旅人' });
+        await say('だが 多勢に 無勢。縄を かけられて|霧島山の ほうへ|引っ立てられて いったよ。', { name: '旅人' });
+        await say('そういえば 霧島山の 頂で|浪人が 立派な 刀を|ふりまわして いたっけな。', { name: '旅人' });
         setFlag('gakuCave'); Save.auto(); return;
       }
-      await say('円塚山の 洞窟の 奥に|大きな 土蜘蛛が いるそうだ。|あいつは 火に 弱いと 聞いたが……', { name: '旅人' });
+      await say('霧島山の 洞窟の 奥に|大きな 土蜘蛛が いるそうだ。|あいつは 火に 弱いと 聞いたが……', { name: '旅人' });
     } },
     { id: 'ronin1', sprite: 'bandit', name: '浪人', x: 8, y: 4, dir: 'left', talk: talk('浪人', '網乾左母二郎？ ああ、あいつは|腕は 立つが 性根が くさっておる。|居合いの 斬りこみには 気をつけろ。') },
   ],
   objects: [look(6, 4, ['いろりで 団子が 焼けている。|いい においだ。'])],
 };
 
-/* ---------------- 武蔵野 ---------------- */
+/* ---------------- 日向の国（九州） ---------------- */
 STORY.world = {
   warps: [
     { x: WP.village[0], y: WP.village[1], to: 'otsuka', tx: 13, ty: 22, dir: 'up', sfx: 'step' },
@@ -3907,19 +3966,21 @@ STORY.world = {
     { x: WP.cave[0], y: WP.cave[1], to: 'cave1', tx: 12, ty: 20, dir: 'up', sfx: 'stairs' },
   ],
   objects: [
-    look(...WP.gate, ['古河へ 通じる 関所だ。|門の すき間から 向こうの 町の|屋根が 見える。||「通行手形の ない者は 通せぬ！」']),
-    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村　東 峠の茶屋|南 古河の関所　西 妖の森』||『妖の森に 入るべからず』と|小さく 書き足してある。']),
+    look(...WP.gate, ['豊後へ 通じる 関所だ。|門の すき間から 山の 向こうの|府内の 町の 屋根が 見える。||「妖怪 さわぎで 関は 閉じておる。|通行手形の ない者は 通せぬ！」']),
+    look(...WP.gate2, ['肥後へ 通じる 関所だ。|門の 向こうには 人吉の 町が ある。||「この先は 肥後の 国。|手形なき者は 一歩も 通さぬ！」']),
+    look(...WP.kago, ['鹿児島の 城下町だ。|門は かたく 閉ざされている。||「妖怪どもが 夜な夜な 出るゆえ|よそ者は 入れられぬ」']),
+    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村・豊後の関所|西南 峠の茶屋・霧島山|東 青島の渡し　西 妖の森』||『妖の森に 入るべからず』と|小さく 書き足してある。']),
     look(...WP.pine, async () => {
-      if (G.opened.pine) { await say('大きな 一本松だ。'); return; }
+      if (G.opened.pine) { await say('浜の 大きな 一本松だ。'); return; }
       G.opened.pine = true; await say('松の 根もとに 何か うまっている……'); await getItem('reisui');
     }),
     look(...WP.temple, ['荒れはてた 寺だ。|扉には 太い かんぬきが かかり、|中から 低い 読経のような 声が する……||（今は 開けられない）']),
     look(...WP.shrine, ['沼の まん中の 古い 祠だ。|石の 扉に 札が 何枚も|貼りつけてある。||何かを 封じているようだ……']),
-    look(...WP.sign, ['立て札だ。|『沖の島 里見の城|渡し舟 休みにつき 渡れず』||湖の 向こうに 白い 城が|かすんで 見える。']),
+    look(...WP.sign, ['立て札だ。|『青島 渡し舟|波 荒きにつき 休み』||沖の 小さな 島に|鳥居が かすんで 見える。']),
   ],
 };
 
-/* ---------------- 円塚山 洞窟 ---------------- */
+/* ---------------- 霧島山 洞窟 ---------------- */
 STORY.cave1 = {
   tile: (n, p) => n === 'cboulder' && flag('rock') ? ['cfloor', 1] : n,
   npcs: [
@@ -3927,7 +3988,7 @@ STORY.cave1 = {
     { id: 'kashira', sprite: 'bandit', name: '山賊の頭', x: 5, y: 14, dir: 'left', cond: () => !flag('kashira'), talk: kashiraFight },
   ],
   warps: [
-    { x: 12, y: 21, to: 'world', tx: WP.cave[0], ty: WP.cave[1] + 1, dir: 'down', sfx: 'stairs' },
+    { x: 12, y: 21, to: 'world', tx: WP.cave[0] + 1, ty: WP.cave[1], dir: 'right', sfx: 'stairs' },
     { x: 4, y: 2, to: 'cave2', tx: 4, ty: 17, dir: 'right', sfx: 'stairs' },
   ],
   objects: [
@@ -3970,7 +4031,7 @@ async function tsuchigumoEvent() {
   await say('土蜘蛛が ふさいでいた 岩の かげから|清らかな 水が わき出した。');
 }
 
-/* ---------------- 円塚山 山頂 ---------------- */
+/* ---------------- 霧島山 山頂 ---------------- */
 STORY.summit = {
   bgm: () => flag('ch1') ? 'field' : 'night',
   tile: n => n === 'pyre' && flag('pyreOut') ? 'ashes' : n,
@@ -4051,7 +4112,7 @@ async function endingEvent() {
   await fadeTo(0, 600);
   await say('おお……村雨丸！|それに 頼もしい 剣士が 二人も。|よう やった、信乃。', { name: N.jiiya });
   await say('信乃は 村雨丸を にぎりしめた。|（父上……古河へ 参ります）');
-  await say('（第一章は ここまでです。|村や 武蔵野は このまま 歩けます）');
+  await say('（第一章は ここまでです。|村や 日向の 野は このまま 歩けます）');
   Save.auto();
 }
 
@@ -4063,7 +4124,7 @@ const Save = (() => {
   let cloud = null, cloudState = 'pending', cloudData = null, lastCloud = 0, cloudTimer = null;
   const waiters = [];
   function data() {
-    return { v: 1, t: Date.now(), map: G.mapId, x: G.pl.x, y: G.pl.y, dir: G.pl.dir, party: G.party.map(({ _hit, sleep, ...m }) => m), bag: G.bag, gold: G.gold,
+    return { v: 1, wv: 2, t: Date.now(), map: G.mapId, x: G.pl.x, y: G.pl.y, dir: G.pl.dir, party: G.party.map(({ _hit, sleep, ...m }) => m), bag: G.bag, gold: G.gold,
       flags: G.flags, opened: G.opened, steps: G.steps, playTime: Math.floor(G.playTime), lastInn: G.lastInn, mayoke: G.mayoke };
   }
   function local() { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
@@ -4236,6 +4297,8 @@ async function continueGame() {
   const d = Save.newest(); if (!d) { await newGame(); return; }
   await fadeTo(1, 300);
   applySave(d);
+  // 九州の地図に描き替える前の記録は、野原の位置が合わないので日向村の前から始める
+  if (d.map === 'world' && d.wv !== 2) { d.x = WP.village[0]; d.y = WP.village[1] + 1; d.dir = 'down'; }
   G.mode = 'field'; loadMap(d.map, d.x, d.y, d.dir);
   await fadeTo(0, 400);
 }
