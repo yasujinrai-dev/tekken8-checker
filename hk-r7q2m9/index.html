@@ -1820,7 +1820,6 @@ const ITEMS = {
   kazenoha:  { name: '風の刃', kind: 'w', wt: 'sword', atk: 24, price: 0, sell: 5, desc: '風をまとう薄刃の刀。山賊がどこかで奪った業物' },
   kurouchi:  { name: '黒打ちの刀', kind: 'w', wt: 'sword', atk: 21, price: 0, sell: 5, desc: '浪人が手放さなかった黒鉄の刀' },
   kama:      { name: 'かま', kind: 'w', wt: 'sickle', who: ['sosuke'], atk: 13, price: 0, sell: 5, desc: '鎌鼬の前足のような鋭い鎌。荘助が使える' },
-  ono:       { name: '炭焼きの斧', kind: 'w', wt: 'axe', who: ['sosuke'], atk: 10, price: 0, sell: 5, desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
   // 呪われた武器（良心が曇った者だけ装備できる。代償はない）
   chisui:    { name: '妖刀 血吸', kind: 'w', wt: 'sword', atk: 36, curse: true, price: 0, sell: 5, desc: '血を吸うたびに 刃が赤く光る妖刀' },
   kikoku:    { name: '鬼哭の棒', kind: 'w', wt: 'staff', atk: 27, curse: true, price: 0, sell: 5, desc: '振るたびに 鬼の泣き声が聞こえる棒' },
@@ -1846,6 +1845,7 @@ const ITEMS = {
   chu:       { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節の玉' },
   rouKey:    { name: '牢の合鍵', kind: 'key', desc: '権太親方が打ち直した鍵。洞窟の牢を開けられる' },
   oreKagi:   { name: '折れた鍵', kind: 'key', desc: '山賊の頭が投げつけた牢の鍵。まん中で折れている' },
+  ono:       { name: '炭焼きの斧', kind: 'key', desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
   sumidawara:{ name: '炭俵', kind: 'key', desc: '諸県村の炭焼きが焼いた炭。鍛冶に使う' },
   zaru:      { name: 'ザル', kind: 'key', desc: '茶屋のおばばに借りたザル' },
   satetsu:   { name: '砂鉄', kind: 'key', desc: '日向の浜ですくった黒い砂。玉鋼の材料になる' },
@@ -4448,20 +4448,22 @@ STORY.morokata = {
     { id: 'sumiyaki', sprite: 'man2', name: '炭焼き', x: 17, y: 10, dir: 'left', talk: async () => {
       const N1 = { name: '炭焼き' };
       if (G.bag.sumidawara || flag('kagiOrder')) { await say('炭は 役に 立ったかい。', N1); return; }
-      if (G.bag.ono || flag('moroRonin')) {
+      if (G.bag.ono) {
         await say('その 斧！ 浪人どもに|取り上げられて いた わしの 斧だ！', N1);
-        if (G.bag.ono) removeItem('ono');
+        removeItem('ono');
         await say('これで また 炭が 焼ける。|焼きためて おいた 分を 持っていきな。', N1);
         await getItem('sumidawara', '炭俵を もらった！'); Save.auto(); return;
       }
       await say('炭焼き 一筋 三十年……|じゃが 斧を 浪人に 取り上げられて|木も 切れん。', N1);
       await say('鍛冶屋も 炭が なくて|困っとるじゃろうに……', N1);
+      if (!flag('moroRonin')) await say('あの 浪人は 年貢の 取り立てに|毎日 この 村へ やって来る。||今日は もう 帰ったが……|斧さえ 取り返せればのう。', N1);
+      setFlag('sumiTalk');
     } },
     { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2, talk: async () => {
       if (flag('samojiroDone')) await say('今日は ひさしぶりに|白い ごはんが 食べられるんだ！', { name: '子ども' });
       else await say('おなか すいた……|もう ずっと うすい おかゆ ばっかり。', { name: '子ども' });
     } },
-    { id: 'collector', sprite: 'bandit', name: '浪人', x: 9, y: 6, dir: 'left', cond: () => !flag('samojiroDone') && !flag('moroRonin'), talk: async () => {
+    { id: 'collector', sprite: 'bandit', name: '浪人', x: 9, y: 6, dir: 'left', cond: () => flag('sumiTalk') && !flag('samojiroDone') && !flag('moroRonin'), talk: async () => {
       await say('なんだ きさま。|年貢の 取り立ての 邪魔を するなら|ただでは すまさんぞ！', { name: '浪人' });
       const r = await fight(['ronin', 'sanzoku'], { intro: '取り立ての 浪人どもが おそいかかってきた！' });
       if (r !== 'win') return;
