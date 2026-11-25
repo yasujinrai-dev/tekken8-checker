@@ -2019,6 +2019,22 @@ MAPS.house1 = { name: '民家', kind: 'in', bgm: 'village', rows: [
   'Xd:::Z:X',
   'XdP::::X',
   'XXXEXXXX'] };
+MAPS.morokata = { name: '諸県村', kind: 'out', bgm: 'village', rows: [
+  'TTTTTTTTTTTTTTTTTTTT',
+  'T.RRRR....;...KKKK.T',
+  'T.RRRR........KKKK.T',
+  'T.WDWW..,.....WWDW.T',
+  'T...=..........=...T',
+  'T...============...T',
+  'T.......=.o........T',
+  'T.RRRR..=....pppp..T',
+  'T.RRRR..=....pppp..T',
+  'T.WWDW..=....pppp..T',
+  'T...=...=..........T',
+  'T...=====....j...,.T',
+  'TT......=........TTT',
+  'TTTTTTTT=TTTTTTTTTTT'] };
+
 MAPS.teahouse = { name: '峠の茶屋', kind: 'in', bgm: 'village', rows: [
   'X#S#L##Y#SX',
   'X___b_____X',
@@ -2127,10 +2143,22 @@ const WP = {
   temple: [118, 85], shrine: [122, 116],
   warnW: [116, 107], warnS: [124, 108], warnF: [125, 84],          // 強い妖怪の立て看板（薩摩・大隅・妖の森の手前）                          // 妖の森の荒れ寺・大隅の沼の祠
   gate2: [98, 96], town2: [98, 91],                             // 肥後の関所・人吉の町
-  kago: [92, 110],                                                // 鹿児島の城下
+  kago: [92, 110], moro: [121, 104],                               // 鹿児島の城下・諸県村（霧島山のふもと）                                                // 鹿児島の城下
   kumamoto: [90, 72], fukuoka: [96, 46], moji: [118, 37], karatsu: [70, 44], funai: [140, 62],
   tsushima: [69, 18], busan: [50, 10], jeju: [18, 76],
 };
+/* 魔の鏡の置き場所と飛び先 */
+// has: その場所にも鏡がある（戻れる）。has のない所へ飛ばされたら歩くか戻り鈴で帰る
+const MIRRORS = [
+  { id: 'mori',    map: 'world', x: 142, y: 104, has: true,  tx: 142, ty: 105 },   // 日向の浜近くの森
+  { id: 'satsuma', map: 'world', x: 90,  y: 103, has: true,  tx: 90,  ty: 104 },   // 薩摩の黒い土の奥
+  { id: 'numa',    map: 'world', x: 124, y: 121, has: true,  tx: 124, ty: 120 },   // 大隅の沼
+  { id: 'yami',    map: 'world', tx: 119, ty: 86 },                                // 妖の森のまん中
+  { id: 'sat2',    map: 'world', tx: 88,  ty: 98 },                                // 薩摩の北
+  { id: 'kago',    map: 'world', tx: 95,  ty: 110 },                               // 鹿児島の城下の手前
+  { id: 'hama',    map: 'world', tx: 147, ty: 97 },                                // 青島の渡し
+  { id: 'mura',    map: 'world', tx: 136, ty: 84 },                                // 日向村の前
+];
 const OYODO_Y = x => 93 + Math.round(1.5 * Math.sin(x * 0.25)) + (x < 128 ? Math.round((128 - x) * 0.15) : 0);
 const inYami = (x, y) => x >= 114 && x <= 124 && y >= 80 && y <= 90;
 const inStrong = (x, y) => { const k = kuni(x, y); return (k === 'o' || k === 's') && (x < 106 || y >= 109); };   // 薩摩・大隅：妖怪が強い
@@ -2224,7 +2252,7 @@ function buildWorldRows() {
   // 目印
   const mark = (k, c) => set(WP[k][0], WP[k][1], c);
   mark('village', 'O'); mark('doso', 'J'); mark('tea', 'Q'); mark('cave', 'C'); mark('gate', 'G'); mark('town', 'K'); mark('gate2', 'G'); mark('town2', 'K');
-  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('warnW', 'I'); mark('warnS', 'I'); mark('warnF', 'I'); mark('castle', 'X'); mark('kago', 'K');
+  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('warnW', 'I'); mark('warnS', 'I'); mark('warnF', 'I'); mark('castle', 'X'); mark('kago', 'K'); mark('moro', 'O');
   for (const k of ['kumamoto', 'fukuoka', 'moji', 'karatsu', 'funai', 'tsushima', 'busan', 'jeju']) { const [x, y] = WP[k]; blob(x, y, 2, 2, '.', 3, ['~']); set(x, y, 'K'); }
   for (const [x, y] of [[135, 82], [137, 82], [134, 82], [138, 82]]) set(x, y, 'T');
   // 関所の両わきは山（すり抜け防止）
@@ -2645,6 +2673,11 @@ function renderField() {
     if (o.type === 'chest') cx.drawImage(TILE[G.opened[o.id] ? 'chestO' : 'chestC'][0], ox, oy);
     else if (o.type === 'sparkle') { const k = Math.floor(G.time * 6) % 4; cx.fillStyle = '#fff6c8'; const s = [1, 2, 3, 2][k]; cx.fillRect(ox + 8 - s, oy + 8, s * 2 - 1, 1); cx.fillRect(ox + 8 - 1 + 0.5, oy + 8 - s + 1, 1, s * 2 - 1); }
     else if (o.type === 'spring') { const t = TILE.spring; cx.drawImage(t[fr % t.length], ox, oy); }
+    else if (o.type === 'mirror') {   // 魔の鏡：黒い枠に紫のゆらめき
+      cx.fillStyle = '#2a1d16'; cx.fillRect(ox + 3, oy + 1, 10, 14); cx.fillStyle = '#c9a24e'; cx.fillRect(ox + 4, oy + 2, 8, 12);
+      const k = G.time * 2.5; for (let i = 0; i < 10; i++) { const v = 0.5 + 0.5 * Math.sin(k + i * 0.7); cx.fillStyle = 'rgb(' + (90 + v * 80 | 0) + ',' + (40 + v * 30 | 0) + ',' + (140 + v * 90 | 0) + ')'; cx.fillRect(ox + 5, oy + 3 + i, 6, 1); }
+      cx.fillStyle = 'rgba(255,255,255,0.6)'; cx.fillRect(ox + 6, oy + 4 + ((G.time * 4) % 8 | 0), 1, 2);
+    }
     else if (o.type === 'boss' && ESPR[o.spr]) { const im = ESPR[o.spr], sc = o.scale || 0.5, bw = im.width * sc, bh = im.height * sc; cx.drawImage(im, Math.round(ox + 8 - bw / 2), Math.round(oy + 16 - bh + Math.sin(G.time * 3) * 1), Math.round(bw), Math.round(bh)); }
   }
   const all = [...G.npcs, ...G.fol.slice().reverse(), G.pl].filter(m => m && m.visible);
@@ -2684,7 +2717,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '鉄吉': 'てつきち', '権太': 'ごんた', '巴': 'ともえ', 'お銀': 'おぎん', '博多': 'はかた', '筑前': 'ちくぜん', '鹿児島': 'かごしま', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -4067,19 +4100,21 @@ STORY.world = {
   warps: [
     { x: WP.village[0], y: WP.village[1], to: 'otsuka', tx: 13, ty: 22, dir: 'up', sfx: 'step' },
     { x: WP.tea[0], y: WP.tea[1], to: 'teahouse', tx: 5, ty: 5, dir: 'up' },
+    { x: WP.moro[0], y: WP.moro[1], to: 'morokata', tx: 8, ty: 12, dir: 'up', sfx: 'step' },
     { x: WP.cave[0], y: WP.cave[1], to: 'cave1', tx: 12, ty: 20, dir: 'up', sfx: 'stairs' },
   ],
   objects: [
     look(...WP.gate, ['豊後へ 通じる 関所だ。|門の すき間から 山の 向こうの|府内の 町の 屋根が 見える。||「妖怪 さわぎで 関は 閉じておる。|通行手形の ない者は 通せぬ！」']),
     look(...WP.gate2, ['肥後へ 通じる 関所だ。|門の 向こうには 人吉の 町が ある。||「この先は 肥後の 国。|手形なき者は 一歩も 通さぬ！」']),
     look(...WP.kago, ['鹿児島の 城下町だ。|門は かたく 閉ざされている。||「妖怪どもが 夜な夜な 出るゆえ|よそ者は 入れられぬ」']),
-    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村・豊後の関所|西南 峠の茶屋・霧島山|東 青島の渡し　西 妖の森』||『大淀川より 南 妖怪 強し|黒き 土に 踏み入るべからず』と|小さく 書き足してある。']),
+    look(...WP.doso, ['道祖神の 石碑だ。|『北 日向村・豊後の関所|西南 峠の茶屋・諸県村・霧島山|東 青島の渡し　西 妖の森』||『大淀川より 南 妖怪 強し|黒き 土に 踏み入るべからず』と|小さく 書き足してある。']),
     look(...WP.pine, async () => {
       if (G.opened.pine) { await say('浜の 大きな 一本松だ。'); return; }
       G.opened.pine = true; await say('松の 根もとに 何か うまっている……'); await getItem('reisui');
     }),
     look(...WP.temple, ['荒れはてた 寺だ。|扉には 太い かんぬきが かかり、|中から 低い 読経のような 声が する……||（今は 開けられない）']),
     look(...WP.shrine, ['沼の まん中の 古い 祠だ。|石の 扉に 札が 何枚も|貼りつけてある。||何かを 封じているようだ……']),
+    ...MIRRORS.filter(m => m.map === 'world' && m.has).map(m => ({ type: 'mirror', x: m.x, y: m.y, block: true, run: () => magicMirror(m) })),
     look(...WP.warnW, ['立て札だ。|『これより 西 薩摩|黒き 土に 強き 妖怪 群れなす|腕に 覚え なき者 立ち入るべからず』']),
     look(...WP.warnS, ['立て札だ。|『これより 南 大隅の 沼|大蝦蟇 出る　近づくべからず』']),
     look(...WP.warnF, ['立て札だ。|『これより 西 妖の森|一つ目小僧 出る　入るべからず』']),
@@ -4139,6 +4174,60 @@ async function tsuchigumoEvent() {
   await say('出口から 夜風が 吹きこんでくる。');
   SND.sfx('water');
   await say('土蜘蛛が ふさいでいた 岩の かげから|清らかな 水が わき出した。');
+}
+
+/* ---------------- 諸県村：左母二郎の取り立てに苦しむ村 ---------------- */
+STORY.morokata = {
+  edges: { s: { to: 'world', x: WP.moro[0], y: WP.moro[1] + 1, dir: 'down' } },
+  npcs: [
+    { id: 'osa', sprite: 'oldman', name: '村長', x: 6, y: 4, dir: 'down', talk: async () => {
+      if (flag('samojiroDone')) { await say('左母二郎が 討たれたと 聞いた。|浪人どもも 散り散りに 逃げていった。||これで ようやく 田に 種が まける。|ありがたい ことじゃ……', { name: '村長' }); return; }
+      await say('旅の お方か。|見てのとおり、この 村には|もう 米も 銭も 残って おらん。', { name: '村長' });
+      await say('霧島山に 左母二郎と いう 浪人が|陣取ってな。妖の 玉とやらを 手に してから|浪人や 山賊を 束ねるように なった。', { name: '村長' });
+      await say('年貢だと 言うて 米を 持っていき、|払えぬ 家からは 娘を 連れていく。||「仕官の 手土産に する」と|笑いながらじゃ……', { name: '村長' });
+      setFlag('moroTalk');
+    } },
+    { id: 'father', sprite: 'man1', name: '男', x: 4, y: 10, dir: 'up', talk: async () => {
+      if (flag('samojiroDone')) { await say('お里が……お里が 帰ってきた！|山の 牢に 閉じこめられて いたそうだ。||あんたらの おかげだ。|この 恩は 忘れねえ。', { name: '男' }); return; }
+      await say('娘の お里が 連れていかれた。|山の 洞窟に 牢が あって、|そこに 入れられて いるらしい。', { name: '男' });
+      await say('取り返しに 行った 若い衆は|だれも 戻って こなかった……', { name: '男' });
+    } },
+    { id: 'woman', sprite: 'woman1', name: '女', x: 12, y: 6, wander: true, radius: 2, talk: async () => {
+      if (flag('samojiroDone')) { await say('もう 夜に 戸を 叩かれる 心配も ないんだね。', { name: '女' }); return; }
+      await say('峠で 浪人に からまれた 娘を|若い 男が かばって くれたんだって。|娘は 逃げて こられたけど……', { name: '女' });
+      await say('その 男の 人は 浪人どもに|山へ 引きずられて いったそうだよ。', { name: '女' });
+    } },
+    { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2, talk: async () => {
+      if (flag('samojiroDone')) await say('今日は ひさしぶりに|白い ごはんが 食べられるんだ！', { name: '子ども' });
+      else await say('おなか すいた……|もう ずっと うすい おかゆ ばっかり。', { name: '子ども' });
+    } },
+    { id: 'collector', sprite: 'bandit', name: '浪人', x: 9, y: 6, dir: 'left', cond: () => !flag('samojiroDone') && !flag('moroRonin'), talk: async () => {
+      await say('なんだ きさま。|年貢の 取り立ての 邪魔を するなら|ただでは すまさんぞ！', { name: '浪人' });
+      const r = await fight(['ronin', 'sanzoku'], { intro: '取り立ての 浪人どもが おそいかかってきた！' });
+      if (r !== 'win') return;
+      setFlag('moroRonin'); const n = npc('collector'); if (n) n.visible = false; G.npcs = G.npcs.filter(x => x.id !== 'collector');
+      await say('お、おぼえて おれ！|左母二郎さまに 言いつけて やる！||浪人は 霧島山の 方へ 逃げていった。');
+    } },
+  ],
+  objects: [
+    look(3, 3, ['戸が かたく 閉ざされている。|中で だれかが 息を ひそめている……']),
+    look(16, 3, ['戸口に 「年貢 未納」と|墨で 書かれた 札が 貼ってある。']),
+    look(4, 9, ['戸の すき間から 空っぽの 米びつが 見える。']),
+    look(10, 6, ['井戸だ。|水だけは まだ たっぷり ある。']),
+    look(13, 11, ['お地蔵さまだ。|小さな 握り飯が 一つ 供えてある。']),
+  ],
+};
+
+/* ---------------- 魔の鏡：どこへ飛ばされるか分からない ---------------- */
+async function magicMirror(from) {
+  await say('古びた 鏡が 立っている。|鏡の 奥で 紫の 光が うずを 巻き、|見知らぬ 景色が ちらちらと 映る……');
+  const c = await ask('鏡に 手を ふれますか？'); if (c !== 0) return;
+  const to = pick(MIRRORS.filter(m => m !== from));
+  SND.sfx('dark'); G.whiteFlash = 0.35;
+  await say('鏡の 中へ 吸いこまれた！');
+  await warp(to.map, to.tx, to.ty, 'down', { sfx: 'shine' });
+  if (to.has) await say('ふりかえると、ここにも|同じ 鏡が 立っている。');
+  else await say('……あたりを 見回しても|鏡は どこにも ない。||（戻る 道は 自分で 探すしかない）');
 }
 
 /* ---------------- 霧島山 山頂 ---------------- */
