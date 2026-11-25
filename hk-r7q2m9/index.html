@@ -8,11 +8,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="里見八犬伝">
+<meta name="apple-mobile-web-app-title" content="さとはち">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<title>里見八犬伝</title>
+<title>さとはち</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Yuji+Syuku&display=swap" rel="stylesheet">
@@ -3935,7 +3935,7 @@ STORY.inn = {
 STORY.house1 = {
   warps: [{ x: 3, y: 5, to: 'otsuka', tx: 18, ty: 17, dir: 'down' }],
   npcs: [
-    { id: 'oji', sprite: 'oldman', name: 'じいさま', x: 3, y: 2, wander: true, radius: 1, talk: talk('じいさま', '伏姫さまの 話を 知っておるか。|姫の 数珠から 八つの 玉が|光って 飛んでいったそうじゃ。', 'その玉を 持って 生まれた 若者が|どこかに 八人 おるという……|まさかのう。') },
+    { id: 'oji', sprite: 'oldman', name: 'じいさま', x: 3, y: 2, wander: true, radius: 1, talk: talk('じいさま', '伏姫さまの 話を 知っておるか。|二十年前、姫の 数珠から 八つの 玉が|光って 飛んでいったそうじゃ。', '姫さまは 玉梓に さらわれ、|いまも 年を とらずに|どこかに 囚われて おるという……|まさかのう。') },
   ],
   objects: [chest('c_house1', 5, 3, { gold: 30 }), pot('pot_house1', 2, 4, 'yakusou'), look(5, 1, ['たんすの中は 着物で いっぱいだ。'])],
 };
@@ -4226,7 +4226,7 @@ const Title = (() => {
   async function show() {
     G.mode = 'title'; stage = 'title'; UI.clearAll(); G.fade = 0;
     dom = UI.el('div', 'title');
-    dom.innerHTML = '<div class="logo">里見八犬伝</div><div class="sub">第一章　村雨丸</div><div class="hint">画面を タップして ください</div><div class="foot">原作：曲亭馬琴『南総里見八犬伝』より</div>';
+    dom.innerHTML = '<div class="logo">さとはち</div><div class="sub">第一章　村雨丸</div><div class="hint">画面を タップして ください</div><div class="foot">原作：曲亭馬琴『南総里見八犬伝』より</div>';
     UI.root.appendChild(dom);
     SND.bgm('title');   // 音が出せる環境ならこの時点から鳴る
     await sleep(300); const wasRunning = SND.running();
@@ -4256,9 +4256,11 @@ const Title = (() => {
     const hint = UI.el('div', 'skiphint', 'メニューで とばす'); UI.root.appendChild(hint);
     const P = async (s, before) => { if (skipped) return; if (before) before(); await say(s, { cls: 'center', y: 150, onSkip: () => { skipped = true; } }); };
     await P('むかし、安房の国の 里見家は|悪女・玉梓の 怨みを かい、|末代まで たたると のろわれた。');
-    await P('里見の 姫・伏姫が 世を 去るとき、|首に かけた 数珠から|八つの 玉が 光を 放った。', () => { stage = 'beads'; t = 0; });
-    await P('仁・義・礼・智・忠・信・孝・悌――|文字の 浮かぶ 玉は|関東の 八方へ 飛び散った。', () => { orbs.t0 = t; stage = 'scatter'; SND.sfx('shine'); });
-    await P('その玉を 持って 生まれた 若者を|人は 八犬士と 呼ぶ。|そして いま、玉梓の 怨霊が よみがえる。', () => { stage = 'dark'; });
+    await P('二十年前。|里見の 姫・伏姫の 数珠から|八つの 玉が 光を 放った。', () => { stage = 'beads'; t = 0; });
+    await P('仁・義・礼・智・忠・信・孝・悌――|文字の 浮かぶ 玉は 関東に 生まれた|八人の 赤子に 宿った。', () => { orbs.t0 = t; stage = 'scatter'; SND.sfx('shine'); });
+    await P('その夜、玉梓は 伏姫を|次元の 牢に 封じこめ、|妖怪どもに 赤子を 襲わせた。', () => { stage = 'dark'; });
+    await P('血を 分けた 者たちは 赤子を 抱いて|関東を のがれ、|日本の 果てへ 散っていった。');
+    await P('それから 二十年――|日向の 国で 育った 若者・犬塚信乃は|まだ 何も 知らない。');
     hint.remove(); UI.hideMsg();
     await card('第一章', '村雨丸');
   }
