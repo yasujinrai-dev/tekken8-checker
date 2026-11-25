@@ -1919,6 +1919,7 @@ const LEGENDS = {
     '.': 'GRASS', ',': 'grass1', ';': 'grass2', '*': 'flower', '=': 'road', 'T': ['tree', 0], 'F': ['forest', 0],
     '~': ['water', 0], 'H': 'bridgeH', 'V': 'bridgeV', 'p': ['paddy', 0], '#': ['fence', 0], 'o': ['well', 0],
     's': ['sign', 0], 'j': ['jizo', 0], 'g': ['grave', 0], 'l': ['toro', 0], 't': 'torii', 'h': ['hokora', 0],
+    'M': ['mount', 0], 'f': ['pyre', 0],
     'R': ['ROOF_th', 0], 'K': ['ROOF_kw', 0], 'W': ['WALL', 0], 'D': 'doorPlain', 'I': 'doorItem', 'A': 'doorWeapon', 'N': 'doorInn', 'B': 'doorBig',
   },
   in: {
@@ -2034,6 +2035,19 @@ MAPS.morokata = { name: '諸県村', kind: 'out', bgm: 'village', rows: [
   'T...=====....j...,.T',
   'TT......=........TTT',
   'TTTTTTTT=TTTTTTTTTTT'] };
+
+MAPS.kakure_mae = { name: '岩山の奥', kind: 'out', bgm: 'night', rows: [
+  'MMMMMMMMMMMMMMMM',
+  'MMMMMMM..MMMMMMM',
+  'MMMMMMT==TMMMMMM',
+  'TTTTTT.==.TTTTTT',
+  'TT.....==.....TT',
+  'TT.,..........TT',
+  'TT.....f......TT',
+  'TT..*.......;.TT',
+  'TT............TT',
+  'TT............TT',
+  'TTTTTTTTTTTTTTTT'] };
 
 MAPS.teahouse = { name: '峠の茶屋', kind: 'in', bgm: 'village', rows: [
   'X#S#L##Y#SX',
@@ -2152,7 +2166,8 @@ const WP = {
 const MIRRORS = [
   { id: 'mori',    map: 'world', x: 142, y: 104, has: true,  tx: 142, ty: 105 },   // 日向の浜近くの森
   { id: 'satsuma', map: 'world', x: 90,  y: 103, has: true,  tx: 90,  ty: 104 },   // 薩摩の黒い土の奥
-  { id: 'numa',    map: 'world', x: 124, y: 121, has: true,  tx: 124, ty: 120 },   // 大隅の沼
+  { id: 'numa',    map: 'world', x: 124, y: 121, has: true,  tx: 124, ty: 120, dest: 'kakure' },   // 大隅の沼：いつも隠し村の前へ
+  { id: 'kakure',  map: 'kakure_mae', x: 7, y: 9, has: true, tx: 7, ty: 8, dest: 'numa', secret: true },   // 岩山の隠し村の前（帰りは大隅へ）
   { id: 'yami',    map: 'world', tx: 119, ty: 86 },                                // 妖の森のまん中
   { id: 'sat2',    map: 'world', tx: 88,  ty: 98 },                                // 薩摩の北
   { id: 'kago',    map: 'world', tx: 95,  ty: 110 },                               // 鹿児島の城下の手前
@@ -2717,7 +2732,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '鉄吉': 'てつきち', '権太': 'ごんた', '巴': 'ともえ', 'お銀': 'おぎん', '博多': 'はかた', '筑前': 'ちくぜん', '鹿児島': 'かごしま', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -4222,12 +4237,29 @@ STORY.morokata = {
 async function magicMirror(from) {
   await say('古びた 鏡が 立っている。|鏡の 奥で 紫の 光が うずを 巻き、|見知らぬ 景色が ちらちらと 映る……');
   const c = await ask('鏡に 手を ふれますか？'); if (c !== 0) return;
-  const to = pick(MIRRORS.filter(m => m !== from));
+  const to = from.dest ? MIRRORS.find(m => m.id === from.dest) : pick(MIRRORS.filter(m => m !== from && !m.secret));
   SND.sfx('dark'); G.whiteFlash = 0.35;
   await say('鏡の 中へ 吸いこまれた！');
   await warp(to.map, to.tx, to.ty, 'down', { sfx: 'shine' });
+  if (to.id === 'kakure') { await kakureOldman(); return; }
   if (to.has) await say('ふりかえると、ここにも|同じ 鏡が 立っている。');
   else await say('……あたりを 見回しても|鏡は どこにも ない。||（戻る 道は 自分で 探すしかない）');
+}
+
+/* ---------------- 岩山の隠し村の前：大隅の魔の鏡から来る ---------------- */
+STORY.kakure_mae = {
+  npcs: [{ id: 'takibi', sprite: 'traveler', name: '焚き火の老人', x: 8, y: 6, dir: 'left', talk: () => kakureOldman() }],
+  objects: [
+    ...MIRRORS.filter(m => m.map === 'kakure_mae').map(m => ({ type: 'mirror', x: m.x, y: m.y, block: true, run: () => magicMirror(m) })),
+    look(7, 1, ['岩山の 切れ目の 先に|村の 屋根が いくつか 見える。||木戸は かたく 閉ざされている。|（今は 入れない）']),
+    look(8, 1, ['岩山の 切れ目の 先に|村の 屋根が いくつか 見える。||木戸は かたく 閉ざされている。|（今は 入れない）']),
+  ],
+};
+async function kakureOldman() {
+  const n = npc('takibi'); if (n && G.pl) n.dir = n.x > G.pl.x ? 'left' : n.x < G.pl.x ? 'right' : n.y > G.pl.y ? 'up' : 'down';
+  await say('魔の 鏡に 入って しもうたかの。||誰が 作ったか、どこに 行くか|わからない 呪われた 鏡じゃ。', { name: '焚き火の老人' });
+  await say('ほれ、帰りは そこに あるがの。|こんなことは 稀じゃ。', { name: '焚き火の老人' });
+  await say('飛行の 術を 使えぬ 限り|足を 踏み入れては ならぬぞ。||そこで 人生 しまえるぞ。', { name: '焚き火の老人' });
 }
 
 /* ---------------- 霧島山 山頂 ---------------- */
