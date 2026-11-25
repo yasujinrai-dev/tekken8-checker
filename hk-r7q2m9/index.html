@@ -1824,7 +1824,12 @@ const ITEMS = {
   kou:       { name: '孝の玉', kind: 'key', desc: '「孝」の字が浮かぶ霊玉。信乃の玉' },
   gi:        { name: '義の玉', kind: 'key', desc: '「義」の字が浮かぶ霊玉。荘助の玉' },
   chu:       { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節の玉' },
-  rouKey:    { name: '牢の鍵', kind: 'key', desc: '山賊の頭が持っていた鍵束。洞窟の牢を開けられる' },
+  rouKey:    { name: '牢の合鍵', kind: 'key', desc: '権太親方が打ち直した鍵。洞窟の牢を開けられる' },
+  oreKagi:   { name: '折れた鍵', kind: 'key', desc: '山賊の頭が投げつけた牢の鍵。まん中で折れている' },
+  ono:       { name: '炭焼きの斧', kind: 'key', desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
+  sumidawara:{ name: '炭俵', kind: 'key', desc: '諸県村の炭焼きが焼いた炭。鍛冶に使う' },
+  zaru:      { name: 'ザル', kind: 'key', desc: '茶屋のおばばに借りたザル' },
+  satetsu:   { name: '砂鉄', kind: 'key', desc: '日向の浜ですくった黒い砂。玉鋼の材料になる' },
   inro:      { name: '網乾家の印籠', kind: 'key', desc: '網乾の家紋が入った印籠。左母二郎の落とし物' },
   kanzashi:  { name: '浜路の簪', kind: 'key', desc: '浜路が髪にさしていた簪' },
 };
@@ -2744,7 +2749,7 @@ const UI = (() => {
     '信乃': 'しの', '荘助': 'そうすけ', '額蔵': 'がくぞう', '道節': 'どうせつ', '浜路': 'はまじ', '権六': 'ごんろく', '亀篠': 'かめざさ',
     '左母二郎': 'さもじろう', '鉄吉': 'てつきち', '権太': 'ごんた', '巴': 'ともえ', 'お銀': 'おぎん', '博多': 'はかた', '筑前': 'ちくぜん', '鹿児島': 'かごしま', '網乾': 'あぼし', '玉梓': 'たまずさ', '与四郎': 'よしろう', '番作': 'ばんさく', '伏姫': 'ふせひめ',
     '犬川': 'いぬかわ', '犬山': 'いぬやま', '犬塚': 'いぬづか', '里見': 'さとみ', '安房': 'あわ', '古河': 'こが', '公方': 'くぼう',
-    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
+    '霧島山': 'きりしまやま', '日向村': 'ひゅうがむら', '諸県村': 'もろかたむら', '魔の鏡': 'まのかがみ', '炭俵': 'すみだわら', '砂鉄': 'さてつ', '玉鋼': 'たまはがね', '合鍵': 'あいかぎ', '炭焼き': 'すみやき', '焚き火': 'たきび', '稀': 'まれ', '年貢': 'ねんぐ', '大淀川': 'おおよどがわ', '日向': 'ひゅうが', '豊後': 'ぶんご', '肥後': 'ひご', '府内': 'ふない', '人吉': 'ひとよし', '青島': 'あおしま', '大隅': 'おおすみ', '薩摩': 'さつま', '村雨丸': 'むらさめまる', '村雨': 'むらさめ',
     '八犬士': 'はっけんし', '犬士': 'けんし', '土蜘蛛': 'つちぐも', '怨霊': 'おんりょう', '火遁': 'かとん', '長持': 'ながもち', '牢番': 'ろうばん',
     '番屋': 'ばんや', '河童': 'かっぱ', '鎌鼬': 'かまいたち', '大蝦蟇': 'おおがま', '提灯': 'ちょうちん', '唐傘': 'からかさ', '鬼火': 'おにび',
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
@@ -3655,7 +3660,7 @@ async function inn(price, o = {}) {
     if (G.gold < total) { await say('お代が たりないようですね。', { name: o.name }); return; }
     G.gold -= total; gp.redraw();
     await say('ごゆっくり おやすみなさいませ。', { name: o.name });
-    await fadeTo(1, 500); Pic.hide(); SND.stopBgm(); await SND.jingle('inn'); healAll(); G.lastInn = o.id || G.lastInn; await sleep(200);
+    await fadeTo(1, 500); Pic.hide(); SND.stopBgm(); await SND.jingle('inn'); healAll(); G.lastInn = o.id || G.lastInn; if (flag('kagiOrder')) setFlag('kagiInn'); await sleep(200);
     if (o.pic) await Pic.scene(o.pic[0], o.pic[1]);
     await fadeTo(0, 500); SND.bgm(G.map.def.bgm);
     await say('おはようございます。\nゆうべは よく お休みでしたね。|いってらっしゃいませ。', { name: o.name });
@@ -3899,6 +3904,7 @@ STORY.otsuka = {
       else await say('村の外には 妖怪が うろついておる。|傷ついたら 宿屋で 休むのじゃぞ。|道具屋の 薬草も 忘れずにな。', { name: '長老' });
     } },
     { id: 'fisher', sprite: 'man2', name: '釣り人', x: 23, y: 16, dir: 'right', talk: async () => {
+      if (flag('smithAsk') && !G.bag.satetsu && !flag('kagiOrder')) { await say('砂鉄？ 村の 東の 浜を 見てみな。|波打ち際の 砂が 黒く 光っとる。', { name: '釣り人' }); return; }
       await say('大淀川は 流れが 速い。|うっかり 落ちたら ひとたまりも ないぞ。', { name: '釣り人' });
       await say('それと な、|あの 橋を 越えると 妖怪どもが|ぐっと 手ごわくなる。||心して 渡るんだぞ。', { name: '釣り人' });
     } },
@@ -4022,6 +4028,16 @@ async function cellTalk() {
     }
   }
   if (G.bag.rouKey) return releaseSosuke();
+  if (G.bag.oreKagi || flag('kagiOrder')) {
+    if (!flag('gakuOre')) {
+      setFlag('gakuOre');
+      await say('鍵が 折れて しまいましたか……', { name: N.gakuzo });
+      await say('日向村の 鍛冶屋、権太親方なら|打ち直せるかも しれません。||あの方の 腕は 九州一と|権六さまも 申して おりました。', { name: N.gakuzo });
+      return;
+    }
+    await say('わたしは ここで 待って おります。|どうか 権太親方の ところへ。', { name: N.gakuzo });
+    return;
+  }
   await say('頭は 洞窟の 南西の 奥です。|どうか お気をつけて。', { name: N.gakuzo });
 }
 async function kashiraFight() {
@@ -4031,9 +4047,11 @@ async function kashiraFight() {
   if (r !== 'win') return;
   setFlag('kashira');
   G.npcs = G.npcs.filter(n => n.id !== 'kashira');
-  await say('山賊の頭は 鍵束を 落として|逃げていった。');
-  await getItem('rouKey', '牢の 鍵を 手に入れた！');
-  if (flag('cellTalk')) await say('（これで 額蔵を 出してやれる！）');
+  await say('山賊の頭は 鍵束を 投げつけて|逃げていった。');
+  SND.sfx('hit');
+  await say('鍵は 岩に あたって|まっぷたつに 折れてしまった！');
+  await getItem('oreKagi', '折れた 鍵を 手に入れた。');
+  if (flag('cellTalk')) await say('（これでは 牢が 開かない……|額蔵に 見せてみるか）');
   Save.auto();
 }
 async function releaseSosuke() {
@@ -4093,13 +4111,47 @@ STORY.item_shop = {
 };
 STORY.weapon_shop = {
   warps: [{ x: 4, y: 5, to: 'otsuka', tx: 19, ty: 10, dir: 'down' }],
-  npcs: [{ id: 'smith', sprite: 'man2', name: '鍛冶屋', x: 4, y: 1, talk: () => shop(['bokuto', 'wakizashi', 'rokushaku', 'kashibo', 'nuno', 'kawado'], { name: '鍛冶屋', hello: 'へい らっしゃい！ 鍛冶屋の 権太だ。|武器と 防具なら まかせとけ。', pic: ['bg_shop', 'p_smith'] }) }],
+  npcs: [{ id: 'smith', sprite: 'man2', name: '鍛冶屋', x: 4, y: 1, talk: async () => { if (await smithKagi()) return; return shop(['bokuto', 'wakizashi', 'rokushaku', 'kashibo', 'nuno', 'kawado'], { name: '鍛冶屋', hello: 'へい らっしゃい！ 鍛冶屋の 権太だ。|武器と 防具なら まかせとけ。', pic: ['bg_shop', 'p_smith'] }); } }],
   objects: [
     look(1, 1, ['炉の 火が ごうごうと 燃えている。']),
     // 弟子が作りかけの からくり（隠し仲間。中盤に戻ると、弟子は諦めて村はずれの草むらに捨てている）
     look(1, 3, ['木の 箱を いくつも 組み合わせた|へんてこな 人形が 置いてある。||ところどころ 釘が 飛び出して|ぜんまいが のぞいている。']),
   ],
 };
+/* 荘助の牢の合鍵：折れた鍵→炭（諸県村）と砂鉄（日向の浜）→日を置く→合鍵 */
+async function smithKagi() {
+  const G1 = { name: '権太' };
+  if (flag('kagiDone') || (!G.bag.oreKagi && !flag('kagiOrder'))) return false;
+  if (flag('kagiOrder')) {
+    if (flag('kagiInn') || G.steps - (G.flags.kagiStep || 0) >= 300) {
+      await say('おう、来たか。|ちょうど 打ち上がった ところだ。', G1);
+      await say('おいらも ふいごを 踏んだんだぜ！|三日 三晩、腕が 棒みたいだ。', { name: '鉄吉' });
+      setFlag('kagiDone');
+      await getItem('rouKey', '牢の 合鍵を 手に入れた！');
+      await say('これで 開かねえ 錠前は ねえ。|行ってこい。', G1);
+      Save.auto(); return true;
+    }
+    await say('まだだ。鋼が 落ち着くまで 待て。||ひと晩 宿で 寝てくるか、|そこらを ひと回り してこい。', G1);
+    return true;
+  }
+  if (!flag('smithAsk')) {
+    setFlag('smithAsk');
+    await say('なんだ、折れた 鍵か。|……ほう、こいつは からくり錠の 鍵だな。', G1);
+    await say('打ち直すには 玉鋼が いる。|だが 浪人どもが 炭を 止めやがってな、|炉に くべる 炭も ねえ。', G1);
+    await say('炭は 諸県村の 炭焼きに 頼め。|玉鋼は 砂鉄から 吹く。||砂鉄なら 日向の 浜の 黒い 砂だ。|ザルでも あれば すくえるだろう。', G1);
+    Save.auto(); return true;
+  }
+  if (G.bag.sumidawara && G.bag.satetsu) {
+    await say('おう、炭も 砂鉄も そろったな。|任せとけ。', G1);
+    removeItem('sumidawara'); removeItem('satetsu'); removeItem('oreKagi'); if (G.bag.zaru) removeItem('zaru');
+    setFlag('kagiOrder'); G.flags.kagiStep = G.steps;
+    await say('だが 鋼は 急いちゃ いけねえ。|打ち上がるまで 日を 置け。||ひと晩 宿で 寝てくるか、|そこらを ひと回り してこい。', G1);
+    Save.auto(); return true;
+  }
+  const need = [!G.bag.sumidawara && '諸県村の 炭', !G.bag.satetsu && '日向の 浜の 砂鉄'].filter(Boolean);
+  await say('まだ そろって ねえぞ。|' + need.join('と ') + 'だ。', G1);
+  return false;
+}
 // 鍛冶屋の弟子（からくりを作っている）
 STORY.weapon_shop.npcs.push({ id: 'deshi', sprite: 'man1', name: '弟子', x: 2, y: 4, dir: 'left', talk: async () => {
   await say('あっ、いらっしゃい！|おいら、権太親方の 弟子の 鉄吉。', { name: '鉄吉' });
@@ -4124,7 +4176,13 @@ STORY.house1 = {
 STORY.teahouse = {
   warps: [{ x: 5, y: 6, to: 'world', tx: WP.tea[0], ty: WP.tea[1] + 1, dir: 'down' }],
   npcs: [
-    { id: 'baba', sprite: 'kamezasa', name: '茶屋のおばば', x: 2, y: 1, talk: () => inn(8, { id: 'tea', name: '茶屋のおばば', hello: '峠の 茶屋へ ようこそ。', pic: ['bg_inn', 'p_baba'] }) },
+    { id: 'baba', sprite: 'kamezasa', name: '茶屋のおばば', x: 2, y: 1, talk: async () => {
+      if (flag('smithAsk') && !G.bag.zaru && !G.bag.satetsu && !flag('kagiOrder')) {
+        await say('砂鉄を すくう ザル？|ああ、豆を 洗う ザルなら あるよ。||古い ザルだ、持っていきな。', { name: '茶屋のおばば' });
+        await getItem('zaru', 'ザルを 借りた。');
+        return;
+      }
+      return inn(8, { id: 'tea', name: '茶屋のおばば', hello: '峠の 茶屋へ ようこそ。', pic: ['bg_inn', 'p_baba'] }); } },
     { id: 'peddler', sprite: 'merchant', name: '行商人', x: 7, y: 1, talk: () => shop(['yakusou', 'dokukeshi', 'reisui', 'hangontan', 'uchigatana', 'tetsubo', 'kusari'], { name: '行商人', hello: '旅の 行商人で ござる。|ちと 値は はるが 品は 確かだよ。' }) },
     { id: 'tabi', sprite: 'traveler', name: '旅人', x: 3, y: 4, wander: true, radius: 2, talk: async () => {
       if (!flag('sosuke')) {
@@ -4177,6 +4235,14 @@ STORY.world = {
     }),
     look(...WP.temple, ['荒れはてた 寺だ。|扉には 太い かんぬきが かかり、|中から 低い 読経のような 声が する……||（今は 開けられない）']),
     look(...WP.shrine, ['沼の まん中の 古い 祠だ。|石の 扉に 札が 何枚も|貼りつけてある。||何かを 封じているようだ……']),
+    look(152, 84, async () => {
+      if (flag('smithAsk') && !G.bag.satetsu && !flag('kagiOrder')) {
+        if (!G.bag.zaru) { await say('波打ち際の 砂が 黒く 光っている。|手で すくっても 指の 間から こぼれてしまう。'); return; }
+        await say('ザルで 黒い 砂を すくい、|波で 洗った。'); await getItem('satetsu', '砂鉄を 手に入れた！'); Save.auto(); return;
+      }
+      await say('日向の 浜だ。|寄せては 返す 波の 音が 心地よい。');
+    }),
+    { type: 'sparkle', x: 152, y: 84, cond: () => flag('smithAsk') && !G.bag.satetsu && !flag('kagiOrder') },
     ...MIRRORS.filter(m => m.map === 'world' && m.has).map(m => ({ type: 'mirror', x: m.x, y: m.y, block: true, run: () => magicMirror(m) })),
     look(...WP.warnW, ['立て札だ。|『これより 西 薩摩|黒き 土に 強き 妖怪 群れなす|腕に 覚え なき者 立ち入るべからず』']),
     look(...WP.warnS, ['立て札だ。|『これより 南 大隅の 沼|大蝦蟇 出る　近づくべからず』']),
@@ -4260,6 +4326,18 @@ STORY.morokata = {
       await say('峠で 浪人に からまれた 娘を|若い 男が かばって くれたんだって。|娘は 逃げて こられたけど……', { name: '女' });
       await say('その 男の 人は 浪人どもに|山へ 引きずられて いったそうだよ。', { name: '女' });
     } },
+    { id: 'sumiyaki', sprite: 'man2', name: '炭焼き', x: 17, y: 10, dir: 'left', talk: async () => {
+      const N1 = { name: '炭焼き' };
+      if (G.bag.sumidawara || flag('kagiOrder')) { await say('炭は 役に 立ったかい。', N1); return; }
+      if (G.bag.ono || flag('moroRonin')) {
+        await say('その 斧！ 浪人どもに|取り上げられて いた わしの 斧だ！', N1);
+        if (G.bag.ono) removeItem('ono');
+        await say('これで また 炭が 焼ける。|焼きためて おいた 分を 持っていきな。', N1);
+        await getItem('sumidawara', '炭俵を もらった！'); Save.auto(); return;
+      }
+      await say('炭焼き 一筋 三十年……|じゃが 斧を 浪人に 取り上げられて|木も 切れん。', N1);
+      await say('鍛冶屋も 炭が なくて|困っとるじゃろうに……', N1);
+    } },
     { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2, talk: async () => {
       if (flag('samojiroDone')) await say('今日は ひさしぶりに|白い ごはんが 食べられるんだ！', { name: '子ども' });
       else await say('おなか すいた……|もう ずっと うすい おかゆ ばっかり。', { name: '子ども' });
@@ -4268,6 +4346,7 @@ STORY.morokata = {
       await say('なんだ きさま。|年貢の 取り立ての 邪魔を するなら|ただでは すまさんぞ！', { name: '浪人' });
       const r = await fight(['ronin', 'sanzoku'], { intro: '取り立ての 浪人どもが おそいかかってきた！' });
       if (r !== 'win') return;
+      await getItem('ono', '浪人が 落とした 斧を 拾った。');
       setFlag('moroRonin'); const n = npc('collector'); if (n) n.visible = false; G.npcs = G.npcs.filter(x => x.id !== 'collector');
       await say('お、おぼえて おれ！|左母二郎さまに 言いつけて やる！||浪人は 霧島山の 方へ 逃げていった。');
     } },
@@ -4490,7 +4569,7 @@ function applySave(d) {
 function resetGame() {
   G.party = [newMember('shino', 1)]; G.party[0].w = 'bokuto'; G.party[0].a = 'nuno';
   G.party[0].hp = stat(G.party[0], 'hp');
-  G.bag = { kou: 1, yakusou: 2 }; G.gold = 20; G.flags = { dog: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
+  G.bag = { yakusou: 2 }; G.gold = 20; G.flags = { dog: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
 }
 
 /* ---------------- 題名・序章・結び ---------------- */
@@ -4602,7 +4681,8 @@ async function continueGame() {
   await fadeTo(1, 300);
   applySave(d);
   // 九州の地図に描き替える前の記録は、野原の位置が合わないので日向村の前から始める
-  if (d.flags && d.flags.samojiroDone && d.bag && !d.bag.kou) d.bag.kou = 1;   // 玉を取り返す話より前の記録
+  if (d.flags && d.flags.samojiroDone && d.bag && !d.bag.kou) d.bag.kou = 1;
+  if (d.flags && !d.flags.samojiroDone && d.bag && d.bag.kou) delete d.bag.kou;   // 孝の玉は左母二郎が持っている   // 玉を取り返す話より前の記録
   if (d.map === 'world' && d.wv !== 2) { d.x = WP.village[0]; d.y = WP.village[1] + 1; d.dir = 'down'; }
   G.mode = 'field'; loadMap(d.map, d.x, d.y, d.dir);
   await fadeTo(0, 400);
