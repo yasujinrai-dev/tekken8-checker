@@ -5593,11 +5593,25 @@ function applySave(d) {
   G.steps = d.steps || 0; G.playTime = d.playTime || 0; G.lastInn = d.lastInn || 'otsuka'; G.mayoke = d.mayoke || 0;
   for (const m of G.party) { m.bonus = m.bonus || { atk: 0, def: 0 }; m.sleep = 0; }
   for (const m of G.party) m.mp = Math.min(m.mp, stat(m, 'mp'));   // 気の上限が変わった古い記録
+  migrateCh1(d);
+}
+/* 2026-11-26 の筋の作り直し以前の記録を、新しい筋に合わせる
+   旧：霧島山の土蜘蛛で義の玉、山頂で道節が仲間になり玉梓戦で第一章が終わる
+   新：義の玉は国東の古寺の鵺、道節は後の章、第一章は門司の港で終わる */
+function migrateCh1(d) {
+  if (G.flags.v2) return;
+  G.flags.v2 = true;
+  const so = G.party.find(m => m.id === 'sosuke');
+  if (so && !G.flags.giBack) { delete so.cls; delete G.bag.gi; }
+  if (G.party.some(m => m.id === 'dosetsu')) { G.party = G.party.filter(m => m.id !== 'dosetsu'); delete G.bag.chu; }
+  if (G.flags.ch1 && !G.flags.nueDone) delete G.flags.ch1;
+  if (G.flags.samojiroDone) { G.flags.pyreOut = true; G.flags.purpleFire = false; }
+  for (const m of G.party) { m.hp = Math.min(m.hp, stat(m, 'hp')); m.mp = Math.min(m.mp, stat(m, 'mp')); }
 }
 function resetGame() {
   G.party = [newMember('shino', 1)]; G.party[0].w = 'bokuto'; G.party[0].a = 'nuno';
   G.party[0].hp = stat(G.party[0], 'hp');
-  G.bag = { yakusou: 2 }; G.gold = 20; G.flags = { dog: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
+  G.bag = { yakusou: 2 }; G.gold = 20; G.flags = { dog: true, v2: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
 }
 
 /* ---------------- 題名・序章・結び ---------------- */
