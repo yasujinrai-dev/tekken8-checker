@@ -5517,7 +5517,8 @@ async function chapter1End() {
 /* =====================================================================
    60 MAIN  記録・題名・操作盤・起動
    ===================================================================== */
-const TEST_NO_AUTOSAVE = true;   // 販売版では false に戻す
+const TEST_NO_AUTOSAVE = true;
+const TEST_START = true;         // テスト用：新しく始めると信乃はレベル10・1500文から。販売版では false に戻す   // 販売版では false に戻す
 const Save = (() => {
   const KEY = 'shinhakkenden.save.v1', PKEY = 'shinhakkenden.prefs';
   let cloud = null, cloudState = 'pending', cloudData = null, lastCloud = 0, cloudTimer = null;
@@ -5609,9 +5610,9 @@ function migrateCh1(d) {
   for (const m of G.party) { m.hp = Math.min(m.hp, stat(m, 'hp')); m.mp = Math.min(m.mp, stat(m, 'mp')); }
 }
 function resetGame() {
-  G.party = [newMember('shino', 1)]; G.party[0].w = 'bokuto'; G.party[0].a = 'nuno';
+  G.party = [newMember('shino', TEST_START ? 10 : 1)]; G.party[0].w = 'bokuto'; G.party[0].a = 'nuno';
   G.party[0].hp = stat(G.party[0], 'hp');
-  G.bag = { yakusou: 2 }; G.gold = 20; G.flags = { dog: true, v2: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
+  G.bag = { yakusou: 2 }; G.gold = TEST_START ? 1500 : 20; G.flags = { dog: true, v2: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
 }
 
 /* ---------------- 題名・序章・結び ---------------- */
