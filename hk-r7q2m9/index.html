@@ -4733,7 +4733,16 @@ STORY.world = {
       if (G.opened.pine) { await say('浜の 大きな 一本松だ。'); return; }
       G.opened.pine = true; await say('松の 根もとに 何か うまっている……'); await getItem('reisui');
     }),
-    look(...WP.temple, ['荒れはてた 寺だ。|扉には 太い かんぬきが かかり、|中から 低い 読経のような 声が する……||（今は 開けられない）']),
+    // お堂の中に隠れているのは弟子の大覚（名は明かさない）。北海道で会う師匠を連れて来て外から呼びかけてもらうと出てくる（後の章）
+    look(...WP.temple, async () => {
+      await say('荒れはてた お堂だ。|扉には 内側から 太い かんぬきが|かけられている。||中から 震える 読経の 声が する……');
+      if (!flag('daikakuVoice')) {
+        setFlag('daikakuVoice');
+        await say('……だ、誰じゃ！|妖怪か！ 妖怪じゃな！||開けぬぞ！ わしは|一歩も 出ぬからな！', { name: 'お堂の中の声' });
+        await say('お師匠さま……|早う 迎えに 来てくだされ……|南無…… 南無……', { name: 'お堂の中の声' });
+      } else await say('南無…… 南無……|お師匠さまの 声で なければ|この 扉は 開けぬ……', { name: 'お堂の中の声' });
+      await say('（今は 開けられない）');
+    }),
     look(...WP.shrine, ['沼の まん中の 古い 祠だ。|石の 扉に 札が 何枚も|貼りつけてある。||何かを 封じているようだ……']),
     look(152, 84, async () => {
       if (flag('smithAsk') && !G.bag.satetsu && !flag('kagiOrder')) {
