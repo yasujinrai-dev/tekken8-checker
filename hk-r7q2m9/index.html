@@ -2178,6 +2178,16 @@ MAPS.cave0 = { name: '霧島山 洞窟・地底', kind: 'cave', bgm: 'cave', row
   '#######...S...##',
   '#######.......##',
   '################'] };
+MAPS.neguro = { name: '山賊のねぐら', kind: 'cave', bgm: 'cave', enc: () => 'cave1', rows: [
+  '############',
+  '###......###',
+  '##..o..o..##',
+  '##........##',
+  '###..##..###',
+  '#..........#',
+  '#.##....##.#',
+  '#..........#',
+  '#####E######'] };
 MAPS.cave2 = { name: '霧島山 洞窟・上', kind: 'cave', bgm: 'cave', enc: () => 'cave2', rows: [
   '##########################',
   '############E#############',
@@ -2254,7 +2264,7 @@ const WP = {
   temple: [118, 85], shrine: [122, 116],
   warnW: [116, 107], warnS: [124, 108], warnF: [125, 84],          // 強い妖怪の立て看板（薩摩・大隅・妖の森の手前）                          // 妖の森の荒れ寺・大隅の沼の祠
   gate2: [98, 96], town2: [98, 91],                             // 肥後の関所・人吉の町
-  kago: [92, 110], moro: [121, 104],                               // 鹿児島の城下・諸県村（霧島山のふもと）                                                // 鹿児島の城下
+  kago: [92, 110], moro: [131, 106], neguro: [143, 103],                               // 鹿児島の城下・諸県村（霧島山のふもと）                                                // 鹿児島の城下
   kumamoto: [90, 72], fukuoka: [96, 46], moji: [118, 37], karatsu: [70, 44], funai: [140, 62],
   tsushima: [69, 18], busan: [50, 10], jeju: [18, 76],
 };
@@ -2354,7 +2364,8 @@ function buildWorldRows() {
   };
   road(136, 79, 136, 92);                                   // 関所から村をぬけて南へ
   road(136, 92, 124, 92); road(124, 92, 124, 99); road(124, 101, 124, 106);   // 辻から西へ、川を渡り峠を越える
-  road(124, 106, 115, 106); road(115, 106, 115, 104); road(115, 104, 113, 104); // 霧島山のふもとへ
+  road(124, 106, 115, 106); road(124, 106, 130, 106);        // 霧島山のふもと（洞窟は街道から外れた岩陰）・諸県村へ
+  for (const [x, y] of [[113, 104], [114, 104], [115, 104], [115, 105]]) set(x, y, 'h');
   road(136, 92, 136, 96); road(136, 96, 148, 96);           // 浜へ（青島の渡し）
   road(136, 73, 136, 77);                                   // 関所の向こう（行けない）
   road(115, 106, 101, 106); road(101, 106, 101, 99); road(101, 99, 98, 99); road(98, 99, 98, 97); road(98, 95, 98, 92);       // 薩摩へ、肥後の関所へ
@@ -2364,7 +2375,7 @@ function buildWorldRows() {
   // 目印
   const mark = (k, c) => set(WP[k][0], WP[k][1], c);
   mark('village', 'O'); mark('doso', 'J'); mark('tea', 'Q'); mark('cave', 'C'); mark('gate', 'G'); mark('town', 'K'); mark('gate2', 'G'); mark('town2', 'K');
-  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('warnW', 'I'); mark('warnS', 'I'); mark('warnF', 'I'); mark('castle', 'X'); mark('kago', 'K'); mark('moro', 'O');
+  mark('temple', 'R'); mark('shrine', 'S'); mark('pine', 'P'); mark('sign', 'I'); mark('warnW', 'I'); mark('warnS', 'I'); mark('warnF', 'I'); mark('castle', 'X'); mark('kago', 'K'); mark('moro', 'O'); mark('neguro', 'C');
   for (const k of ['kumamoto', 'fukuoka', 'moji', 'karatsu', 'funai', 'tsushima', 'busan', 'jeju']) { const [x, y] = WP[k]; blob(x, y, 2, 2, '.', 3, ['~']); set(x, y, 'K'); }
   for (const [x, y] of [[135, 82], [137, 82], [134, 82], [138, 82]]) set(x, y, 'T');
   // 関所の両わきは山（すり抜け防止）
@@ -2430,7 +2441,7 @@ function compileMap(id) {
         name = !isW(at(x - 1, y)) ? 'wallL' : !isW(at(x + 1, y)) ? 'wallR' : (x % 2 ? 'wallM' : 'wallP');
       } else if (name === 'CWALL') name = (at(x, y + 1) && at(x, y + 1) !== '#') ? 'cwallFace' : 'cwallTop';
       else if (name === 'CHEST') { chestCells.push([x, y]); name = def.chestBase || (def.kind === 'cave' ? 'cfloor' : def.kind === 'in' ? 'wood' : 'grass0'); }
-      if (STORY[id] && STORY[id].tile) { const t = STORY[id].tile(name, p); if (Array.isArray(t)) [name, p] = t; else name = t; }
+      if (STORY[id] && STORY[id].tile) { const t = STORY[id].tile(name, p, x, y); if (Array.isArray(t)) [name, p] = t; else name = t; }
       if (!TILE[name]) throw new Error(id + ' missing tile ' + name);
       tiles[y].push(name); pass[y].push(!!p);
     }
@@ -4185,7 +4196,8 @@ async function cellTalk() {
     SND.sfx('shine'); G.whiteFlash = 0.12;
     await say('（肩の 痣が 熱い……！|額蔵の 腕の 痣も かすかに 光っている）');
     if (!G.bag.rouKey) {
-      await say('牢の 鍵は 山賊の 頭が|持って おります。|洞窟の 南西の 奥に いるはず。||鍵さえ あれば わたしも|お供 いたします！', { name: N.gakuzo });
+      await say('牢の 鍵は 山賊の 頭が|持って おります。||ですが 頭は 別に ねぐらを 構えて、|ここへは 時おり 顔を 出すだけ。|どこに いるのかは わかりません。', { name: N.gakuzo });
+      await say('ふもとの 村の 者なら|山賊どもの 出入りを|見て いるかも しれません。||鍵さえ あれば わたしも|お供 いたします！', { name: N.gakuzo });
       Save.auto(); return;
     }
   }
@@ -4200,7 +4212,7 @@ async function cellTalk() {
     await say('わたしは ここで 待って おります。|どうか 権太親方の ところへ。', { name: N.gakuzo });
     return;
   }
-  await say('頭は 洞窟の 南西の 奥です。|どうか お気をつけて。', { name: N.gakuzo });
+  await say('頭の ねぐらは ふもとの 村で|たずねて みてください。|どうか お気をつけて。', { name: N.gakuzo });
 }
 async function kashiraFight() {
   await say('なんだ 小僧。|ここは 左母二郎の 旦那から|あずかった ねぐらよ。', { name: '山賊の頭' });
@@ -4351,6 +4363,7 @@ STORY.teahouse = {
         await say('額蔵？ ああ、ゆうべの あの男か。|浪人どもに からまれた 娘を かばって|大立ち回りを してな。', { name: '旅人' });
         await say('だが 多勢に 無勢。縄を かけられて|霧島山の ほうへ|引っ立てられて いったよ。', { name: '旅人' });
         await say('そういえば 霧島山の 頂で|浪人が 立派な 刀を|ふりまわして いたっけな。', { name: '旅人' });
+        await say('ねぐらの 入口？ さあな。|峠を 下りた 東の 村の 者なら|知っとるかも しれん。', { name: '旅人' });
         setFlag('gakuCave'); Save.auto(); return;
       }
       await say('霧島山の 洞窟の 奥に|大きな 土蜘蛛が いるそうだ。|あいつは 火に 弱いと 聞いたが……', { name: '旅人' });
@@ -4362,6 +4375,12 @@ STORY.teahouse = {
 
 /* ---------------- 日向の国（九州） ---------------- */
 STORY.world = {
+  // 洞窟と山賊のねぐらの入口は、話を聞くまで岩山・森にしか見えない
+  tile: (n, p, x, y) => {
+    if (n === 'fCave' && x === WP.cave[0] && y === WP.cave[1] && !flag('caveKnown') && !flag('caveIn')) return ['mount', 0];
+    if (n === 'fCave' && x === WP.neguro[0] && y === WP.neguro[1] && !flag('neguroKnown') && !flag('kashira')) return 'forest';
+    return n;
+  },
   // 隠し仲間・巴の顔見せ（今は仲間にならない。中盤に薩摩へ戻ると話が進む）
   npcs: [
     { id: 'tomoe', sprite: 'woman2', name: '女剣士', x: 97, y: 109, dir: 'down', talk: async () => {
@@ -4385,6 +4404,7 @@ STORY.world = {
     { x: WP.tea[0], y: WP.tea[1], to: 'teahouse', tx: 5, ty: 5, dir: 'up' },
     { x: WP.moro[0], y: WP.moro[1], to: 'morokata', tx: 8, ty: 12, dir: 'up', sfx: 'step' },
     { x: WP.cave[0], y: WP.cave[1], to: 'cave1', tx: 12, ty: 20, dir: 'up', sfx: 'stairs' },
+    { x: WP.neguro[0], y: WP.neguro[1], to: 'neguro', tx: 5, ty: 7, dir: 'up', sfx: 'stairs', cond: () => flag('neguroKnown') || flag('kashira') },
   ],
   objects: [
     look(...WP.gate, ['豊後へ 通じる 関所だ。|門の すき間から 山の 向こうの|府内の 町の 屋根が 見える。||「妖怪 さわぎで 関は 閉じておる。|通行手形の ない者は 通せぬ！」']),
@@ -4418,7 +4438,6 @@ STORY.cave1 = {
   tile: (n, p) => n === 'cboulder' && flag('rock') ? ['cfloor', 1] : n,
   npcs: [
     { id: 'cell', sprite: 'sosuke', name: '？？？', x: 20, y: 2, dir: 'down', cond: () => !flag('sosuke'), talk: cellTalk },
-    { id: 'kashira', sprite: 'bandit', name: '山賊の頭', x: 5, y: 14, dir: 'left', cond: () => !flag('kashira'), talk: kashiraFight },
   ],
   warps: [
     { x: 12, y: 21, to: 'world', tx: WP.cave[0] + 1, ty: WP.cave[1], dir: 'right', sfx: 'stairs' },
@@ -4439,6 +4458,11 @@ STORY.cave0 = {
   objects: [
     look(10, 8, async () => { SND.sfx('heal'); healAll(); G.whiteFlash = 0.15; await say('ふしぎな 泉だ。|水を すくって 飲むと 力が わいてきた！|（HPと 気が すべて 回復した）'); }),
   ],
+};
+STORY.neguro = {
+  npcs: [{ id: 'kashira', sprite: 'bandit', name: '山賊の頭', x: 5, y: 2, dir: 'down', cond: () => !flag('kashira'), talk: kashiraFight }],
+  warps: [{ x: 5, y: 8, to: 'world', tx: WP.neguro[0], ty: WP.neguro[1] + 1, dir: 'down', sfx: 'stairs' }],
+  objects: [look(4, 2, ['酒の 入った 甕だ。|ぷんと 酒の においが する。']), look(7, 2, ['奪った 米俵が|山と 積まれている。'])],
 };
 STORY.cave2 = {
   warps: [
@@ -4482,7 +4506,12 @@ STORY.morokata = {
       await say('旅の お方か。|見てのとおり、この 村には|もう 米も 銭も 残って おらん。', { name: '村長' });
       await say('霧島山に 左母二郎と いう 浪人が|陣取ってな。妖の 玉とやらを 手に してから|浪人や 山賊を 束ねるように なった。', { name: '村長' });
       await say('年貢だと 言うて 米を 持っていき、|払えぬ 家からは 娘を 連れていく。||「仕官の 手土産に する」と|笑いながらじゃ……', { name: '村長' });
-      setFlag('moroTalk');
+      await say('奴らの ねぐらの 洞窟は|霧島山の 南の ふもと。||街道から 少し 外れた|岩山の かげに 口を 開けて おる。', { name: '村長' });
+      setFlag('moroTalk'); setFlag('caveKnown');
+      if (flag('cellTalk') && !flag('kashira')) {
+        await say('山賊の 頭？ あやつなら|村の 東、海ぞいの 森の 奥に|小屋を 構えて おるそうな。||夜な夜な 酒を くらって おると 聞く。', { name: '村長' });
+        setFlag('neguroKnown');
+      }
     } },
     { id: 'father', sprite: 'man1', name: '男', x: 4, y: 10, dir: 'up', talk: async () => {
       if (flag('samojiroDone')) { await say('お里が……お里が 帰ってきた！|山の 牢に 閉じこめられて いたそうだ。||あんたらの おかげだ。|この 恩は 忘れねえ。', { name: '男' }); return; }
@@ -4923,7 +4952,7 @@ function testPreset() {
   if (t !== 'sosuke') return null;
   const m = newMember('shino', 6); m.w = 'uchigatana'; m.a = 'kawado'; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp');
   return { v: 1, wv: 2, map: 'world', x: WP.cave[0] + 1, y: WP.cave[1], dir: 'right', party: [m], gold: 300,
-    bag: { yakusou: 6, dokukeshi: 2, modorisuzu: 2 }, flags: { dog: true, opening: true, askGaku: true, askBanya: true, gakuCave: true },
+    bag: { yakusou: 6, dokukeshi: 2, modorisuzu: 2 }, flags: { dog: true, opening: true, askGaku: true, askBanya: true, gakuCave: true, caveKnown: true },
     opened: {}, steps: 0, playTime: 0, lastInn: 'otsuka', mayoke: 0 };
 }
 async function continueGame(dd) {
