@@ -2793,6 +2793,7 @@ async function afterStep() {
     const hit = tr.test ? tr.test(p.x, p.y) : tr.area ? (p.x >= tr.area[0] && p.y >= tr.area[1] && p.x <= tr.area[2] && p.y <= tr.area[3]) : (tr.x === p.x && tr.y === p.y);
     if (hit && (!tr.cond || tr.cond())) { G.path = null; await runEvent(tr.run); return; }
   }
+  { const S = STORY[G.mapId]; if (S && S.bgm && G.mode === 'field') SND.bgm(S.bgm()); }   // 場所で曲が変わる地図（別次元の切れ目など）
   const o = objAt(p.x, p.y); if (o && o.onStep) { G.path = null; await runEvent(o.onStep, o); return; }
   // 毒
   if (G.steps % 2 === 0) for (const m of G.party) if (m.hp > 0 && m.poison && m.hp > 1) { m.hp--; G.flash = 0.12; }
@@ -4868,6 +4869,7 @@ async function magicMirror(from) {
 
 /* ---------------- 岩山の隠し村の前：大隅の魔の鏡から来る ---------------- */
 STORY.kakure_mae = {
+  bgm: () => G.pl && G.pl.y <= 9 ? 'jigen' : 'night',   // 岩の切れ目に近づくと、別次元の町の曲に急に切り替わる
   // 壁の向こう＝伏姫の次元牢と同じ次元。人は年を取らず、善も悪もなく、人と妖怪とからくりが共に暮らす。
   // 後の章で入れる：からくりがデスマシーンになる品、大蛇丸・自来也がティエンルン・チンワセンになる技を覚えられる
   npcs: [{ id: 'takibi', sprite: 'traveler', name: '焚き火の老人', x: 8, y: 12, dir: 'left', talk: () => kakureOldman() },
