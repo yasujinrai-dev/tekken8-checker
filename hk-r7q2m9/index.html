@@ -1986,6 +1986,8 @@ const ENC = {
   // 今は用のない場所：強い妖怪が群れで出る（一人旅でも数を減らさない）
   yami:  { bg: 'forest', rate: 6, full: true, groups: [[3, ['hitotsume', 'hitotsume']], [3, ['ogama', 'kamaitachi']], [2, ['uramibi', 'uramibi', 'uramibi']], [1, ['ronin', 'hitotsume']]] },
   numa:  { bg: 'field', rate: 6, full: true, groups: [[3, ['ogama', 'ogama']], [3, ['kappa', 'kappa', 'uramibi']], [2, ['ogama', 'uramibi']]] },
+  neguro:  { bg: 'cave', rate: 9, groups: [[4, ['sanzoku', 'sanzoku']], [3, ['sanzoku', 'ronin']], [2, ['kamaitachi', 'sanzoku']], [2, ['tanuki', 'sanzoku']], [1, ['sanzoku', 'sanzoku', 'sanzoku']]] },
+  neguro2: { bg: 'cave', rate: 8, groups: [[3, ['ronin', 'sanzoku']], [2, ['ronin', 'ronin']], [2, ['sanzoku', 'sanzoku', 'kamaitachi']]] },
   cave2: { bg: 'cave', rate: 8, groups: [[3, ['ogama']], [3, ['hitotsume', 'uramibi']], [2, ['ronin', 'kamaitachi']], [2, ['uramibi', 'uramibi', 'uramibi']], [1, ['ogama', 'kamaitachi']], [1, ['hitotsume', 'hitotsume']]] },
 };
 
@@ -2178,16 +2180,53 @@ MAPS.cave0 = { name: '霧島山 洞窟・地底', kind: 'cave', bgm: 'cave', row
   '#######...S...##',
   '#######.......##',
   '################'] };
-MAPS.neguro = { name: '山賊のねぐら', kind: 'cave', bgm: 'cave', enc: () => 'cave1', rows: [
-  '############',
-  '###......###',
-  '##..o..o..##',
-  '##........##',
-  '###..##..###',
-  '#..........#',
-  '#.##....##.#',
-  '#..........#',
-  '#####E######'] };
+MAPS.neguro = { name: '山賊のねぐら・入口', kind: 'cave', bgm: 'cave', enc: (x, y) => y < 11 ? 'neguro' : null, rows: [
+  '######################',
+  '#....####......###.D.#',
+  '#.Z..####..o...###...#',
+  '#....####......###...#',
+  '##..#####..##........#',
+  '##..........#..#####.#',
+  '######..#####..#####.#',
+  '######..#####........#',
+  '######......######.###',
+  '########.....####..Z##',
+  '###########..#########',
+  '##########...#########',
+  '##########...#########',
+  '##########..o#########',
+  '##########...#########',
+  '###########E##########'] };
+MAPS.neguro2 = { name: '山賊のねぐら・中', kind: 'cave', bgm: 'cave', enc: () => 'neguro', rows: [
+  '######################',
+  '#D....######.....Z####',
+  '#.....######.......###',
+  '#..........#####...###',
+  '####..####.....#...###',
+  '####..####.###.#.#####',
+  '#Z....####.###...#####',
+  '#.....####.#######.U.#',
+  '##..######.#######...#',
+  '##..........b......###',
+  '###########.....######',
+  '###########..o..######',
+  '######################'] };
+MAPS.neguro3 = { name: '山賊のねぐら・奥', kind: 'cave', bgm: 'cave', enc: (x, y) => y > 9 ? 'neguro2' : null, rows: [
+  '##################',
+  '#####........#####',
+  '####..o....o..####',
+  '####..........####',
+  '#####..##..##.####',
+  '#Z...........#####',
+  '#....##....##....#',
+  '#..............Z.#',
+  '######..####..####',
+  '######..####..####',
+  '####..........####',
+  '####.b......b.####',
+  '####..........####',
+  '########U#########',
+  '##################'] };
 MAPS.cave2 = { name: '霧島山 洞窟・上', kind: 'cave', bgm: 'cave', enc: () => 'cave2', rows: [
   '##########################',
   '############E#############',
@@ -4378,7 +4417,6 @@ STORY.world = {
   // 洞窟と山賊のねぐらの入口は、話を聞くまで岩山・森にしか見えない
   tile: (n, p, x, y) => {
     if (n === 'fCave' && x === WP.cave[0] && y === WP.cave[1] && !flag('caveKnown') && !flag('caveIn')) return ['mount', 0];
-    if (n === 'fCave' && x === WP.neguro[0] && y === WP.neguro[1] && !flag('neguroKnown') && !flag('kashira')) return 'forest';
     return n;
   },
   // 隠し仲間・巴の顔見せ（今は仲間にならない。中盤に薩摩へ戻ると話が進む）
@@ -4404,7 +4442,7 @@ STORY.world = {
     { x: WP.tea[0], y: WP.tea[1], to: 'teahouse', tx: 5, ty: 5, dir: 'up' },
     { x: WP.moro[0], y: WP.moro[1], to: 'morokata', tx: 8, ty: 12, dir: 'up', sfx: 'step' },
     { x: WP.cave[0], y: WP.cave[1], to: 'cave1', tx: 12, ty: 20, dir: 'up', sfx: 'stairs' },
-    { x: WP.neguro[0], y: WP.neguro[1], to: 'neguro', tx: 5, ty: 7, dir: 'up', sfx: 'stairs', cond: () => flag('neguroKnown') || flag('kashira') },
+    { x: WP.neguro[0], y: WP.neguro[1], to: 'neguro', tx: 11, ty: 14, dir: 'up', sfx: 'stairs' },
   ],
   objects: [
     look(...WP.gate, ['豊後へ 通じる 関所だ。|門の すき間から 山の 向こうの|府内の 町の 屋根が 見える。||「妖怪 さわぎで 関は 閉じておる。|通行手形の ない者は 通せぬ！」']),
@@ -4460,9 +4498,62 @@ STORY.cave0 = {
   ],
 };
 STORY.neguro = {
-  npcs: [{ id: 'kashira', sprite: 'bandit', name: '山賊の頭', x: 5, y: 2, dir: 'down', cond: () => !flag('kashira'), talk: kashiraFight }],
-  warps: [{ x: 5, y: 8, to: 'world', tx: WP.neguro[0], ty: WP.neguro[1] + 1, dir: 'down', sfx: 'stairs' }],
-  objects: [look(4, 2, ['酒の 入った 甕だ。|ぷんと 酒の においが する。']), look(7, 2, ['奪った 米俵が|山と 積まれている。'])],
+  npcs: [
+    { id: 'kobun1', sprite: 'bandit', name: '子分', x: 11, y: 10, dir: 'down', cond: () => !flag('kobunDone'), talk: () => kobunFight() },
+    { id: 'kobun2', sprite: 'bandit', name: '子分', x: 12, y: 10, dir: 'down', cond: () => !flag('kobunDone'), talk: () => kobunFight() },
+  ],
+  warps: [
+    { x: 11, y: 15, to: 'world', tx: WP.neguro[0], ty: WP.neguro[1] + 1, dir: 'down', sfx: 'stairs' },
+    { x: 19, y: 1, to: 'neguro2', tx: 19, ty: 8, dir: 'down', sfx: 'stairs' },
+  ],
+  objects: [
+    chest('c_neg1a', 2, 2, { gold: 80 }),
+    chest('c_neg1b', 19, 9, { item: 'dokukeshi' }),
+    look(11, 2, ['酒の 入った 甕だ。|ぷんと 酒の においが する。']),
+    look(12, 13, ['水甕だ。|ふちが 欠けている。']),
+  ],
+  onEnter: async () => {
+    if (flag('kobunDone')) return;
+    if (!flag('cellTalk')) {
+      await say('おい、そこの 小僧！', { name: '子分' });
+      await say('ここは 山賊の ねぐらだ。|ガキの 来る 所じゃ ねえ。|とっとと 失せな！', { name: '子分' });
+      await say('子分たちに 突き飛ばされ、|ねぐらの 外へ 追い出された……');
+      await warp('world', WP.neguro[0], WP.neguro[1] + 1, 'down', { sfx: 'hit' });
+      return;
+    }
+    await kobunFight();
+  },
+};
+async function kobunFight() {
+  await say('また 来やがったな 小僧。|頭は 奥で 酒盛りの 最中だ。|通すわけには いかねえ！', { name: '子分' });
+  const r = await fight(['sanzoku', 'sanzoku', 'sanzoku'], { bg: 'cave', intro: '山賊の 子分どもが おそいかかってきた！' });
+  if (r !== 'win') return;
+  setFlag('kobunDone');
+  G.npcs = G.npcs.filter(n => n.id !== 'kobun1' && n.id !== 'kobun2');
+  await say('ひ、ひいっ！|頭ぁ！ 頭ぁ！||子分どもは ねぐらの 奥へ|逃げていった。');
+  Save.auto();
+}
+STORY.neguro2 = {
+  warps: [
+    { x: 19, y: 7, to: 'neguro', tx: 19, ty: 2, dir: 'down', sfx: 'stairs' },
+    { x: 1, y: 1, to: 'neguro3', tx: 8, ty: 12, dir: 'up', sfx: 'stairs' },
+  ],
+  objects: [
+    chest('c_neg2a', 17, 1, { item: 'hangontan' }),
+    chest('c_neg2b', 1, 6, { item: 'wakizashi' }),
+    look(13, 11, ['奪った 米俵が|山と 積まれている。']),
+    look(12, 9, ['だれかの 骨だ……|山賊に 逆らった 者だろうか。'], { block: false }),
+  ],
+};
+STORY.neguro3 = {
+  npcs: [{ id: 'kashira', sprite: 'bandit', name: '山賊の頭', x: 9, y: 2, dir: 'down', cond: () => !flag('kashira'), talk: kashiraFight }],
+  warps: [{ x: 8, y: 13, to: 'neguro2', tx: 2, ty: 1, dir: 'right', sfx: 'stairs' }],
+  objects: [
+    chest('c_neg3a', 1, 5, { item: 'mamori' }),
+    chest('c_neg3b', 15, 7, { gold: 150 }),
+    look(6, 2, ['酒の 入った 甕だ。|頭の 酒盛りの 残りらしい。']),
+    look(11, 2, ['分け前の 銭箱だ。|中は からっぽだ。']),
+  ],
 };
 STORY.cave2 = {
   warps: [
