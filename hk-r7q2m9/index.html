@@ -2823,6 +2823,7 @@ function loadMap(id, x, y, dir) {
   G.npcs = (S.npcs || []).filter(n => !n.cond || n.cond()).map(n => Object.assign(mkMover(n.sprite, n.x, n.y, n.dir || 'down'), { def: n, id: n.id, hx: n.x, hy: n.y, wt: 1 + rand() * 2 }));
   G.path = null; G.encSteps = 0;
   if (G.mode === 'field') SND.bgm(S.bgm ? S.bgm() : G.map.def.bgm);
+  G.tint = S.tint ? S.tint() : null;
   G.banner = { text: G.map.def.name, t: 2.2 };
 }
 const npc = id => G.npcs.find(n => n.id === id);
@@ -5881,15 +5882,251 @@ STORY.chugoku = {
     if (n === 'fTown' && CH2_TOWNS.some(k => CP[k][0] === x && CP[k][1] === y)) return ['fTown', 1];
     return n;
   },
-  warps: CH2_TOWNS.map(k => ({ x: CP[k][0], y: CP[k][1], to: k, tx: k === 'shimo' || k === 'aki' ? 8 : 8, ty: 12, dir: 'up', sfx: 'step' })),
+  warps: [
+    ...CH2_TOWNS.map(k => ({ x: CP[k][0], y: CP[k][1], to: k, tx: 8, ty: 12, dir: 'up', sfx: 'step' })),
+    ...Object.keys(CH2_VILLAGE).map(k => ({ x: CP[k][0], y: CP[k][1], to: 'v_' + k, tx: 8, ty: 12, dir: 'up', sfx: 'step' })),
+    { x: CP.tera[0], y: CP.tera[1], to: 'onitera1', tx: 8, ty: 11, dir: 'up', sfx: 'door', cond: async () => {
+      if (kontonLeft() === 0) return true;
+      await say('備中の 鬼封じの寺だ。|門の まわりに 黒い 気が|渦を 巻いている。||四つの 方角から 黒い 筋が|寺へ 流れこんでいる……||（今は 入れない）');
+      return false;
+    } },
+  ],
   objects: [
-    ...Object.entries(CH2_VILLAGE).map(([k, name]) => look(...CP[k], [name + 'だ。|村を 黒い 霧が 包んでいる。||霧の 奥から 低い うなり声が……||（今は 近づけない）'])),
-    look(...CP.tera, ['備中の 鬼封じの寺だ。|門は 固く 閉ざされ、|屋根の 上に 黒い 気が|立ちのぼっている……||（今は 入れない）']),
     look(...CP.harima, ['播磨へ 通じる 関所だ。|見えない 壁のような ものが|道を ふさいでいる……||（今は 通れない）']),
     look(...CP.doso, ['道祖神の 石碑だ。|『西 下関　東 周防・安芸|北 山越えて 石見』']),
   ],
   triggers: [],
 };
+
+
+/* ---------------- 第二章②：4つの村の混沌・鬼封じの寺・道節 ---------------- */
+// 混沌の絵は今ある妖怪の色違い（仮の絵）
+Object.assign(YOKAI_VAR, {
+  sanmoto: ['karo', 270, 1.2, 0.8], ushioni: ['tsuchigumo', 110, 1.1, 0.75], sarugami: ['mujina', 340, 1.4, 1.05], ura: ['hitotsume', 345, 1.5, 0.85], samojiro2: ['samojiro', 250, 1.3, 0.8],
+});
+Object.assign(EN_SKILLS, {
+  hyakki:   { name: '百鬼夜行', msg: '{e}が 扇を ひらくと、|百の 化け物が 行列を なして|おそいかかった！', kind: 'magic', target: 'all', pow: [13, 18], sfx: 'dark' },
+  sarunaki: { name: '猿叫', msg: '{e}は 耳を つんざく|叫び声を あげた！', kind: 'sleep', target: 'all', chance: 0.3, turns: 1, sfx: 'dark', verb: '耳を おさえて 動けない！' },
+  oninage:  { name: '鬼の大岩', msg: '{e}は 大岩を 持ち上げ、|{t}めがけて 投げつけた！', kind: 'phys', target: 'one', mult: 1.5, sfx: 'hurt' },
+  chuen:    { name: '忠の炎', msg: '{e}の 手の 玉から|青白い 炎が 噴き上がった！', kind: 'magic', elem: 'fire', target: 'all', pow: [15, 20], sfx: 'fire' },
+});
+Object.assign(ENEMIES, {
+  sanmoto:   { name: '山ン本五郎左衛門', spr: 'sanmoto', hp: 1200, atk: 56, def: 20, agi: 15, exp: 1300, gold: 700, boss: true, acts: 2, act: [[3, 'attack'], [2, 'hyakki'], [1, 'noroi'], [1, 'kyukon']] },
+  ushioni:   { name: '牛鬼', spr: 'ushioni', hp: 1550, atk: 62, def: 22, agi: 11, exp: 1400, gold: 700, boss: true, acts: 2, weak: ['fire'], act: [[3, 'attack'], [2, 'dokugiri'], [2, 'dokuga'], [1, 'sumo']] },
+  sarugami:  { name: '猿神', spr: 'sarugami', hp: 1650, atk: 65, def: 21, agi: 22, exp: 1500, gold: 750, boss: true, acts: 2, act: [[2, 'attack'], [3, 'renzan'], [1, 'sarunaki'], [2, 'iai']] },
+  ura:       { name: '温羅', spr: 'ura', hp: 1600, atk: 63, def: 22, agi: 14, exp: 1700, gold: 800, boss: true, acts: 2, weak: ['water'], act: [[4, 'attack'], [1, 'onnenhono'], [2, 'oninage']] },
+  samojiro2: { name: '網乾左母二郎', spr: 'samojiro2', hp: 1800, atk: 62, def: 22, agi: 17, exp: 2400, gold: 1000, boss: true, acts: 2, resist: ['fire'], act: [[3, 'attack'], [2, 'iaigiri'], [2, 'chuen'], [1, 'noroi']] },
+});
+Object.assign(ENC, {
+  onitera: { bg: 'cave', rate: 8, groups: [[3, ['oonyudo', 'akagumo']], [3, ['nobuseri', 'nobuseri']], [2, ['aoonibi', 'aoonibi', 'aoonibi']], [2, ['akagumo', 'akagumo']], [1, ['oonyudo', 'oonyudo']]] },
+});
+Object.assign(ITEMS, {
+  chu:     { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節の玉' },
+  kizuchi: { name: '魔王の木槌', kind: 'key', desc: '山ン本五郎左衛門が置いていった木槌。打てば魔王が来るという' },
+});
+Object.assign(N, { sanmoto: '山ン本五郎左衛門', ushioni: '牛鬼', sarugami: '猿神', ura: '温羅' });
+MEMBERS.dosetsu.clsDef = () => flag('chuBack') ? 1 : 0;   // 忠の玉は左母二郎に奪われていた
+
+const KONTON = ['bingo', 'hoki', 'mimasaka', 'bizen'];
+const kontonLeft = () => KONTON.filter(k => !flag('k_' + k)).length;
+// 4つの村：諸県村と同じ間取り。混沌に支配されているあいだは暗い霧に包まれ、夜の曲
+function chuVillage(key, o) {
+  const id = 'v_' + key, free = () => flag('k_' + key);
+  MAPS[id] = { name: o.name, kind: 'out', bgm: 'village', rows: MAPS.morokata.rows };
+  CH2_MAPS.add(id);
+  STORY[id] = {
+    edges: { s: { to: 'chugoku', x: CP[key][0], y: CP[key][1] + 1, dir: 'down' } },
+    bgm: () => free() ? 'village' : 'night',
+    tint: () => free() ? null : { c: 'rgba(70,50,90,0.6)' },
+    npcs: o.npcs.map(n => ({ ...n, talk: async () => { const t = free() ? n.after : n.before; for (const p of [].concat(t)) await say(p, { name: n.name }); if (n.extra) await n.extra(); } })),
+    objects: [
+      { type: 'boss', spr: o.boss, x: 10, y: 8, scale: 0.4, block: true, cond: () => !free(), run: async () => { await o.event(); } },
+      look(10, 6, ['井戸だ。']),
+    ],
+    onEnter: async () => { if (!free() && !flag('see_' + key)) { setFlag('see_' + key); for (const p of [].concat(o.enter)) await say(p); } },
+  };
+}
+async function kontonFight(key, bossId, intro, lastWords) {
+  const r = await fight([bossId], { boss: true, bg: 'field', intro, winText: N[bossId] + 'を うちたおした！' });
+  if (r !== 'win') return false;
+  for (const p of [].concat(lastWords)) await say(p, { name: N[bossId] });
+  SND.sfx('shine'); G.whiteFlash = 0.35;
+  await say(N[bossId] + 'の 体は 黒い 煙と なって|ちぎれ、西の 空へ 吸いこまれて いった……');
+  setFlag('k_' + key);
+  G.tint = null; SND.bgm('village');
+  await say('村を 包んで いた 霧が 晴れていく！');
+  const n = kontonLeft();
+  if (n > 0) await say('（混沌は あと ' + n + '匹……）');
+  else { SND.sfx('dark'); await say('……遠く 備中の 方角で、|何かが 割れるような 音が した。||鬼封じの寺の 黒い 気が|ゆらいでいる……'); }
+  Save.auto();
+  return true;
+}
+
+chuVillage('bingo', {
+  name: '備後の村', boss: 'sanmoto',
+  enter: ['村は 昼なのに 夜のように 暗い。|家々の 戸は 固く 閉ざされている……'],
+  npcs: [
+    { id: 'osa', sprite: 'oldman', name: '村長', x: 6, y: 4, dir: 'down',
+      before: ['ひ、人か……？|化け物では あるまいな。', 'ひと月ほど 前から、夜ごと|家の 中に 化け物が 出るのじゃ。||天井から 大首が 下がり、|畳が 波打ち、行灯が 歩く……', '広場に 居すわって おるのは|山ン本五郎左衛門と 名乗る 魔王。||西の 寺の 坊主に 呼ばれた と|言うておった……'],
+      after: ['魔王が 去って、ようやく|夜に 眠れるように なった。||あの 寺で 何が 起きて おるのか……|どうか 確かめて くだされ。'] },
+    { id: 'father', sprite: 'man1', name: '男', x: 4, y: 10, dir: 'up',
+      before: ['昔、この 備後に 稲生の 若様と いう|お方が おってな。||三十日の あいだ 化け物に 囲まれても|眉ひとつ 動かさなかった そうだ。', 'あの 魔王は、怖がる 者ほど|おもしろがる。||おれたちには とても 無理だ……'],
+      after: ['魔王は 最後に、木槌を 置いて いったよ。|打てば いつでも 来る と 言ってな。|……だれが 打つもんか。'] },
+    { id: 'woman', sprite: 'woman1', name: '女', x: 12, y: 6, wander: true, radius: 1,
+      before: ['白装束の 行者さんが 来たのよ。|魔王に 斬りかかったけど、|「玉が あれば……」と くやしそうに|東へ 行って しまったわ。'],
+      after: ['あの 行者さん、無事かしら……|網乾とかいう 男を 追って いたわ。'] },
+    { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2,
+      before: ['ゆうべ ぼくの 枕もとに|大きな 顔が 出たんだ……'], after: ['もう 天井から 顔が 出てこないよ！'] },
+  ],
+  event: async () => {
+    await say('ほう……わしを 見ても 逃げぬか。||わしは 山ン本五郎左衛門。|魔王である。', { name: N.sanmoto });
+    await say('長い あいだ 壺の 中で|退屈して おったのよ。||網乾とやらに 出して もらった 礼に、|この 村で 遊んで おったまで。', { name: N.sanmoto });
+    await say('さて、そなたらは どこまで|怖がらずに いられるかな？', { name: N.sanmoto });
+    if (await kontonFight('bingo', 'sanmoto', '山ン本五郎左衛門が 扇を ひらいた！', ['見事……見事じゃ。|稲生の 小僧 以来の 胆力よ。', 'わしは 壺へ 帰るとしよう。|この 木槌を くれてやる。|打てば いつでも 遊びに 来て やるぞ。'])) {
+      await getItem('kizuchi', '魔王の木槌を 手に入れた！');
+    }
+  },
+});
+chuVillage('hoki', {
+  name: '伯耆の村', boss: 'ushioni',
+  enter: ['生ぐさい 霧が 村を おおっている。|井戸の 水が 黒く にごっている……'],
+  npcs: [
+    { id: 'osa', sprite: 'oldman', name: '村長', x: 6, y: 4, dir: 'down',
+      before: ['大山の ふもとの この 村に|牛鬼が 居すわって しもうた。||牛の 頭に 蜘蛛の 体……|吐く 息は 毒じゃ。', '井戸も 田も 毒で やられた。|このままでは 村は 死に絶える……'],
+      after: ['井戸の 水が 澄んできた！|大山の 神さまの おかげじゃ……||いや、あんたがたの おかげじゃな。'] },
+    { id: 'father', sprite: 'man2', name: '男', x: 4, y: 10, dir: 'up',
+      before: ['牛鬼は 火を 嫌うと 聞くが、|この 霧では 火も つかん。'], after: ['毒消しの 草を 摘んでおいた。|旅に 持っていけ。'],
+      extra: async () => { if (flag('k_hoki') && !flag('hokiGift')) { setFlag('hokiGift'); addItem('dokukeshi', 3); SND.sfx('item'); await say('毒消しを 3つ もらった！'); } } },
+    { id: 'woman', sprite: 'woman2', name: '女', x: 12, y: 6, wander: true, radius: 1,
+      before: ['白装束の 行者さまが 火の 術で|牛鬼を 焼こうと したの。||でも 炎が 弱くて……|「玉さえ 取り返せば」と。'],
+      after: ['行者さまは 東の 寺の 方へ|行ったわ。'] },
+    { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2,
+      before: ['おなか いたい……|お水 のんだら いたいの……'], after: ['もう おなか いたくない！'] },
+  ],
+  event: async () => {
+    SND.sfx('dark');
+    await say('ブモォォォ……！||牛の 頭が こちらを 向き、|八本の 足が ぎしぎしと 動いた！');
+    await kontonFight('hoki', 'ushioni', '牛鬼が 毒の 息を 吐きながら|せまってきた！', ['ブモ……ォ……|あの 坊主ども……また……|封じ……る……か……']);
+  },
+});
+chuVillage('mimasaka', {
+  name: '美作の村', boss: 'sarugami',
+  enter: ['村の 広場に 白木の 輿が 置かれ、|まわりを 大猿が 取り囲んでいる……'],
+  npcs: [
+    { id: 'osa', sprite: 'oldman', name: '庄屋', x: 6, y: 4, dir: 'down',
+      before: ['あの 猿神は、毎年 村の 娘を|一人 生贄に 出せと 言う。||出さねば 田畑を 荒らし、|家を 焼くのだ。', '今年 選ばれたのは……わしの 娘じゃ。|今夜、輿に 乗せねば ならん……'],
+      after: ['娘が……娘が 帰ってきた！|この 恩は 一生 忘れませぬ。'] },
+    { id: 'musume', sprite: 'woman1', name: '庄屋の娘', x: 12, y: 6, dir: 'down',
+      before: ['わたしが 行けば 村は 助かるの。|だから……いいの。'],
+      after: ['ありがとう ございました。|もう 生贄なんて いらないのね……'] },
+    { id: 'father', sprite: 'man1', name: '男', x: 4, y: 10, dir: 'up',
+      before: ['猿神は とにかく 素早い。|気づいた ときには 二度 斬られてる。'], after: ['猿どもも 山へ 逃げていったよ。'] },
+    { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2,
+      before: ['お姉ちゃん、どこかへ 行っちゃうの？'], after: ['お姉ちゃんが 帰ってきた！'] },
+  ],
+  event: async () => {
+    await say('キキッ……今年の 娘は まだか。|待ちくたびれたぞ。', { name: N.sarugami });
+    await say('娘は 渡さん！');
+    await say('ほう……ならば 娘の 代わりに|おぬしらを 喰らうまでよ！', { name: N.sarugami });
+    await kontonFight('mimasaka', 'sarugami', '猿神が 木の 上から 飛びかかってきた！', ['ギ……ギィ……|網乾の 小僧め……|話が ちがう……ではないか……']);
+  },
+});
+chuVillage('bizen', {
+  name: '備前の村', boss: 'ura',
+  enter: ['村の 向こうの 山に、|赤く 燃える 城が 見える……'],
+  npcs: [
+    { id: 'osa', sprite: 'oldman', name: '村長', x: 6, y: 4, dir: 'down',
+      before: ['温羅じゃ……|昔 吉備の 国を 荒らした 鬼の 王が|よみがえったのじゃ。', '昔話では、温羅は 高僧たちに|封じられ、寺の 壺に 納められた と|いう。||それが なぜ……'],
+      after: ['温羅が 消えて、山の 城の 火も|消えた。||これで 刀鍛冶も 仕事に 戻れる。'] },
+    { id: 'kaji', sprite: 'man2', name: '刀鍛冶', x: 4, y: 10, dir: 'up',
+      before: ['備前の 刀鍛冶も、鬼に 炉を|奪われちゃ 何も 打てねえ。||温羅は 水を 嫌うって 話だが……'],
+      after: ['炉に 火が 戻った。|そのうち 備前の 名刀を 見せて やるよ。'] },
+    { id: 'woman', sprite: 'woman2', name: '女', x: 12, y: 6, wander: true, radius: 1,
+      before: ['白装束の 行者さんが、|「鬼封じの寺に 網乾が いる」って|言ってたわ。||四匹の 化け物が 消えれば、|寺の 守りも 解ける はずだと……'],
+      after: ['寺へ 行くの？|気をつけてね。'] },
+    { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2,
+      before: ['鬼が 岩を 投げてくるんだ！'], after: ['もう 岩は 飛んでこない！'] },
+  ],
+  event: async () => {
+    SND.sfx('dark'); G.shake = 0.4;
+    await say('人間か……|この 温羅に 刃を 向けるとは。', { name: N.ura });
+    await say('わしを 封じた 坊主どもは もう おらぬ。|壺を 開けた 網乾には 借りが あるが、|おぬしらに 恨みは ない。||……だが、邪魔を するなら 喰らうまで！', { name: N.ura });
+    await kontonFight('bizen', 'ura', '温羅が 大岩を 担いで 立ちはだかった！', ['ぐ……ふ……|網乾……あやつは 玉の 力に|酔って おる……||あの 男は、いずれ……|自分の 火に 焼かれる……ぞ……']);
+  },
+});
+
+/* 備中・鬼封じの寺：本堂（妖怪が出る）→ 奥の院（左母二郎） */
+MAPS.onitera1 = { name: '鬼封じの寺・本堂', kind: 'in', bgm: 'cave', enc: () => 'onitera', rows: MAPS.kodera1.rows };
+MAPS.onitera2 = { name: '鬼封じの寺・奥の院', kind: 'in', bgm: 'cave', rows: MAPS.kodera3.rows };
+CH2_MAPS.add('onitera1'); CH2_MAPS.add('onitera2');
+STORY.onitera1 = {
+  warps: [{ x: 8, y: 12, to: 'chugoku', tx: CP.tera[0], ty: CP.tera[1] + 1, dir: 'down', sfx: 'door' }, { x: 14, y: 7, to: 'onitera2', tx: 6, ty: 7, dir: 'up', sfx: 'stairs' }],
+  objects: [
+    chest('c_oni1a', 2, 7, { item: 'hangontan' }),
+    look(8, 1, ['四つの 台座が 並んでいる。|どの 台座の 上の 封じの 札も|破られて いる……||ここに 壺が 置かれていたのだ。']),
+    look(14, 6, ['奥の院へ 降りる 階段だ。|下から 青白い 光が もれてくる……'], { block: false }),
+  ],
+  onEnter: async () => { if (!flag('oniteraIn')) { setFlag('oniteraIn'); await say('本堂は 荒れはて、|ほこりの 上に 新しい 足あとが|奥へ 続いている……'); } },
+};
+STORY.onitera2 = {
+  warps: [{ x: 6, y: 8, to: 'onitera1', tx: 14, ty: 8, dir: 'down', sfx: 'stairs' }],
+  npcs: [{ id: 'samo', sprite: 'samojiro', name: N.samo, x: 6, y: 2, dir: 'down', cond: () => !flag('samo2Done') }],
+  objects: [look(6, 1, async () => { await say(flag('samo2Done') ? 'からっぽの 祭壇だ。|割れた 壺の かけらが 散らばっている。' : '祭壇の 上で、割れた 壺が|青白く 光っている……'); })],
+  triggers: [{ area: [1, 4, 11, 7], cond: () => !flag('samo2Done'), run: samojiro2Event }],
+};
+async function samojiro2Event() {
+  await say('……ようやく 来たか、犬ども。|待ちくたびれたぞ。', { name: N.samo });
+  await say('左母二郎！|寺で 何を していた！');
+  await say('改心して 仏門に 入ったのよ。|ありがたい 寺で、ありがたい 壺を|見つけてな。', { name: N.samo });
+  await say('……ふふ、うそじゃ。||玉を 取られて ただの 浪人に|戻った わしが、行者から 奪った|この 玉よ！', { name: N.samo });
+  SND.sfx('fire'); G.whiteFlash = 0.3;
+  await say('左母二郎の 手の中で、『忠』の 字が|浮かぶ 玉が 青白く 燃えあがった！');
+  await say('この 火で 壺の 封を 焼き切り、|四匹の 混沌を 手下に したのよ。||それを ことごとく 倒すとは……|やはり 犬は 犬同士 群れるか！', { name: N.samo });
+  await say('玉が 二つも あればと 言うたな。|一つで 十分 よ！', { name: N.samo });
+  const r = await fight(['samojiro2'], { boss: true, bg: 'cave', intro: '左母二郎が 青白い 炎を まとって|おそいかかってきた！', winText: '左母二郎を うちやぶった！' });
+  if (r !== 'win') return;
+  await say('ぐっ……ま、まだだ……|まだ 終わらんぞ……！', { name: N.samo });
+  await walkNpc('samo', ['down', 'down'], 0.3);
+  SND.sfx('door');
+  await say('待て、網乾 左母二郎！', { name: '白装束の男' });
+  await say('階段から 白装束の 男が|駆け上がってきた！');
+  { const s = npc('samo'); const d = Object.assign(mkMover('dosetsu', 8, 6, 'left'), { id: 'dosetsu', def: {}, hx: 8, hy: 6, wt: 1 }); G.npcs.push(d); }
+  await say('き、きさまは……|あの 行者……！', { name: N.samo });
+  await say('わが 玉、わが 忠義、|もはや 許さん！', { name: N.dosetsu });
+  SND.sfx('crit'); G.whiteFlash = 0.5; G.shake = 0.5;
+  await say('一閃！||左母二郎は 声も なく|その場に 崩れ落ちた……');
+  { const s = npc('samo'); if (s) s.visible = false; G.npcs = G.npcs.filter(n => n.id !== 'samo'); }
+  setFlag('samo2Done');
+  await say('……九州で 浜路どのを 救った|犬塚信乃どのと お見受けする。', { name: N.dosetsu });
+  await say('それがしは 犬山道節。|この 男に 忠の 玉を 奪われ、|ここまで 追って まいった。', { name: N.dosetsu });
+  await say('四匹の 混沌を 倒したのは|貴殿らで あろう。||玉なき それがしには、|あやつらに 太刀打ち できなんだ。', { name: N.dosetsu });
+  await say('道節どの……！|では、あなたも 玉の 剣士！');
+  setFlag('chuBack');
+  const lv = Math.round(G.party.reduce((s, m) => s + m.lv, 0) / G.party.length);
+  joinParty('dosetsu', lv);
+  await regainBead('dosetsu', 'chu', '道節が 床の 玉を 拾うと、|『忠』の 字が 赤く 輝いた！', 'この 火こそ、わが 火遁の 源。|……礼を 言う。', N.dosetsu);
+  G.npcs = G.npcs.filter(n => n.id !== 'dosetsu');
+  SND.stopBgm(); await SND.jingle('join'); SND.bgm('cave');
+  await say('道節が 仲間に なった！');
+  await say('玉を 狙って 妖怪どもが|ますます 集まって こよう。||それがしも 同行 いたす。', { name: N.dosetsu });
+  await benchPick();
+  Save.auto();
+}
+// 仲間が5人以上になったら、連れていく4人を選ぶ（外れた仲間は先に行く）
+async function benchPick() {
+  while (G.party.length > 4) {
+    await say('連れて 行けるのは 4人までだ。|ひと足 先に 行く 仲間を|えらんでください。');
+    const c = await UI.choose(G.party.map(m => ({ label: mName(m), right: 'Lv' + m.lv })), { x: 60, y: 50, w: 140, cancel: false, start: G.party.length - 1 });
+    const m = G.party[c];
+    if (!m) continue;
+    if (m.id === 'shino') { await say('信乃は 外せない。'); continue; }
+    const k = await ask(mName(m) + 'を 先に 行かせますか？', ['はい', 'いいえ']);
+    if (k !== 0) continue;
+    G.party.splice(c, 1); (G.reserve || (G.reserve = [])).push(m); refreshFollowers();
+    await say(mName(m) + 'は ひと足 先に|旅立って いった。');
+    await say('では 先で 待っている。|噂を 聞いたら 追いついて こい。', { name: mName(m) });
+  }
+}
 
 /* =====================================================================
    60 MAIN  記録・題名・操作盤・起動
@@ -5902,7 +6139,7 @@ const Save = (() => {
   const waiters = [];
   function data() {
     return { v: 1, wv: 2, t: Date.now(), map: G.mapId, x: G.pl.x, y: G.pl.y, dir: G.pl.dir, party: G.party.map(({ _hit, sleep, ...m }) => m), bag: G.bag, gold: G.gold,
-      flags: G.flags, opened: G.opened, steps: G.steps, playTime: Math.floor(G.playTime), lastInn: G.lastInn, mayoke: G.mayoke };
+      flags: G.flags, opened: G.opened, steps: G.steps, playTime: Math.floor(G.playTime), lastInn: G.lastInn, mayoke: G.mayoke, reserve: G.reserve || [] };
   }
   let slot = 1; const keyOf = n => n === 1 ? KEY : KEY + '.s' + n;   // 記録の枠は3つ（1枠目はこれまでの記録）
   function local(n = slot) { try { const s = localStorage.getItem(keyOf(n)); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
@@ -5968,7 +6205,7 @@ async function chooseSlot(title, o = {}) {
 }
 function applySave(d) {
   G.party = d.party; G.bag = d.bag || {}; G.gold = d.gold || 0; G.flags = d.flags || {}; G.opened = d.opened || {};
-  G.steps = d.steps || 0; G.playTime = d.playTime || 0; G.lastInn = d.lastInn || 'otsuka'; G.mayoke = d.mayoke || 0;
+  G.steps = d.steps || 0; G.playTime = d.playTime || 0; G.lastInn = d.lastInn || 'otsuka'; G.mayoke = d.mayoke || 0; G.reserve = d.reserve || [];
   for (const m of G.party) { m.bonus = m.bonus || { atk: 0, def: 0 }; m.sleep = 0; }
   for (const m of G.party) m.mp = Math.min(m.mp, stat(m, 'mp'));   // 気の上限が変わった古い記録
   migrateCh1(d);
@@ -5989,7 +6226,7 @@ function migrateCh1(d) {
 function resetGame() {
   G.party = [newMember('shino', TEST_START ? 10 : 1)]; G.party[0].w = 'bokuto'; G.party[0].a = 'nuno';
   G.party[0].hp = stat(G.party[0], 'hp');
-  G.bag = { yakusou: 2 }; G.gold = TEST_START ? 1500 : 20; G.flags = { dog: true, v2: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null;
+  G.bag = { yakusou: 2 }; G.gold = TEST_START ? 1500 : 20; G.flags = { dog: true, v2: true }; G.opened = {}; G.steps = 0; G.playTime = 0; G.lastInn = 'otsuka'; G.mayoke = 0; G.tint = null; G.reserve = [];
 }
 
 /* ---------------- 題名・序章・結び ---------------- */
@@ -6155,10 +6392,14 @@ function nameEntry() {
 /* テスト用の始まり：URLに ?test=sosuke を付けると、荘助を助ける前（洞窟の前）から始まる。記録には書かない */
 function testPreset() {
   const t = new URLSearchParams(location.search).get('test');
-  if (t === 'ch2') {
+  if (t === 'ch2' || t === 'ch2b') {
     const mk = (id, w, a) => { const m = newMember(id, 17); m.w = w; m.a = a; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp'); return m; };
     const sh = mk('shino', 'murasame', 'okegawa');
     const fl = {}; for (const k of ['dog', 'opening', 'askGaku', 'askBanya', 'gakuCave', 'caveKnown', 'caveIn', 'sosuke', 'samojiroDone', 'tegata', 'surikae', 'genFight', 'genJoin', 'ryuka', 'kobungoMet', 'bunbeOk', 'kobungo', 'kobunDone', 'koderaOpen', 'koderaIn', 'karoDone', 'nueDone', 'giBack', 'dotanukiGiven', 'murasameSkill', 'shinbeMet', 'ch1']) fl[k] = true;
+    if (t === 'ch2b') { for (const k of ['k_bingo', 'k_hoki', 'k_mimasaka', 'k_bizen', 'ch2Arrive']) fl[k] = true; }
+    const lvB = t === 'ch2b' ? 21 : 17;
+    if (t === 'ch2b') return { v: 1, wv: 2, map: 'chugoku', x: CP.tera[0], y: CP.tera[1] + 1, dir: 'up', party: ['shino', 'sosuke', 'genpachi', 'kobungo'].map((id, i) => { const m = mk(id, ['murasame', 'shakujo', 'nagajitte', 'kongotekko'][i], 'tosei'); m.lv = lvB; m.exp = EXP_TABLE[lvB]; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp'); return m; }), gold: 5000,
+      bag: { yakusou: 10, dokukeshi: 3, reisui: 4, hangontan: 3, modorisuzu: 2, kou: 1, gi: 1, kizuchi: 1 }, flags: fl, opened: {}, steps: 0, playTime: 0, lastInn: 'aki', mayoke: 0 };
     return { v: 1, wv: 2, map: 'shimo', x: 19, y: 5, dir: 'left', party: [sh, mk('sosuke', 'kongozue', 'okegawa'), mk('genpachi', 'tetsujitte', 'okegawa'), mk('kobungo', 'kurotekko', 'okegawa')], gold: 3000,
       bag: { yakusou: 8, dokukeshi: 3, reisui: 3, hangontan: 2, modorisuzu: 2, kou: 1, gi: 1, dotanuki: 1 }, flags: fl, opened: {}, steps: 0, playTime: 0, lastInn: 'moji', mayoke: 0 };
   }
