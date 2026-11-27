@@ -1943,10 +1943,10 @@ const ITEMS = {
   reisui:    { name: '霊水', kind: 'use', price: 60, target: 'ally', eff: { mp: [18, 22] }, desc: '気（MP）を20ほど回復する' },
   hangontan: { name: '反魂丹', kind: 'use', price: 90, target: 'dead', eff: { revive: 0.5 }, desc: '倒れた仲間を生き返らせる' },
   mayoke:    { name: '魔除けの香', kind: 'use', price: 20, target: 'none', field: true, battle: false, eff: { mayoke: 80 }, desc: 'しばらく妖怪を寄せつけない' },
-  modorisuzu:{ name: '戻り鈴', kind: 'use', price: 25, target: 'none', field: true, battle: false, eff: { warp: 'otsuka' }, desc: '日向村へ一瞬で戻る' },
+  modorisuzu:{ name: '戻り鈴', kind: 'use', price: 25, target: 'none', field: true, battle: false, eff: { warp: 'otsuka' }, desc: '日向村へ一瞬で戻る（中国では下関へ）' },
   chikara:   { name: '力の丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['atk', 3] }, desc: '飲んだ者の力が3上がる' },
-  yomishizuku:{ name: '黄泉の雫', kind: 'use', price: 0, sell: 5, target: 'ally', eff: { yomi: [44, 56] }, desc: '黄泉からしたたる黒い雫。良心ある者には毒' },
-  yomigaeri: { name: '黄泉がえりの香', kind: 'use', price: 0, sell: 5, target: 'dead', eff: { yomirev: 0.5 }, desc: '倒れた者を呼び戻す香。良心ある者が焚くと…' },
+  yomishizuku:{ name: '黄泉の雫', kind: 'use', price: 0, sell: 5, target: 'ally', eff: { yomi: [44, 56] }, desc: '黄泉からしたたる黒い雫。人望ある者には毒' },
+  yomigaeri: { name: '黄泉がえりの香', kind: 'use', price: 0, sell: 5, target: 'dead', eff: { yomirev: 0.5 }, desc: '倒れた者を呼び戻す香。人望ある者が焚くと…' },
   mamori:    { name: '守りの丸薬', kind: 'use', price: 0, target: 'ally', battle: false, eff: { stat: ['def', 3] }, desc: '飲んだ者の守りが3上がる' },
   // 武器
   nisemura:  { name: '村雨丸？', kind: 'w', wt: 'sword', atk: 2, price: 0, nosell: true, desc: '村雨丸…のはずの刀。どこか軽い' },
@@ -3082,7 +3082,7 @@ const UI = (() => {
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
     '孝の玉': 'こうのたま', '義の玉': 'ぎのたま', '忠の玉': 'ちゅうのたま', '『孝』': '『こう』', '『義』': '『ぎ』', '『忠』': '『ちゅう』',
     '牡丹': 'ぼたん', '痣': 'あざ', '神足': 'じんそく', '全神速': 'ぜんしんそく', '無刀取り': 'むとうどり', '剣豪': 'けんごう', '剣聖': 'けんせい', '棒術': 'ぼうじゅつ',
-    '白装束': 'しろしょうぞく', '路銀': 'ろぎん', '曲者': 'くせもの', '拙者': 'せっしゃ', '樫': 'かし', '居合い': 'いあい',
+    '下関': 'しものせき', '長門': 'ながと', '周防': 'すおう', '石見': 'いわみ', '安芸': 'あき', '出雲': 'いずも', '備後': 'びんご', '伯耆': 'ほうき', '美作': 'みまさか', '備前': 'びぜん', '備中': 'びっちゅう', '播磨': 'はりま', '大山': 'だいせん', '鬼封じ': 'おにふうじ', '錫杖': 'しゃくじょう', '野伏せり': 'のぶせり', '山童': 'やまわろ', '大入道': 'おおにゅうどう', '蒼鬼火': 'あおおにび', '具足': 'ぐそく', '渦潮': 'うずしお', '瀬戸内': 'せとうち', '山陽': 'さんよう', '山陰': 'さんいん', '白装束': 'しろしょうぞく', '路銀': 'ろぎん', '曲者': 'くせもの', '拙者': 'せっしゃ', '樫': 'かし', '居合い': 'いあい',
   };
   const RUBY_RE = new RegExp(Object.keys(RUBY).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -3968,7 +3968,8 @@ async function menuItems(pp) {
   }
 }
 async function warpHome() {
-  await fadeTo(1, 300); G.mode = 'field'; loadMap('otsuka', 13, 21, 'up'); await fadeTo(0, 300); Save.auto();
+  const chu = typeof CH2_MAPS !== 'undefined' && CH2_MAPS.has(G.mapId);   // 中国にいるときは下関へ
+  await fadeTo(1, 300); G.mode = 'field'; if (chu) loadMap('shimo', 8, 11, 'up'); else loadMap('otsuka', 13, 21, 'up'); await fadeTo(0, 300); Save.auto();
 }
 async function menuSkills(pp) {
   const m = await pickMember('だれの わざ？'); if (!m) return;
@@ -5597,7 +5598,11 @@ STORY.moji = {
   npcs: [
     { id: 'sendo', sprite: 'man2', name: '船頭', x: 20, y: 5, dir: 'left', talk: async () => {
       if (!flag('nueDone')) { await say('海の 上に 妖気が 立ちこめて、|船が 出せねえんだ。||これじゃ 商売 あがったりだよ。', { name: '船頭' }); return; }
-      if (flag('ch1')) { await say('本州へ 渡る 船は|また 支度が できたら 出すぜ。|（第二章で 海を 渡ります）', { name: '船頭' }); return; }
+      if (flag('ch1')) {
+        const c2 = await ask('本州の 下関へ 渡るかい？', ['渡る', 'やめる'], { name: '船頭' });
+        if (c2 === 0) await warp('shimo', 19, 5, 'left', { sfx: 'step' });
+        return;
+      }
       const c = await ask('妖気が 晴れて、やっと 船が 出せる。|本州へ 渡るかい？||（第一章の 終わりです。|九州に やり残しは ありませんか？）', ['渡る', 'まだ']);
       if (c !== 0) { await say('支度が できたら 声を かけな。', { name: '船頭' }); return; }
       await chapter1End();
@@ -5628,11 +5633,263 @@ async function chapter1End() {
   G.mode = 'ending';
   await Title.ending();
   G.mode = 'field';
-  loadMap('moji', 19, 5, 'left');
+  loadMap('shimo', 19, 5, 'left');
   await fadeTo(0, 600);
-  await say('（第一章は ここまでです。|九州の 野は このまま 歩けます）');
-  Save.auto();
+  await STORY.shimo.onEnter();
+  await say('（九州へは 下関の 船頭に|話せば いつでも 戻れます）');
 }
+
+
+/* =====================================================================
+   第二章：中国地方
+   左母二郎は備中の鬼封じの寺に改心を装って入り、壺を盗んで4匹の混沌を解き放った（4つの村を支配）。
+   道節は忠の玉を左母二郎に奪われ、行者として後を追っている（噂だけが先に聞こえる）。
+   ①地図・町・寺の配置（いま）　②4つの村と混沌・左母二郎・道節　③鬼子母神と親兵衛　④対馬のお銀と里八株式会社
+   ===================================================================== */
+
+/* 国：N=長門 U=周防 I=石見 A=安芸 Z=出雲 H=伯耆 G=備後 C=備中 M=美作 Y=因幡 B=備前 P=播磨（次の章） K=九州 S=四国 O=隠岐 ~=海 */
+const CHU = [
+  '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~OO~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~ZZZZ~~~~~~~~~~~~~~~',
+  '~~~~~~~~~IZZZZZHHHHYYYYY~~~~~~',
+  '~~~~~~IIIIIZZZZHHHHHYYYYYPP~~~',
+  '~~NNIIIIIIIZZZGGHHHMMMMYYPPP~~',
+  '~NNNNIIIIIAAGGGGCCCMMMMMMPPPP~',
+  '~NNNNUUUUAAAAGGGCCCCMMMBBBPPP~',
+  '~~NNUUUUUAAAAAGGGCCCCBBBBBPPP~',
+  '~~~NUUUUUAAAAAGGGCCCCBBBBPPPP~',
+  '~~~~~~UUU~~AAA~GG~CC~~~BB~PP~~',
+  'K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+  'KK~~~~~~~~~SSSSSSSSSSSS~~~~~~~',
+  'KKK~~~~~SSSSSSSSSSSSSSSSS~~~~~',
+  'KKK~~~~SSSSSSSSSSSSSSSSSSS~~~~',
+];
+const CKS = 6, CHU_W = CHU[0].length * CKS, CHU_H = CHU.length * CKS;
+const ckuni = (x, y) => { const r = CHU[Math.floor(y / CKS)]; return r ? (r[Math.floor(x / CKS)] || '~') : '~'; };
+const CHU_NORTH = 'IZHY', CHU_SOUTH = 'NUAGCB';
+const CP = {
+  shimo: [12, 58], suo: [40, 56], iwami: [46, 34], aki: [68, 60], izumo: [76, 26],
+  bingo: [90, 52], hoki: [102, 30], mimasaka: [124, 42], bizen: [140, 56], tera: [108, 50],
+  harima: [152, 46], doso: [30, 52],
+};
+function buildChugokuRows() {
+  const W = CHU_W, H = CHU_H, g = [];
+  const land = (x, y) => {
+    const jx = Math.round((hash2(x >> 1, y >> 1, 107) - 0.5) * 4), jy = Math.round((hash2(x >> 1, y >> 1, 108) - 0.5) * 4);
+    return ckuni(x + jx, y + jy) !== '~';
+  };
+  for (let y = 0; y < H; y++) { const row = []; for (let x = 0; x < W; x++) { if (!land(x, y)) { row.push('~'); continue; } const h = hash2(x, y, 191); row.push(h < 0.06 ? ',' : h < 0.11 ? ';' : h < 0.125 ? '*' : '.'); } g.push(row); }
+  const set = (x, y, c) => { if (x >= 0 && y >= 0 && x < W && y < H) g[y][x] = c; };
+  const get = (x, y) => (x >= 0 && y >= 0 && x < W && y < H) ? g[y][x] : '~';
+  const onLand = (x, y) => get(x, y) !== '~';
+  const blob = (cx, cy, rx, ry, c, seed, keep, landOnly = true) => {
+    for (let y = Math.floor(cy - ry - 2); y <= cy + ry + 2; y++) for (let x = Math.floor(cx - rx - 2); x <= cx + rx + 2; x++)
+      if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 + (hash2(x, y, seed) - 0.5) * 0.5 < 1 && (!keep || !keep.includes(get(x, y))) && (!landOnly || onLand(x, y))) set(x, y, c);
+  };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (Math.min(x, y, W - 1 - x, H - 1 - y) < 2) set(x, y, '~');
+  // 中国山地：山陰と山陽のあいだの山なみ（美作は山の中の国）
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (!onLand(x, y)) continue; const k = ckuni(x, y);
+    if (!CHU_SOUTH.includes(k)) continue;
+    for (const [dx, dy] of [[0, -1], [0, -2], [1, -1], [-1, -1]]) if (CHU_NORTH.includes(ckuni(x + dx, y + dy))) { set(x, y, 'M'); break; }
+  }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (onLand(x, y) && ckuni(x, y) === 'M' && hash2(x, y, 141) < 0.42) set(x, y, hash2(x, y, 142) < 0.5 ? 'M' : 'h');
+  blob(104, 22, 5, 3, 'M', 113); blob(104, 23, 7, 4.5, 'h', 114, ['M']);      // 大山（伯耆）
+  blob(84, 40, 4, 3, 'h', 115, ['M']); blob(58, 42, 4, 3, 'h', 116, ['M']);
+  // 森
+  for (const [cx, cy, rx, ry] of [[22, 50, 3, 2.4], [52, 50, 3, 2.4], [62, 30, 3, 2], [86, 30, 3, 2], [116, 34, 3, 2.4], [132, 48, 3, 2], [96, 58, 3, 2], [126, 58, 2.6, 2], [78, 50, 2.6, 2]])
+    blob(cx, cy, rx, ry, 'F', 121, ['M', '~']);
+  for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) if ('.,;'.includes(g[y][x]) && hash2(x, y, 133) < 0.025) set(x, y, 'T');
+  // 宍道湖（出雲）
+  blob(84, 26, 3.4, 1.6, '~', 117);
+  // 目印のまわりは平地にする
+  for (const k in CP) { const [x, y] = CP[k]; blob(x, y, 2.2, 2.2, '.', 118, ['~']); }
+  // 道
+  const road = (x0, y0, x1, y1) => { let x = x0, y = y0; for (;;) { const c = g[y][x]; if (c === '~') set(x, y, y0 === y1 ? 'H' : 'V'); else set(x, y, '='); if (x === x1 && y === y1) break; if (x !== x1) x += Math.sign(x1 - x); else y += Math.sign(y1 - y); } };
+  const via = (...pts) => { for (let i = 0; i + 1 < pts.length; i++) road(...pts[i], ...pts[i + 1]); };
+  via(CP.shimo, [12, 56], [30, 56], CP.suo);                       // 下関 → 周防
+  via([30, 56], CP.doso);                                          // 辻
+  via(CP.doso, [30, 40], [46, 40], [46, 35]);                      // 辻 → 石見（山を越える）
+  via([46, 33], [46, 28], [76, 28], [76, 27]);                     // 石見 → 出雲
+  via(CP.suo, [40, 60], [67, 60]);                                 // 周防 → 安芸
+  via([69, 60], [90, 60], [90, 53]);                               // 安芸 → 備後
+  via([76, 29], [76, 32], [102, 32], [102, 31]);                   // 出雲 → 伯耆
+  via([90, 51], [90, 50], [107, 50]);                              // 備後 → 寺
+  via([102, 32], [102, 46], [108, 46], [108, 49]);                 // 伯耆 → 寺
+  via([109, 50], [124, 50], [124, 43]);                            // 寺 → 美作
+  via([124, 50], [140, 50], [140, 55]);                            // 美作路 → 備前
+  via([140, 50], [140, 46], [151, 46]);                            // 備前 → 播磨の関所
+  const mark = (k, c) => set(CP[k][0], CP[k][1], c);
+  for (const k of ['shimo', 'suo', 'iwami', 'aki', 'izumo']) mark(k, 'K');
+  for (const k of ['bingo', 'hoki', 'mimasaka', 'bizen']) mark(k, 'O');
+  mark('tera', 'R'); mark('harima', 'G'); mark('doso', 'J');
+  // 播磨との国ざかいは山でふさぎ、関所だけを開ける（次の章）
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (!onLand(x, y) || ckuni(x, y) !== 'P') continue;
+    let edge = false; for (let dy = -2; dy <= 2 && !edge; dy++) for (let dx = -2; dx <= 2; dx++) { const k = ckuni(x + dx, y + dy); if (k !== 'P' && k !== '~' && onLand(x + dx, y + dy)) { edge = true; break; } }
+    if (edge) set(x, y, 'M');
+  }
+  road(141, 46, CP.harima[0] - 1, 46); mark('harima', 'G');
+  // 播磨・九州・四国・隠岐は今は歩けない（海で隔てられ、播磨は関所で閉ざす）
+  return g.map(r => r.join(''));
+}
+
+const CH2_MAPS = new Set(['chugoku']);
+MAPS.chugoku = { name: '中国', kind: 'world', bgm: 'field', rows: buildChugokuRows(),
+  enc: (x, y, t) => {
+    const k = ckuni(x, y);
+    if ('KSOP~'.includes(k)) return null;
+    if (t === 'forest') return 'chuWood';
+    if ('NUI'.includes(k)) return 'chuW';
+    if ('AZG'.includes(k)) return 'chuM';
+    return 'chuE';
+  } };
+/* 妖怪（第二章）。絵は今ある妖怪の色違い（仮の絵。あいもんの原画で差し替える） */
+Object.assign(YOKAI_VAR, {
+  aoonibi: ['onibi', 35, 1.25, 0.8], oonyudo: ['hitotsume', 30, 0.8, 0.85], yamawaro: ['kappa', 90, 0.9, 1.0], kurodanuki: ['tanuki', 0, 0.5, 0.6],
+  shiroitachi: ['kamaitachi', 0, 0.25, 1.35], nobuseri: ['ronin', 330, 0.7, 0.85], suigun: ['kaizoku', 170, 0.8, 0.9], akagumo: ['oogumo', 330, 1.3, 1.0],
+});
+Object.assign(ENEMIES, {
+  aoonibi:    { name: '蒼鬼火', spr: 'aoonibi', drops: [[20, 'yomishizuku']], hp: 58, atk: 44, def: 13, agi: 15, exp: 34, gold: 18, weak: ['water'], resist: ['fire'], chest: [8, 'reisui', 'hangontan', 8], act: [[2, 'attack'], [1, 'onnen']] },
+  oonyudo:    { name: '大入道', spr: 'oonyudo', drops: [[60, 'chisui']], hp: 120, atk: 50, def: 17, agi: 9, exp: 52, gold: 30, chest: [6, 'hangontan', 'mamori', 8], act: [[3, 'attack'], [1, 'niramu']] },
+  yamawaro:   { name: '山童', spr: 'yamawaro', drops: [[90, 'kappako']], hp: 96, atk: 48, def: 16, agi: 11, exp: 44, gold: 26, weak: ['fire'], chest: [7, 'yakusou', 'kusari', 10], act: [[3, 'attack'], [1, 'sumo']] },
+  kurodanuki: { name: '黒狸', spr: 'kurodanuki', drops: [[90, 'haramaki']], hp: 100, atk: 46, def: 16, agi: 12, exp: 46, gold: 34, chest: [6, 'yakusou', 'hangontan', 8], act: [[3, 'attack'], [1, 'haratsuzumi']] },
+  shiroitachi:{ name: '白鎌鼬', spr: 'shiroitachi', drops: [[40, 'kama']], hp: 70, atk: 50, def: 14, agi: 22, exp: 44, gold: 22, chest: [8, 'dokukeshi', 'kongozue', 12], act: [[3, 'attack'], [1, 'renzan']] },
+  nobuseri:   { name: '野伏せり', spr: 'nobuseri', drops: [[120, 'kurouchi'], [60, 'tachi'], [30, 'okegawa']], hp: 110, atk: 52, def: 17, agi: 13, exp: 54, gold: 48, chest: [5, 'hangontan', 'tachi', 10], act: [[3, 'attack'], [1, 'iai']] },
+  suigun:     { name: '水軍くずれ', spr: 'suigun', drops: [[110, 'kazenoha'], [60, 'tetsujitte']], hp: 115, atk: 53, def: 17, agi: 11, exp: 54, gold: 50, chest: [5, 'yakusou', 'okegawa', 12], act: [[4, 'attack'], [1, 'nusumu']] },
+  akagumo:    { name: '赤蜘蛛', spr: 'akagumo', hp: 140, atk: 54, def: 18, agi: 14, exp: 66, gold: 36, weak: ['fire'], chest: [5, 'dokukeshi', 'kurotekko', 10], act: [[3, 'attack'], [2, 'dokuga'], [1, 'ito']] },
+});
+Object.assign(ENC, {
+  chuW:    { bg: 'field', rate: 11, groups: [[3, ['aoonibi', 'aoonibi']], [3, ['yamawaro']], [2, ['kurodanuki', 'aoonibi']], [2, ['suigun']], [1, ['shiroitachi', 'yamawaro']]] },
+  chuM:    { bg: 'field', rate: 11, groups: [[3, ['kurodanuki', 'yamawaro']], [3, ['nobuseri']], [2, ['shiroitachi', 'shiroitachi']], [2, ['suigun', 'aoonibi']], [1, ['oonyudo']]] },
+  chuE:    { bg: 'field', rate: 11, groups: [[3, ['oonyudo']], [3, ['nobuseri', 'aoonibi']], [2, ['akagumo']], [2, ['shiroitachi', 'kurodanuki', 'aoonibi']], [1, ['oonyudo', 'nobuseri']]] },
+  chuWood: { bg: 'forest', rate: 9, groups: [[3, ['shiroitachi', 'kurodanuki']], [3, ['akagumo']], [2, ['oonyudo']], [2, ['aoonibi', 'aoonibi', 'aoonibi']]] },
+});
+/* 第二章の店の品 */
+Object.assign(ITEMS, {
+  nodachi:   { name: '野太刀', kind: 'w', wt: 'sword', atk: 34, price: 980, desc: '刃の長い 野戦の太刀' },
+  shakujo:   { name: '鉄の錫杖', kind: 'w', wt: 'staff', atk: 30, price: 940, desc: '鉄の輪が鳴る 重い錫杖' },
+  nagajitte: { name: '長十手', kind: 'w', wt: 'jitte', atk: 30, price: 920, desc: '柄を長くした 捕り物の十手' },
+  kongotekko:{ name: '金剛の手甲', kind: 'w', wt: 'fist', atk: 33, price: 990, desc: '鋼を重ねた 手甲' },
+  tosei:     { name: '当世具足', kind: 'a', def: 22, price: 1100, desc: '鉄の板を つなぎ合わせた 新しい具足' },
+});
+const T2_ARMS = ['tachi', 'nodachi', 'kongozue', 'shakujo', 'tetsujitte', 'nagajitte', 'kurotekko', 'kongotekko', 'okegawa', 'tosei'];
+const T2_ARMS_S = ['tachi', 'kongozue', 'tetsujitte', 'kurotekko', 'okegawa', 'tosei'];
+/* 町の地図は九州の町と同じ間取りを使い回す */
+MAPS.shimo = { name: '下関の港', kind: 'out', bgm: 'village', rows: ROWS_PORT };
+MAPS.suo = { name: '周防の町', kind: 'out', bgm: 'village', rows: ROWS_SMALL };
+MAPS.iwami = { name: '石見の町', kind: 'out', bgm: 'village', rows: ROWS_SMALL };
+MAPS.aki = { name: '安芸の港', kind: 'out', bgm: 'village', rows: ROWS_PORT };
+MAPS.izumo = { name: '出雲の町', kind: 'out', bgm: 'village', rows: ROWS_SMALL };
+const CH2_TOWNS = ['shimo', 'suo', 'iwami', 'aki', 'izumo'];
+for (const id of CH2_TOWNS) CH2_MAPS.add(id);
+// 小さい町（周防・石見・出雲）と港町（下関・安芸）の建物
+function ch2Town(id, port, innName, price, armsHello, houseNpcs, gold) {
+  const D = port ? { inn: [4, 3], shop: [14, 3], arms: [4, 9], house: [14, 9] } : { inn: [3, 3], shop: [16, 3], arms: [15, 9], house: [4, 9] };
+  const w = (k, to, tx, ty) => ({ x: D[k][0], y: D[k][1], to, tx, ty, dir: 'up' });
+  townInn('inn_' + id, innName, [id, D.inn[0], D.inn[1] + 1], price, id);
+  townShop('shop_' + id, '道具屋', [id, D.shop[0], D.shop[1] + 1], T_ITEMS, '道具屋');
+  townShop('arms_' + id, '鍛冶屋', [id, D.arms[0], D.arms[1] + 1], T_ARMS, '鍛冶屋', armsHello);
+  STORY['arms_' + id].npcs[0].talk = () => shop(port ? T2_ARMS : T2_ARMS_S, { name: '鍛冶屋', hello: armsHello });
+  townHouse('house_' + id, '民家', [id, D.house[0], D.house[1] + 1], houseNpcs, gold);
+  for (const k of ['inn_', 'shop_', 'arms_', 'house_']) CH2_MAPS.add(k + id);
+  return [w('inn', 'inn_' + id, 5, 5), w('shop', 'shop_' + id, 4, 4), w('arms', 'arms_' + id, 4, 4), w('house', 'house_' + id, 3, 4)];
+}
+const chuEdge = id => ({ s: { to: 'chugoku', x: CP[id][0], y: CP[id][1] + 1, dir: 'down' } });
+// 道節の噂：行く先々で「さっきまでいた」
+const dosetsuRumor = (who, text) => say1(who, text);
+
+/* ---------------- 長門・下関の港（第二章の始まり） ---------------- */
+STORY.shimo = {
+  edges: chuEdge('shimo'),
+  warps: ch2Town('shimo', true, '下関の宿', 14, '本州の 鍛冶は 刃が 長いぜ。|九州の 刀とは 勝手が ちがう。',
+    [{ id: 'oji', sprite: 'oldman', name: 'じいさま', x: 3, y: 2, wander: true, radius: 1, talk: say1('じいさま', '本州の 西の はしは|山で 南と 北に 分かれておる。||南の 海ぞいが 山陽の 道、|北の 海ぞいが 山陰の 道じゃ。', '道祖神の 辻から 北へ 山を 越えれば|石見に 出られるぞ。') }], 120),
+  npcs: [
+    { id: 'sendo', sprite: 'man2', name: '船頭', x: 20, y: 5, dir: 'left', talk: async () => {
+      const c = await ask('門司へ 渡るかい？', ['渡る', 'やめる'], { name: '船頭' });
+      if (c !== 0) return;
+      await fadeTo(1, 400); loadMap('moji', 19, 5, 'left'); await fadeTo(0, 400);
+    } },
+    { id: 'so', sprite: 'oldman', name: '旅の僧', x: 9, y: 7, wander: true, radius: 2, talk: say1('旅の僧', '備中の 鬼封じの寺を 知っておるか。|昔の 高僧たちが 鬼を 封じた 寺じゃ。', '近ごろ 九州から 来たという|新入りの 僧が おるそうな。||ずいぶん 熱心に 修行して おるとか。|殊勝な ことじゃ。') },
+    { id: 'w1', sprite: 'woman1', name: '港の娘', x: 13, y: 11, wander: true, radius: 2, talk: say1('港の娘', '東の 備後の 方から|魚を 買いに 来る 人が|ぱったり 来なくなったの。||村を 黒い 霧が 包んだって 噂よ。') },
+    { id: 'm1', sprite: 'man1', name: '港の男', x: 6, y: 5, wander: true, radius: 2, talk: say1('港の男', 'ここは 長門の 下関。|本州の 西の はしさ。||海の 向こうに 見えるのが|門司の 港だ。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。'])],
+  onEnter: async () => {
+    if (flag('ch2Arrive')) return;
+    setFlag('ch2Arrive');
+    await say('（信乃たちは 関門の 海を 渡り、|本州の 西の はし|長門の 下関に 着いた）');
+    await say('第二章　中国', { cls: 'center', y: 92 });
+    Save.auto();
+  },
+};
+/* ---------------- 周防の町 ---------------- */
+STORY.suo = {
+  edges: chuEdge('suo'),
+  warps: ch2Town('suo', false, '周防の宿', 14, '刀か 杖か。|ゆっくり 見て いきな。',
+    [{ id: 'oba', sprite: 'woman2', name: 'おかみさん', x: 3, y: 2, wander: true, radius: 1, talk: say1('おかみさん', 'ゆうべ 白い 装束の 行者さんが|水を もらいに 来たのよ。||礼も そこそこに|東へ 走って いったわ。') }], 90),
+  npcs: [
+    { id: 'm1', sprite: 'man1', name: '町人', x: 9, y: 7, wander: true, radius: 3, talk: dosetsuRumor('町人', '火を 操る 白装束の 行者を 見たよ。|妖怪を 焼き払って 東へ 急いで いった。||「網乾」とかいう 名を|口の 中で くり返して いたな。') },
+    { id: 'w1', sprite: 'woman1', name: '町の娘', x: 14, y: 11, wander: true, radius: 2, talk: say1('町の娘', '石見へは 西の 道祖神の 辻から|北へ 山を 越えて 行けるよ。||安芸へは 海ぞいの 道を 東へ。') },
+    { id: 'tr', sprite: 'traveler', name: '旅の男', x: 5, y: 5, wander: true, radius: 2, talk: say1('旅の男', '安芸の 先、備後から 東は|黒い 霧が 出て 近づけないそうだ。||霧は 一つの 村だけじゃない。|山の 向こうの 伯耆も だとさ。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。|冷たい 水が たっぷり ある。'])],
+};
+/* ---------------- 石見の町（銀山） ---------------- */
+STORY.iwami = {
+  edges: chuEdge('iwami'),
+  warps: ch2Town('iwami', false, '石見の宿', 14, '銀山の 町の 鍛冶だ。|鋼の 質は 悪くないぜ。',
+    [{ id: 'oji', sprite: 'oldman', name: '鉱夫の父', x: 3, y: 2, wander: true, radius: 1, talk: say1('鉱夫の父', 'せがれは 銀山で 働いておる。|この 町の 者は みな 銀で 食っとる。') }], 140),
+  npcs: [
+    { id: 'm1', sprite: 'man2', name: '鉱夫', x: 9, y: 7, wander: true, radius: 3, talk: say1('鉱夫', '石見の 銀山さ。|掘った 銀は 博多の|お銀さんの 店にも 卸してるんだ。', 'ところが お銀さん、|対馬へ 渡ったきり|音沙汰が ないんだと。||番頭さんが 青い 顔してたよ。') },
+    { id: 'w1', sprite: 'woman1', name: '町の娘', x: 14, y: 11, wander: true, radius: 2, talk: say1('町の娘', '出雲の 大社へ お参りに 行くなら|海ぞいの 道を 東へ どうぞ。') },
+    { id: 'tr', sprite: 'traveler', name: '旅の男', x: 5, y: 5, wander: true, radius: 2, talk: dosetsuRumor('旅の男', '白装束の 行者？|ああ、きのうまで 宿に いたよ。||山陰の 道を 東へ 行くと 言ってた。|ひどく 思いつめた 顔でな。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。'])],
+};
+/* ---------------- 安芸の港 ---------------- */
+STORY.aki = {
+  edges: chuEdge('aki'),
+  warps: ch2Town('aki', true, '安芸の宿', 16, '瀬戸内の 水軍が 使っていた|刀も あるぜ。',
+    [{ id: 'oba', sprite: 'woman1', name: '女', x: 3, y: 2, wander: true, radius: 1, talk: say1('女', '備後の 村から 逃げて きた 人が|うちに 泊まって いるの。||夜に なると うなされて……|「霧の 中に 大きな 影が」って。') }], 150),
+  npcs: [
+    { id: 'sendo', sprite: 'man2', name: '船乗り', x: 20, y: 5, dir: 'left', talk: say1('船乗り', '南の 海の 向こうが 四国さ。||ところが 渦潮が 荒れて|船が 一艘も 出せねえ。|こんな ことは 初めてだ。') },
+    { id: 'm1', sprite: 'man1', name: '町人', x: 9, y: 7, wander: true, radius: 3, talk: dosetsuRumor('町人', '白装束の 行者なら|さっきまで そこの 茶屋に いたよ。||火の 術で 海賊を|追っ払って くれたんだ。|名を 聞いても 答えなかったなあ。') },
+    { id: 'w1', sprite: 'woman2', name: '茶屋の娘', x: 14, y: 11, wander: true, radius: 2, talk: say1('茶屋の娘', '備後の 村へは 東の 道。|でも 今は 誰も 近づかないわ。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。'])],
+};
+/* ---------------- 出雲の町 ---------------- */
+STORY.izumo = {
+  edges: chuEdge('izumo'),
+  warps: ch2Town('izumo', false, '出雲の宿', 15, '神さまの 国の 鍛冶だ。|まあ 腕は 人並みだがね。',
+    [{ id: 'oji', sprite: 'oldman', name: '古老', x: 3, y: 2, wander: true, radius: 1, talk: say1('古老', '鬼封じの寺には 昔の 高僧たちが|四匹の 化け物を 封じた 壺が|納めて あると いう。||決して 開けては ならぬ 壺じゃ。') }], 160),
+  npcs: [
+    { id: 'kannushi', sprite: 'oldman', name: '神主', x: 9, y: 7, wander: true, radius: 2, talk: say1('神主', '出雲には 年に 一度|国じゅうの 神々が 集う。||その 神々が 今年は 口を そろえて|「備中に 凶あり」と……') },
+    { id: 'm1', sprite: 'man1', name: '町人', x: 14, y: 11, wander: true, radius: 3, talk: say1('町人', '鬼封じの寺の 和尚さまが|亡くなってから、寺は 荒れる 一方さ。||残ったのは 新入りの 僧 一人だけ。|九州から 来たとかいう。') },
+    { id: 'tr', sprite: 'traveler', name: '旅の男', x: 5, y: 5, wander: true, radius: 2, talk: say1('旅の男', '東の 伯耆の 村が|黒い 霧に 包まれちまった。||大山の ふもとの いい 村だったのに。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。'])],
+};
+
+/* ---------------- 中国の野 ---------------- */
+const CH2_VILLAGE = { bingo: '備後の村', hoki: '伯耆の村', mimasaka: '美作の村', bizen: '備前の村' };
+STORY.chugoku = {
+  tile: (n, p, x, y) => {
+    if (n === 'fTown' && CH2_TOWNS.some(k => CP[k][0] === x && CP[k][1] === y)) return ['fTown', 1];
+    return n;
+  },
+  warps: CH2_TOWNS.map(k => ({ x: CP[k][0], y: CP[k][1], to: k, tx: k === 'shimo' || k === 'aki' ? 8 : 8, ty: 12, dir: 'up', sfx: 'step' })),
+  objects: [
+    ...Object.entries(CH2_VILLAGE).map(([k, name]) => look(...CP[k], [name + 'だ。|村を 黒い 霧が 包んでいる。||霧の 奥から 低い うなり声が……||（今は 近づけない）'])),
+    look(...CP.tera, ['備中の 鬼封じの寺だ。|門は 固く 閉ざされ、|屋根の 上に 黒い 気が|立ちのぼっている……||（今は 入れない）']),
+    look(...CP.harima, ['播磨へ 通じる 関所だ。|見えない 壁のような ものが|道を ふさいでいる……||（今は 通れない）']),
+    look(...CP.doso, ['道祖神の 石碑だ。|『西 下関　東 周防・安芸|北 山越えて 石見』']),
+  ],
+  triggers: [],
+};
 
 /* =====================================================================
    60 MAIN  記録・題名・操作盤・起動
@@ -5898,6 +6155,13 @@ function nameEntry() {
 /* テスト用の始まり：URLに ?test=sosuke を付けると、荘助を助ける前（洞窟の前）から始まる。記録には書かない */
 function testPreset() {
   const t = new URLSearchParams(location.search).get('test');
+  if (t === 'ch2') {
+    const mk = (id, w, a) => { const m = newMember(id, 17); m.w = w; m.a = a; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp'); return m; };
+    const sh = mk('shino', 'murasame', 'okegawa');
+    const fl = {}; for (const k of ['dog', 'opening', 'askGaku', 'askBanya', 'gakuCave', 'caveKnown', 'caveIn', 'sosuke', 'samojiroDone', 'tegata', 'surikae', 'genFight', 'genJoin', 'ryuka', 'kobungoMet', 'bunbeOk', 'kobungo', 'kobunDone', 'koderaOpen', 'koderaIn', 'karoDone', 'nueDone', 'giBack', 'dotanukiGiven', 'murasameSkill', 'shinbeMet', 'ch1']) fl[k] = true;
+    return { v: 1, wv: 2, map: 'shimo', x: 19, y: 5, dir: 'left', party: [sh, mk('sosuke', 'kongozue', 'okegawa'), mk('genpachi', 'tetsujitte', 'okegawa'), mk('kobungo', 'kurotekko', 'okegawa')], gold: 3000,
+      bag: { yakusou: 8, dokukeshi: 3, reisui: 3, hangontan: 2, modorisuzu: 2, kou: 1, gi: 1, dotanuki: 1 }, flags: fl, opened: {}, steps: 0, playTime: 0, lastInn: 'moji', mayoke: 0 };
+  }
   if (t !== 'sosuke') return null;
   const m = newMember('shino', 6); m.w = 'uchigatana'; m.a = 'kawado'; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp');
   return { v: 1, wv: 2, map: 'world', x: WP.cave[0] + 1, y: WP.cave[1], dir: 'right', party: [m], gold: 300,
