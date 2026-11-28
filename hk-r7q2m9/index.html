@@ -1771,9 +1771,12 @@ const SND = (() => {
     { w: 'drum', v: 0.22, seq: '| S:1 S:1 S:1 S:1 S:1 S:1 r:10 |' },
   ]);
   // 宿：子守歌のように2小節。旋律は5音だけ（2026-11-28 船長「メロディ数多い」で8音→5音、伴奏の分散和音も長い2音に）。最後の音を伸ばして止め、朝になる
-  def('inn', 125, false, [   // 2026-11-28 船長のハミング（ソッ・ソ・ドー）をそのまま写した。短いソ→ソ→4度上のドを伸ばす。1小節10刻み≒1.2秒
-    { w: 0.25, v: 0.15, seq: '| g5:1 r:1 g5:2 c6:6 |' },
-    { w: 'tri', v: 0.2, seq: '| g2:4 c3:6 |' },
+  def('inn', 125, false, [   // 2026-11-28 船長のハミング（ソッ・ソ・ドー）どおり。音色は村・勝利と同じ組み（三角波の旋律／矩形の3度下ハモり／低音／小太鼓）。1小節10刻み≒1.2秒
+    { w: 'tri', v: 0.3, seq: '| g5:1 r:1 g5:2 c6:6 |' },
+    { w: 0.25, v: 0.07, seq: '| d5:1 r:1 d5:2 e5:6 |' },
+    { w: 0.5, v: 0.1, s: 0.3, seq: '| g2:2 r:2 c3:6 |' },
+    { w: 'drum', v: 0.06, seq: '| r:4 D:6 |' },
+    { w: 'drum', v: 0.22, seq: '| S:1 r:1 S:2 r:6 |' },
   ], 10);
 
   // 別次元の町（2026-11-26）：さとはちで唯一「和」から外れる曲。入った途端に音色ごと切り替わる。ホ短調・160。
@@ -7556,7 +7559,7 @@ const Title = (() => {
       await Save.waitCloud(1500);
       const has = Save.hasAny(), tp = testPreset();
       const info = tp ? 'テスト' : has ? '' : '記録なし';
-      const c = await UI.choose([{ label: 'はじめから' }, { label: 'つづきから', right: info }], { x: 50, y: 150, w: 140, cancel: false, start: 0, cls: 'tmenu' });
+      const c = await UI.choose([{ label: 'はじめから' }, { label: 'つづきから', right: info }], { x: 50, y: 150, w: 140, cancel: false, start: (has || tp) ? 1 : 0, cls: 'tmenu' });   // 記録があればカーソルは「つづきから」
       if (c === 0) {
         const n = await chooseSlot('どの 記録に 冒険を のこしますか？', { y: 40 }); if (!n) continue;
         if (Save.newest(n)) { const k = await ask('記録' + n + 'を 消して はじめから|遊びますか？', ['はい', 'いいえ']); if (k !== 0) continue; }
