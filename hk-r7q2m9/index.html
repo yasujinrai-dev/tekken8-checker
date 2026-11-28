@@ -150,6 +150,16 @@ ruby{ruby-position:over;ruby-align:center}rt{font-size:4.6rem;line-height:1;lett
 <button id="bM" class="pill" aria-label="メニュー">メニュー</button>
 <script>
 'use strict';
+/* 版の自動更新（2026-11-28）：ホーム画面のアイコンから開くと古い版が残るので、起動時に最新の版番号を見に行き、
+   違えば読み込み直す。BUILD は更新を送るたびに書き換えること */
+const BUILD = '2026-11-28a';
+(async () => {
+  try {
+    const r = await fetch(location.pathname + '?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
+    const m = /const BUILD = '([^']+)'/.exec(await r.text());
+    if (m && m[1] !== BUILD && !sessionStorage.getItem('reloadedTo' + m[1])) { sessionStorage.setItem('reloadedTo' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); }
+  } catch (e) {}
+})();
 /* =====================================================================
    00 CORE  定数・乱数・ドット絵の下地
    ===================================================================== */
