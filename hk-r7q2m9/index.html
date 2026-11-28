@@ -152,7 +152,7 @@ ruby{ruby-position:over;ruby-align:center}rt{font-size:4.6rem;line-height:1;lett
 'use strict';
 /* 版の自動更新（2026-11-28）：ホーム画面のアイコンから開くと古い版が残るので、起動時に最新の版番号を見に行き、
    違えば読み込み直す。BUILD は更新を送るたびに書き換えること */
-const BUILD = '2026-11-28c';
+const BUILD = '2026-11-28d';
 (async () => {
   try {
     const r = await fetch(location.pathname + '?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
@@ -2007,8 +2007,9 @@ const ITEMS = {
   kou:       { name: '孝の玉', kind: 'key', desc: '「孝」の字が浮かぶ霊玉。信乃の玉' },
   gi:        { name: '義の玉', kind: 'key', desc: '「義」の字が浮かぶ霊玉。荘助の玉' },
   chu:       { name: '忠の玉', kind: 'key', desc: '「忠」の字が浮かぶ霊玉。道節の玉' },
+  kashiraKagi: { name: '牢の鍵', kind: 'key', desc: '山賊の頭が持っていた鍵束。洞窟の牢の鍵らしい' },
   rouKey:    { name: '牢の合鍵', kind: 'key', desc: '権太親方が打ち直した鍵。洞窟の牢を開けられる' },
-  oreKagi:   { name: '折れた鍵', kind: 'key', desc: '山賊の頭が投げつけた牢の鍵。まん中で折れている' },
+  oreKagi:   { name: '折れた鍵', kind: 'key', desc: '牢の錠前の中で折れた鍵。まん中で折れている' },
   ono:       { name: '炭焼きの斧', kind: 'key', desc: '浪人が取り上げていた斧。諸県村の炭焼きの物' },
   sumidawara:{ name: '炭俵', kind: 'key', desc: '諸県村の炭焼きが焼いた炭。鍛冶に使う' },
   zaru:      { name: 'ザル', kind: 'key', desc: '茶屋のおばばに借りたザル' },
@@ -3146,11 +3147,13 @@ const UI = (() => {
         if (DEBUG.measure && shown >= full.length) { const lh = parseFloat(getComputedStyle(m.body).lineHeight) || 1, n = Math.round(m.body.getBoundingClientRect().height / lh); if (n > Math.max(1, full.split('\n').length)) DEBUG.overflow.push(n + ': ' + full); }
       };
       const tick = () => { if (shown < full.length) { shown = Math.min(full.length, shown + speed); render(); if (shown % 4 === 0) SND.sfx('talk'); tm = setTimeout(tick, 28); } else render(); };
-      const show = () => { full = pages[pi]; shown = DEBUG.fast ? full.length : 0; clearTimeout(tm); tick(); };
+      let openAt = 0;
+      const show = () => { full = pages[pi]; shown = DEBUG.fast ? full.length : 0; openAt = performance.now(); clearTimeout(tm); tick(); };
       m.catchTaps = true;
       m.onKey = k => {
         if (k === 'menu' && o.onSkip) { o.onSkip(); clearTimeout(tm); remove(m); m.el.style.display = 'none'; res(); return; }
         if (k !== 'a' && k !== 'b') return;
+        if (o.guard && !DEBUG.auto && performance.now() - openAt < o.guard) return;   // 歩いてきた勢いのボタンで読み飛ばさない
         if (shown < full.length) { shown = full.length; render(); return; }
         if (++pi < pages.length) { show(); return; }
         clearTimeout(tm); remove(m);
@@ -4521,13 +4524,24 @@ async function cellTalk() {
     await say('信乃さまの 村雨丸を 左母二郎が!?|あの 浪人なら この山の 頂に|陣取って おります。||浜路さまも そこに……！', { name: N.gakuzo });
     SND.sfx('shine'); G.whiteFlash = 0.12;
     await say('（肩の 痣が 熱い……！|額蔵の 腕の 痣も かすかに 光っている）');
-    if (!G.bag.rouKey) {
+    if (!G.bag.rouKey && !G.bag.kashiraKagi) {
       await say('牢の 鍵は 山賊の 頭が|持って おります。||ですが 頭は 別に ねぐらを 構えて、|ここへは 時おり 顔を 出すだけ。|どこに いるのかは わかりません。', { name: N.gakuzo });
       await say('ふもとの 村の 者なら|山賊どもの 出入りを|見て いるかも しれません。||鍵さえ あれば わたしも|お供 いたします！', { name: N.gakuzo });
       Save.auto(); return;
     }
   }
   if (G.bag.rouKey) return releaseSosuke();
+  if (G.bag.kashiraKagi) {   // 頭の鍵をさしこむと、錆びた錠前の中で折れる
+    await say('牢の 鍵を さしこんだ。|……ギ、ギギ……');
+    SND.sfx('hit');
+    await say('バキッ！||錆びついた 錠前の 中で|鍵が まっぷたつに 折れてしまった！');
+    removeItem('kashiraKagi');
+    await getItem('oreKagi', '折れた 鍵が 手もとに 残った。');
+    setFlag('gakuOre');
+    await say('ああ……！ 鍵が……', { name: N.gakuzo });
+    await say('日向村の 鍛冶屋、権太親方なら|打ち直せるかも しれません。||あの方の 腕は 九州一と|権六さまも 申して おりました。', { name: N.gakuzo });
+    Save.auto(); return;
+  }
   if (G.bag.oreKagi || flag('kagiOrder')) {
     if (!flag('gakuOre')) {
       setFlag('gakuOre');
@@ -4547,11 +4561,8 @@ async function kashiraFight() {
   if (r !== 'win') return;
   setFlag('kashira');
   G.npcs = G.npcs.filter(n => n.id !== 'kashira');
-  await say('山賊の頭は 鍵束を 投げつけて|逃げていった。');
-  SND.sfx('hit');
-  await say('鍵は 岩に あたって|まっぷたつに 折れてしまった！');
-  await getItem('oreKagi', '折れた 鍵を 手に入れた。');
-  if (flag('cellTalk')) await say('（これでは 牢が 開かない……|額蔵に 見せてみるか）');
+  await say('山賊の頭は 鍵束を 投げ捨てて|逃げていった。');
+  await getItem('kashiraKagi', '牢の 鍵を 手に入れた！');   // 2026-11-28 船長：手に入れた瞬間に壊れると面倒でやめたくなる→牢を開けるときに折れる形に
   Save.auto();
 }
 async function releaseSosuke() {
@@ -4839,8 +4850,9 @@ STORY.neguro = {
   ],
   onEnter: async () => {
     if (flag('kobunDone')) return;
+    await sleep(500);   // 入った直後は画面が落ち着くまで待つ（2026-11-28 船長：会話から戦闘までが早すぎて読めない）
     if (!flag('cellTalk')) {
-      await say('おい、そこの 小僧！', { name: '子分' });
+      await say('おい、そこの 小僧！', { name: '子分', guard: 600 });
       await say('ここは 山賊の ねぐらだ。|ガキの 来る 所じゃ ねえ。|とっとと 失せな！', { name: '子分' });
       await say('子分たちに 突き飛ばされ、|ねぐらの 外へ 追い出された……');
       await warp('world', WP.neguro[0], WP.neguro[1] + 1, 'down', { sfx: 'hit' });
@@ -4850,7 +4862,8 @@ STORY.neguro = {
   },
 };
 async function kobunFight() {
-  await say('また 来やがったな 小僧。|頭は 奥で 酒盛りの 最中だ。|通すわけには いかねえ！', { name: '子分' });
+  await say('また 来やがったな 小僧。|頭は 奥で 酒盛りの 最中だ。|通すわけには いかねえ！', { name: '子分', guard: 600 });
+  await sleep(400);
   const r = await fight(['sanzoku', 'sanzoku', 'sanzoku'], { bg: 'cave', intro: '山賊の 子分どもが おそいかかってきた！' });
   if (r !== 'win') return;
   setFlag('kobunDone');
