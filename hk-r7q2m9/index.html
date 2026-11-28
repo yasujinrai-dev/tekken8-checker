@@ -152,7 +152,7 @@ ruby{ruby-position:over;ruby-align:center}rt{font-size:4.6rem;line-height:1;lett
 'use strict';
 /* 版の自動更新（2026-11-28）：ホーム画面のアイコンから開くと古い版が残るので、起動時に最新の版番号を見に行き、
    違えば読み込み直す。BUILD は更新を送るたびに書き換えること */
-const BUILD = '2026-11-28d';
+const BUILD = '2026-11-28e';
 (async () => {
   try {
     const r = await fetch(location.pathname + '?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
@@ -2828,6 +2828,10 @@ async function fadeTo(v, ms = 220) {
 async function warp(to, x, y, dir, opt = {}) {
   if (opt.sfx !== false) SND.sfx(opt.sfx || 'door');
   await fadeTo(1, 200);
+  if (opt.sfx === 'stairs') {   // 階段で着いたら、となりの戻り階段の上に立たせる（2026-11-28 船長：着いた先で前へ進むと元の階へ戻されるのはやめて）
+    const back = ((STORY[to] && STORY[to].warps) || []).find(w => w.to === G.mapId && Math.abs(w.x - x) + Math.abs(w.y - y) === 1);
+    if (back) { x = back.x; y = back.y; }
+  }
   loadMap(to, x, y, dir || G.pl.dir);
   await fadeTo(0, 200);
   Save.auto();
