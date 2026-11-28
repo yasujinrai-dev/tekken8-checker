@@ -890,6 +890,7 @@ function buildChars() {
   mkChar('tono', 'mage', 'hakama', { C: '#c9a03a', c: '#9a7826', O: '#7a1f3a', w: '#f4f0e2', P: '#5f3a96', p: '#432a6e' });
   mkChar('karo', 'mage', 'hakama', { H: '#4a4258', C: '#3a3a52', c: '#27273a', O: '#96291f', w: '#96291f', P: '#2b2838', p: '#1c1a26' });
   mkChar('shinbe', 'child', 'kimono', { C: '#3d6fd0', c: '#2a4f9c', O: '#f3d44c', F: '#3a2a1a' });
+  if (typeof buildChars2 === 'function') buildChars2();   // 第二章③④の人物
   mkDog();
   // 別次元の住人（あいもんに描かせた原画を24×24に落とし、目元を手直し。2026-11-26）
   const JIGEN = {"robe1":{"p":["#bdbbb8","#040404","#4268a6","#795636","#fafafa","#c79561","#6994d9","#2e3138","#fccc87","#777776","#bed6fa","#b17a42","#ffe14a"],"r":[".......bbbb.....",".....bbeekkb....","....beeeeekkb...","...beeeeeekkkb..","...beeeeekkkkb..","..beeeeeeegkkb..","..beeeeebeegkkb.",".beeeebbbbbegkb.",".beeebmbbmbbeeb.",".bbbbbffffbbbeb.","bllbcgfffflggb..","blldgggbbbggb...",".blkkkgbabgkkb..","..bgkegebkgeeb..",".biigegecegkeeb.",".biigkeffegkeeb.","..bbkgebcbekkeb.","..bgkcehgbkkkgeb","..bgeekgghkkbeb.","..bbbbbbbbbb.b..","....bbbb.bbbb..."]},"robe2":{"p":["#9e9b9b","#050403","#7e542b","#f6c356","#cccbc9","#6c3b81","#b1763d","#3b283b","#db9f4a","#fcdb7a","#5b3d60","#a04da8","#fff6a0"],"r":[".....bbbb.....","....bllffbb...","...bllllffb...","..blllllfffb..","..blllllfffb..",".bllljjjjfffb.",".bljjbbbbbjjfb",".bjbbbbbbbbjkb","bjjbmbbbbmbjib","bdbbbccccbbbib",".biibggggbkib.","..biidbbddbb..",".bllbdjidbffb.",".blffddddflfb.","bldiibbbddffb.","bdbiibiibddffb","bdbbbbbbbbdffb","bbbdibkkhdbdfb",".bibihkkkdddb.",".bbbbbbbbbibb.","...bbbbbbbb..."]},"robe3":{"p":["#eeeef0","#040403","#ad733d","#e9b373","#3e5846","#afafaf","#6a8a6c","#82562d","#fccc89","#273329","#bf8449","#cdcdce","#ffe14a"],"r":["......bbbb.....","....bbgggeb....","...bgggggeeb...","...bgggggeeeb..","..bggggggeeeb..","..bgggbbbbgeeb.","..bggbbbbbbgeb.",".bggbmbbbmbbgeb",".bgbbiiiiibbgfb",".bbbaaaaaaabbfb","bccllaaaaabllb.","bcbbllaaalllb..",".bceeblaaljjb..",".bkjeelaaleeeb.",".biieebbbleeeb.",".bidellchleeeeb","..bbelbjbblblfb","..bbelbebbfelbb","..belbeeeelebb.","..bblbbbbbbfb..","..bbbbb.bbbb..."]},"robot":{"p":["#dbdadf","#050404","#ed4337","#878590","#fbd043","#b32b25","#f0796a","#ebb81e","#463c3f","#fde081","#b6b4bd","#9d504c"],"r":["........bb........",".......bcb........","........bb........","......bbaabb......",".....bakkkkkb.....","....bakkkkkkkb....","...bbkjhddeekbb...","...bkkehddeekbb...","...bbkaaaaakkbb...",".bbcbbbbbbbbbbcb..",".bccbkkkkkkkkkcfb.",".bkkbkcccccfkbkb..",".bibdkcccccckbblb.","bkadbdccccccdbaab.","bccfbbbccccbbbfcfb","bccfadkkkkkkbaccfb","bbkbagbbbbbbgakkb.",".bkbagbb..bgcbbkb.","..b.bccb..bccb.b..","...bcccb.bfgccb...","...bbbbb.bbbbbb..."]},"dragon":{"p":["#ececeb","#040403","#bf8c31","#3c6a3c","#74ac65","#f8cf66","#253922","#5b9154","#e4a936","#585440","#a5aa9a","#fcdd86","#ffffff"],"r":[".....bb....bb.....",".....blb...bb.....",".....blbbbblb.....","....bbleeeelbb....","....beeeeeeeeb....","....bemmeemmeb....","....bembeembeb....","....beeebbeeeb....","..bbaeeeeeeeb.bb..",".bihaabeeeeb.beib.","bfiihabgccgbbdiifb","bffifbedlldebiiffb","bbfffehlllleefffbb","..bbeeelllleeebb..","...beeeliiiheeb...","...beelllllleeb.bb","...bebhillihlb.beb","....beefllfeebbedb","....beebccbhehebb.","....behebbeeebb...","...bbbbb..bbbb...."]},"yeti":{"p":["#d1ceed","#030303","#64739f","#32374b","#9ea1c6","#bbbada","#848bb8","#8a898e","#5f5e66","#47557e","#17181d","#f6f3fd","#ff5a4a"],"r":["......bbbbbb.......",".....bllllllbb.....","....blllllllllb....","...blllllllllab....","....bllljljlllab...","..bbllbcccccblab...","...bllcmcccmclaab..","..blllcccccccllab..","..blllcbbbbbcllab..",".blllllllllllllaab.","..blllllllllllllb..",".blllglllllllgllfb.",".bllallllllllgallb.","bllaabellllggaalllb","bllaaalagggallalllb","bljjblllaallllbjjfb","bcccbllaaballlbccb.",".bcbllafb.bflllbcb.","..bblljeb.bfjllbb..","...bgcjjb.bcccb....","...bbbbb..bbbbbb..."]}};
@@ -2050,6 +2051,8 @@ const MEMBERS = {
     cls: [{ name: '武闘家', noMp: true }], clsDef: () => 0 },
 };
 const EXP_TABLE = [0, 0, 15, 50, 105, 180, 310, 590, 870, 1260, 1750, 2310, 2940, 3710, 4620, 5740, 7000, 8540, 10360, 12460, 14840];
+// 2026-11-27：第二章でレベル20で止まっていたので、40まで伸ばす（21以降は1つごとに約1割ずつ重くなる）
+for (let lv = 21, d = 2380; lv <= 40; lv++) { d = Math.round(d * 1.1 / 10) * 10; EXP_TABLE.push(EXP_TABLE[lv - 1] + d); }
 const MAX_LV = EXP_TABLE.length - 1;
 /* リーチバー：次のレベルまでの進み具合（0〜1）と残りの経験値 */
 const expFrac = m => m.lv >= MAX_LV ? 1 : (m.exp - EXP_TABLE[m.lv]) / (EXP_TABLE[m.lv + 1] - EXP_TABLE[m.lv]);
@@ -2820,7 +2823,7 @@ function loadMap(id, x, y, dir) {
   G.mapId = id; G.map = compileMap(id);
   placeParty(x, y, dir);
   const S = STORY[id] || {};
-  G.npcs = (S.npcs || []).filter(n => !n.cond || n.cond()).map(n => Object.assign(mkMover(n.sprite, n.x, n.y, n.dir || 'down'), { def: n, id: n.id, hx: n.x, hy: n.y, wt: 1 + rand() * 2 }));
+  G.npcs = (S.npcs || []).filter(n => !n.cond || n.cond()).map(n => Object.assign(mkMover(n.sprite, n.x, n.y, n.dir || 'down'), { def: n, id: n.id, hx: n.x, hy: n.y, wt: 1 + rand() * 2, alpha: n.alpha }));
   G.path = null; G.encSteps = 0;
   if (G.mode === 'field') SND.bgm(S.bgm ? S.bgm() : G.map.def.bgm);
   G.tint = S.tint ? S.tint() : null;
@@ -2888,6 +2891,7 @@ async function interact() {
 const SHUN_FREE = ['bandit', 'sosuke', 'dosetsu', 'samojiro', 'shino', 'genpachi', 'kobungo'];   // 総スカンでも口をきく者（浪人・山賊・犬士）
 async function talkTo(n) {
   if (ryo() < 0 && G.map && ['out', 'in'].includes(G.map.def.kind) && !SHUN_FREE.includes(n.def.sprite)) {
+    G.flags.hachibu = true;   // 村八分を一度でも味わった（鬼子母神に「はなす」が届く）
     await say(pick(['……。|（目を そらされた）', '……あっちへ 行っとくれ。', '……。|（口を きいて もらえない）']), { name: n.def.name }); return;
   }
   const t = n.def.talk, pic = n.def.pic;
@@ -3004,7 +3008,9 @@ function drawSprite(m, camX, camY) {
   const fr = Math.floor(G.time * 3.2 + m.phase) % 4;
   const x = Math.round((m.fx + (m.x - m.fx) * m.t) * TS - camX), y = Math.round((m.fy + (m.y - m.fy) * m.t) * TS - camY);
   cx.fillStyle = 'rgba(0,0,0,0.22)'; cx.beginPath(); cx.ellipse(x + 8, y + 14, 5, 2, 0, 0, Math.PI * 2); cx.fill();
-  const im = s[m.dir][fr]; cx.drawImage(im, x + 8 - (im.width >> 1), y + 14 - im.height);   // 16×16も24×24も足元をそろえる
+  const im = s[m.dir][fr]; if (m.alpha) cx.globalAlpha = m.alpha * (0.85 + 0.15 * Math.sin(G.time * 2));   // 幽霊は透ける
+  cx.drawImage(im, x + 8 - (im.width >> 1), y + 14 - im.height);   // 16×16も24×24も足元をそろえる
+  cx.globalAlpha = 1;
 }
 function renderField() {
   const [camX, camY] = camera();
@@ -3036,6 +3042,7 @@ function renderField() {
   if (G.map.def.night || G.tint) {
     const tint = G.tint || { c: 'rgba(30,20,80,0.35)' };
     cx.save(); cx.globalCompositeOperation = 'multiply'; cx.fillStyle = tint.c; cx.fillRect(0, 0, VW, VH); cx.restore();
+    if (tint.fog) { cx.fillStyle = 'rgba(232,236,244,' + (tint.fog + 0.05 * Math.sin(G.time * 0.7)) + ')'; cx.fillRect(0, 0, VW, VH); }   // 霧（対馬・流刑島）
   }
   // 別次元の都：夜の色をかぶせた後に都のタイルだけ描き直す（都の光は夜でも明るいまま）。空中回廊には行き交う光（人や乗り物）を流す
   if (G.map.def.glowTiles) {
@@ -3083,7 +3090,7 @@ const UI = (() => {
     '錠前': 'じょうまえ', '反魂丹': 'はんごんたん', '鎖帷子': 'くさりかたびら', '脇差': 'わきざし', '簪': 'かんざし', '印籠': 'いんろう',
     '孝の玉': 'こうのたま', '義の玉': 'ぎのたま', '忠の玉': 'ちゅうのたま', '『孝』': '『こう』', '『義』': '『ぎ』', '『忠』': '『ちゅう』',
     '牡丹': 'ぼたん', '痣': 'あざ', '神足': 'じんそく', '全神速': 'ぜんしんそく', '無刀取り': 'むとうどり', '剣豪': 'けんごう', '剣聖': 'けんせい', '棒術': 'ぼうじゅつ',
-    '下関': 'しものせき', '長門': 'ながと', '周防': 'すおう', '石見': 'いわみ', '安芸': 'あき', '出雲': 'いずも', '備後': 'びんご', '伯耆': 'ほうき', '美作': 'みまさか', '備前': 'びぜん', '備中': 'びっちゅう', '播磨': 'はりま', '大山': 'だいせん', '鬼封じ': 'おにふうじ', '錫杖': 'しゃくじょう', '野伏せり': 'のぶせり', '山童': 'やまわろ', '大入道': 'おおにゅうどう', '蒼鬼火': 'あおおにび', '具足': 'ぐそく', '渦潮': 'うずしお', '瀬戸内': 'せとうち', '山陽': 'さんよう', '山陰': 'さんいん', '白装束': 'しろしょうぞく', '路銀': 'ろぎん', '曲者': 'くせもの', '拙者': 'せっしゃ', '樫': 'かし', '居合い': 'いあい',
+    '下関': 'しものせき', '因幡': 'いなば', '鬼子母神': 'きしもじん', '女郎蜘蛛': 'じょろうぐも', 'お駒': 'おこま', '房八': 'ふさはち', '沼藺': 'ぬい', '産婆': 'さんば', '産着': 'うぶぎ', '水子': 'みずこ', '伊右衛門': 'いえもん', '民谷': 'たみや', 'お岩': 'おいわ', '直吉': 'なおきち', '対馬': 'つしま', '唐津': 'からつ', '流刑島': 'るけいじま', '流人': 'るにん', '人吉': 'ひとよし', '抜け荷': 'ぬけに', '身代': 'しんだい', '算盤': 'そろばん', '長船': 'おさふね', '奉行': 'ぶぎょう', '証文': 'しょうもん', '延べ棒': 'のべぼう', '株式会社': 'かぶしきがいしゃ', '里八': 'さとはち', '親兵衛': 'しんべえ', '仁の玉': 'じんのたま', '『仁』': '『じん』', '稲生': 'いのう', '温羅': 'うら', '牛鬼': 'うしおに', '猿神': 'さるがみ', '山ン本五郎左衛門': 'さんもとごろうざえもん', '祠': 'ほこら', '庄屋': 'しょうや', '生贄': 'いけにえ', '輿': 'こし', '長門': 'ながと', '周防': 'すおう', '石見': 'いわみ', '安芸': 'あき', '出雲': 'いずも', '備後': 'びんご', '伯耆': 'ほうき', '美作': 'みまさか', '備前': 'びぜん', '備中': 'びっちゅう', '播磨': 'はりま', '大山': 'だいせん', '鬼封じ': 'おにふうじ', '錫杖': 'しゃくじょう', '野伏せり': 'のぶせり', '山童': 'やまわろ', '大入道': 'おおにゅうどう', '蒼鬼火': 'あおおにび', '具足': 'ぐそく', '渦潮': 'うずしお', '瀬戸内': 'せとうち', '山陽': 'さんよう', '山陰': 'さんいん', '白装束': 'しろしょうぞく', '路銀': 'ろぎん', '曲者': 'くせもの', '拙者': 'せっしゃ', '樫': 'かし', '居合い': 'いあい',
   };
   const RUBY_RE = new RegExp(Object.keys(RUBY).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -3303,6 +3310,7 @@ async function battleLoop() {
       if (!B.sim) BUI.clear();
       if (a.side === 'p') await partyAct(a); else if (a.side === 'f') await famAct(a.who); else await enemyAct(a.who);
       if (!B.sim) BUI.status();
+      if (B.talked) { if (!B.sim) { BUI.clear(); SND.stopBgm(); } return 'talked'; }   // 話して戦いが終わった
       if (!evilLeft()) { await goodsLeave(); return await victory(); }
       if (!liveP().length) return await defeat();
       if (B.opt.rescue && !B.rescued && (B.party[0].hp <= stat(B.party[0], 'hp') * 0.3 || B.round >= 4)) { B.rescued = true; await B.opt.rescue(); if (!B.sim) BUI.status(); break; }
@@ -3337,7 +3345,7 @@ async function damageEnemy(t, v) {
   await out(v > 0 ? t.name + 'に ' + v + 'の ダメージ！' : 'ミス！ ' + t.name + 'に ダメージを あたえられない！', 550);
   if (t.hp <= 0) {
     SND.sfx('die'); await fx('edie', t); await out(t.name + 'を たおした！', 600);
-    if (!B.sim) {
+    if (!B.sim && !t.d.noRyo) {
       G.flags.ryo = ryo() + (t.good ? -10 : 1) * t.d.exp;
       if (t.good) { G.flags.goodKills = (G.flags.goodKills || 0) + 1; await out('……なにか いやな 手ごたえが のこった。', 700); }
     }
@@ -3355,6 +3363,7 @@ async function partyAct(a) {
   if (a.type === 'guard') { await out(mName(m) + 'は 身を まもっている。', 500); return; }
   if (a.type === 'talk') {
     const t = retarget(a.target); if (!t) return;
+    if (B.opt.onTalk) { const r = await B.opt.onTalk(t, m); if (r === 'end') { B.talked = true; return; } if (r === false) return; }   // 特別な敵（鬼子母神）
     await out(mName(m) + 'は ' + t.name + 'に 話しかけた。', 500);
     if (!t.good) { await out(t.name + 'は 聞く耳を もたない！', 600); return; }
     for (const line of pick(GOOD_TALK).split('|')) await out(line, 700);
@@ -5674,6 +5683,7 @@ const CP = {
   shimo: [12, 58], suo: [40, 56], iwami: [46, 34], aki: [68, 60], izumo: [76, 26],
   bingo: [90, 52], hoki: [102, 30], mimasaka: [124, 42], bizen: [140, 56], tera: [108, 50],
   harima: [152, 46], doso: [30, 52],
+  inaba: [122, 32], inahama: [132, 26], kumomori: [142, 32],   // 第二章③：因幡の村・因幡の浜・蜘蛛の森
 };
 function buildChugokuRows() {
   const W = CHU_W, H = CHU_H, g = [];
@@ -5702,6 +5712,7 @@ function buildChugokuRows() {
   // 森
   for (const [cx, cy, rx, ry] of [[22, 50, 3, 2.4], [52, 50, 3, 2.4], [62, 30, 3, 2], [86, 30, 3, 2], [116, 34, 3, 2.4], [132, 48, 3, 2], [96, 58, 3, 2], [126, 58, 2.6, 2], [78, 50, 2.6, 2]])
     blob(cx, cy, rx, ry, 'F', 121, ['M', '~']);
+  blob(142, 35, 4, 2.6, 'F', 151, ['M', '~']);                     // 蜘蛛の森（因幡）
   for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) if ('.,;'.includes(g[y][x]) && hash2(x, y, 133) < 0.025) set(x, y, 'T');
   // 宍道湖（出雲）
   blob(84, 26, 3.4, 1.6, '~', 117);
@@ -5722,10 +5733,14 @@ function buildChugokuRows() {
   via([109, 50], [124, 50], [124, 43]);                            // 寺 → 美作
   via([124, 50], [140, 50], [140, 55]);                            // 美作路 → 備前
   via([140, 50], [140, 46], [151, 46]);                            // 備前 → 播磨の関所
+  via([102, 32], [122, 32]);                                       // 伯耆 → 因幡の村
+  via([122, 31], [122, 28], [132, 28], [132, 27]);                 // 因幡の村 → 因幡の浜
+  via([132, 28], [142, 28], [142, 31]);                            // 因幡の浜 → 蜘蛛の森
   const mark = (k, c) => set(CP[k][0], CP[k][1], c);
   for (const k of ['shimo', 'suo', 'iwami', 'aki', 'izumo']) mark(k, 'K');
   for (const k of ['bingo', 'hoki', 'mimasaka', 'bizen']) mark(k, 'O');
   mark('tera', 'R'); mark('harima', 'G'); mark('doso', 'J');
+  mark('inaba', 'O'); mark('inahama', 'O'); mark('kumomori', 'C');
   // 播磨との国ざかいは山でふさぎ、関所だけを開ける（次の章）
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     if (!onLand(x, y) || ckuni(x, y) !== 'P') continue;
@@ -5929,23 +5944,196 @@ MEMBERS.dosetsu.clsDef = () => flag('chuBack') ? 1 : 0;   // 忠の玉は左母�
 
 const KONTON = ['bingo', 'hoki', 'mimasaka', 'bizen'];
 const kontonLeft = () => KONTON.filter(k => !flag('k_' + k)).length;
-// 4つの村：諸県村と同じ間取り。混沌に支配されているあいだは暗い霧に包まれ、夜の曲
+
+/* =====================================================================
+   第二章③④（2026-11-27）
+   ③ 因幡：鬼子母神と親兵衛（寄り道）　④ 対馬：お岩・伊右衛門・お銀と里八株式会社（寄り道）
+   ほかに：中国の4つの村を村ごとの間取りに作り直し（宿・店・民家に入れる）、控えの仲間との合流、
+   第二章の終わり（安芸の港から四国へ）
+   ===================================================================== */
+
+/* ---------------- 新しい人物の絵 ---------------- */
+function buildChars2() {
+  mkChar('ogin', 'long', 'kimono', { X: '#e6cb8e', C: '#2b2838', c: '#1c1a26', O: '#d6463a', F: '#f4f0e2' });
+  mkChar('oiwa', 'long', 'kimono', { H: '#1a1a22', C: '#e8ecf2', c: '#b8c0cc', O: '#9aa4b4', F: '#f4f0e2' });
+  mkChar('iemon', 'mage', 'hakama', { H: '#1a1a22', C: '#4a3a5a', c: '#33283f', O: '#c9a03a', w: '#c9a03a', P: '#2b2838', p: '#1c1a26' });
+  mkChar('okoma', 'bun', 'kimono', { H: '#3a2a22', C: '#8d8b94', c: '#6a6872', O: '#5b5966', F: '#3a2a1a' });
+  mkChar('naokichi', 'short', 'hakama', { C: '#8a6a44', c: '#6a4f30', O: '#3a2a1a', P: '#55503f', p: '#3f3b2e' });
+  mkChar('nui', 'bun', 'kimono', { C: '#3d6fd0', c: '#2a4f9c', O: '#f3d44c', F: '#f4f0e2' });
+}
+
+/* ---------------- 読みのルビ・話し手 ---------------- */
+Object.assign(N, { kishimo: '鬼子母神', koma: 'お駒', jorogumo: '女郎蜘蛛', fusa: '房八', nui: '沼藺', iemon: '伊右衛門', oiwa: 'お岩', nao: '直吉', ogin: 'お銀', sotono: '対馬の殿', fuse: '伏姫の声' });
+
+/* ---------------- 仲間：お銀（隠し仲間・女商人） ---------------- */
+Object.assign(SKILLS, {
+  zeninage: { name: '銭投げ', mp: 4, target: 'enemies', kind: 'phys', mult: 0.9, desc: '銭を つぶてにして 敵すべてに 投げつける' },
+  senryo:   { name: '千両箱', mp: 7, target: 'enemy', kind: 'phys', mult: 2.1, acc: 0.9, desc: '千両箱で 敵ひとりを なぐりつける' },
+  kizukai:  { name: '気づかい', mp: 5, target: 'party', kind: 'healall', pow: [18, 24], field: true, desc: '味方すべてに 薬を くばる' },
+});
+MEMBERS.ogin = { name: 'お銀', full: 'お銀', bead: '', sprite: 'ogin', wt: 'soroban',
+  base: { hp: 30, mp: 12, atk: 7, def: 5, agi: 9 }, grow: { hp: 6.8, mp: 2.6, atk: 2.1, def: 1.4, agi: 1.6 },
+  learn: [[1, 'zeninage'], [1, 'kizukai'], [24, 'senryo']],
+  cls: [{ name: '女商人' }], clsDef: () => 0 };
+JOB.ogin = '女商人';
+Object.assign(ITEMS, {
+  tetsusoroban: { name: '鉄の算盤', kind: 'w', wt: 'soroban', atk: 27, price: 900, desc: '玉まで 鉄で できた 重い 算盤' },
+  kinsoroban:   { name: '金の算盤', kind: 'w', wt: 'soroban', atk: 36, price: 1900, desc: '金の 玉の 算盤。商売繁盛' },
+  bizenosafune: { name: '備前長船', kind: 'w', wt: 'sword', atk: 40, price: 2400, desc: '備前の 刀鍛冶が 打った 名刀' },
+});
+
+/* ---------------- 戦い：はなす（特別な敵）・人望が動かない敵 ---------------- */
+// 敵の定義に noRyo:true があると、倒しても人望は上下しない（善玉の数にも数えない）
+
+/* =====================================================================
+   1. 中国の4つの村：村ごとの間取り（宿・店・民家）
+   ===================================================================== */
+const CH2_VLAYOUT = {
+  bingo: { rows: [
+    'TTTTTTTTTTTTTTTTTTTT',
+    'T.KKKKKK..;..RRRR.gT',
+    'T.KKKKKK.....RRRR.gT',
+    'T.WWWBWW.....WWDW.jT',
+    'T....=..........=..T',
+    'T..==============..T',
+    'T.......=.o...,....T',
+    'T.RRRR..=..........T',
+    'T.RRRR..=.....*....T',
+    'T.WWIW..=...pppppp.T',
+    'T...=...=...pppppp.T',
+    'T...=====...pppppp.T',
+    'TT......=........TTT',
+    'TTTTTTTT=TTTTTTTTTTT'],
+    pos: { osa: [6, 4], father: [6, 10], woman: [12, 6], kid: [16, 7] },
+    doors: { inn: [5, 3], house: [15, 3], shop: [4, 9] },
+    looks: [[10, 6, '井戸だ。'], [18, 1, '古い 墓だ。|『稲生』と 刻まれている。'], [18, 3, 'お地蔵さまだ。|前に 小さな 団子が 供えてある。']] },
+  hoki: { rows: [
+    'TTTTTTTTTTTTTTTTTTTT',
+    'TMMMMMMMMhMMMMMMMMMT',
+    'T.RRRR...=....RRRR.T',
+    'T.RRRR...=....RRRR.T',
+    'T.WDWW...=....WWNW.T',
+    'T..=.....=......=..T',
+    'T..==============..T',
+    'T.......=.o........T',
+    'T.pppp..=........,.T',
+    'T.pppp..=...pppppp.T',
+    'T.pppp..=...pppppp.T',
+    'T.......=..........T',
+    'TT......=........TTT',
+    'TTTTTTTT=TTTTTTTTTTT'],
+    pos: { osa: [6, 5], father: [6, 11], woman: [12, 7], kid: [17, 8] },
+    doors: { inn: [16, 4], house: [3, 4], shop: null },
+    boss: [10, 9], well: [10, 7],
+    looks: [[10, 7, () => flag('k_hoki') ? '井戸だ。|水が 澄んでいる。' : '井戸だ。|黒く にごった 水から|生ぐさい においが する……'], [9, 1, () => flag('k_hoki') ? '大山の 神を まつる 祠だ。|お神酒が 新しく 供えてある。' : '大山の 神を まつる 祠だ。|しめ縄が 黒く すすけている。']] },
+  mimasaka: { rows: [
+    'TTTTTTTTTTTTTTTTTTTT',
+    'TTTT...h....TTTTTTTT',
+    'TT.....=.....RRRR.TT',
+    'T......=.....RRRR..T',
+    'T......=.....WWNW..T',
+    'T.RRRR.=.......=...T',
+    'T.RRRR.==========..T',
+    'T.WDWW...=.o.......T',
+    'T...=....=.........T',
+    'T...======.........T',
+    'T.........=...pppp.T',
+    'T.KKKK....=...pppp.T',
+    'T.WWIW..=.=........T',
+    'TTTT=...=TTTTTTTTTTT'],
+    pos: { osa: [17, 5], musume: [12, 8], father: [6, 8], kid: [16, 9] },
+    doors: { inn: [15, 4], house: [3, 7], shop: [4, 12] },
+    boss: [12, 9], well: [11, 7], exitX: 8,
+    looks: [[11, 7, '井戸だ。'], [7, 1, () => flag('k_mimasaka') ? '山の 神の 祠だ。|生贄の 輿は 薪に されて いた。' : '山の 神の 祠だ。|前に 白木の 輿が 据えられている……']] },
+  bizen: { rows: [
+    'TTTTTTTTTTTTTTTTTTTT',
+    'T.KKKK..;...KKKKKK.T',
+    'T.KKKK......KKKKKK.T',
+    'T.WWAW......WWWBWW.T',
+    'T...=.........=....T',
+    'T...============...T',
+    'T.......=.o......,.T',
+    'T.RRRR..=..........T',
+    'T.RRRR..=...MMMMM..T',
+    'T.WWDW..=...MMfMM..T',
+    'T...=...=..........T',
+    'T...=====..........T',
+    'TT......=........TTT',
+    'TTTTTTTT=TTTTTTTTTTT'],
+    pos: { osa: [6, 4], kaji: [6, 10], woman: [12, 6], kid: [17, 10] },
+    doors: { inn: [15, 3], house: [4, 9], arms: [4, 3] },
+    looks: [[10, 6, '井戸だ。'], [14, 9, () => flag('k_bizen') ? '刀を 鍛える 炉だ。|火が ごうごうと 燃えている。' : '刀を 鍛える 炉だ。|火は 消え、灰が 冷えている。']] },
+};
+const CH2_VNAME = { bingo: '備後', hoki: '伯耆', mimasaka: '美作', bizen: '備前' };
+// 村の建物：村長（庄屋）の家は霧が晴れると宿になる。よろず屋・鍛冶屋・民家
+function chuVillageRooms(key) {
+  const L = CH2_VLAYOUT[key], id = 'v_' + key, free = () => flag('k_' + key), nm = CH2_VNAME[key], warps = [];
+  const back = d => [id, d[0], d[1] + 1];
+  if (L.doors.inn) {
+    const rid = 'vinn_' + key;
+    townInn(rid, nm + 'の 庄屋の家', back(L.doors.inn), 10, rid);
+    STORY[rid].npcs[0] = { id: 'okami', sprite: 'woman2', name: '庄屋の奥方', x: 2, y: 1, talk: async () => {
+      if (!free()) { await say('すみませぬ……化け物が おる うちは|旅の お方を おもてなし|できませぬ。', { name: '庄屋の奥方' }); return; }
+      await inn(10, { id: rid, name: '庄屋の奥方', hello: '村を 救って くださった お方。|狭い 家ですが どうぞ。' });
+    } };
+    CH2_MAPS.add(rid); warps.push({ x: L.doors.inn[0], y: L.doors.inn[1], to: rid, tx: 5, ty: 5, dir: 'up' });
+  }
+  if (L.doors.house) {
+    const rid = 'vhouse_' + key;
+    townHouse(rid, '民家', back(L.doors.house), [{ id: 'oba', sprite: 'kamezasa', name: 'ばあさま', x: 3, y: 2, wander: true, radius: 1,
+      talk: async () => { await say(free() ? CH2_HOUSE_TALK[key][1] : CH2_HOUSE_TALK[key][0], { name: 'ばあさま' }); } }], 150);
+    CH2_MAPS.add(rid); warps.push({ x: L.doors.house[0], y: L.doors.house[1], to: rid, tx: 3, ty: 4, dir: 'up' });
+  }
+  if (L.doors.shop) {
+    const rid = 'vshop_' + key;
+    townShop(rid, 'よろず屋', back(L.doors.shop), T_ITEMS, 'よろず屋');
+    STORY[rid].npcs[0].talk = async () => {
+      if (!free()) { await say('こんな ときに 店なんか|開けて られるかい……||（店の 奥で ふるえている）', { name: 'よろず屋' }); return; }
+      await shop(['yakusou', 'dokukeshi', 'reisui', 'hangontan', 'mayoke', 'modorisuzu'], { name: 'よろず屋', hello: 'おかげで 店を 開けられたよ。|なんでも 見て いきな。' });
+    };
+    CH2_MAPS.add(rid); warps.push({ x: L.doors.shop[0], y: L.doors.shop[1], to: rid, tx: 4, ty: 4, dir: 'up' });
+  }
+  if (L.doors.arms) {
+    const rid = 'varms_' + key;
+    townShop(rid, '刀鍛冶', back(L.doors.arms), T_ARMS, '刀鍛冶');
+    STORY[rid].npcs[0] = { id: 'shop', sprite: 'man2', name: '刀鍛冶の親方', x: 4, y: 1, talk: async () => {
+      if (!free()) { await say('炉を 鬼に 奪われちゃ|槌も ふれねえ。||温羅を なんとか しねえ かぎり、|刀は 一本も 打てねえよ。', { name: '刀鍛冶の親方' }); return; }
+      await shop(['bizenosafune', 'nodachi', 'shakujo', 'nagajitte', 'kongotekko', 'tetsusoroban', 'tosei'], { name: '刀鍛冶の親方', hello: '炉に 火が 戻った。|備前の 刀を 見て いってくれ。' });
+    } };
+    CH2_MAPS.add(rid); warps.push({ x: L.doors.arms[0], y: L.doors.arms[1], to: rid, tx: 4, ty: 4, dir: 'up' });
+  }
+  return warps;
+}
+const CH2_HOUSE_TALK = {
+  bingo: ['夜に なると 行灯が 歩きだすのじゃ。|おとなしゅう しておれば|悪さは せんがの……', '稲生の 若様の 話を|孫に 聞かせて やったら、|もう 怖がらんように なったわい。'],
+  hoki: ['井戸の 水が 飲めんでな。|雨水を ためて しのいで おる。', '大山の 雪どけ水が また|井戸に 戻ってきた。|ありがたや ありがたや。'],
+  mimasaka: ['わしの 若いころも 生贄は あった。|いつの 間にか 途絶えて おったのに……|あの 猿は 壺から 出てきたのじゃな。', '娘っ子が 生贄に ならずに すんだ。|長生きは するもんじゃ。'],
+  bizen: ['温羅の 投げた 岩で|うちの 屋根に 穴が あいたよ。', '刀鍛冶の 槌の 音が|また 聞こえるように なった。|この 村は これで なくっちゃ。'],
+};
+
+// 4つの村の作り：前のものを置き換える（間取り・入口・建物・人の立ち位置は村ごと）
 function chuVillage(key, o) {
-  const id = 'v_' + key, free = () => flag('k_' + key);
-  MAPS[id] = { name: o.name, kind: 'out', bgm: 'village', rows: MAPS.morokata.rows };
+  const id = 'v_' + key, free = () => flag('k_' + key), L = CH2_VLAYOUT[key];
+  const ex = L.exitX || 8;
+  MAPS[id] = { name: o.name, kind: 'out', bgm: 'village', rows: L.rows };
   CH2_MAPS.add(id);
+  const bp = L.boss || [10, 8];
   STORY[id] = {
     edges: { s: { to: 'chugoku', x: CP[key][0], y: CP[key][1] + 1, dir: 'down' } },
     bgm: () => free() ? 'village' : 'night',
     tint: () => free() ? null : { c: 'rgba(70,50,90,0.6)' },
-    npcs: o.npcs.map(n => ({ ...n, talk: async () => { const t = free() ? n.after : n.before; for (const p of [].concat(t)) await say(p, { name: n.name }); if (n.extra) await n.extra(); } })),
+    warps: chuVillageRooms(key),
+    npcs: o.npcs.map(n => ({ ...n, ...(L.pos[n.id] ? { x: L.pos[n.id][0], y: L.pos[n.id][1] } : {}),
+      talk: async () => { const t = free() ? n.after : n.before; for (const p of [].concat(t)) await say(p, { name: n.name }); if (n.extra) await n.extra(); } })),
     objects: [
-      { type: 'boss', spr: o.boss, x: 10, y: 8, scale: 0.4, block: true, cond: () => !free(), run: async () => { await o.event(); } },
-      look(10, 6, ['井戸だ。']),
+      { type: 'boss', spr: o.boss, x: bp[0], y: bp[1], scale: 0.4, block: true, cond: () => !free(), run: async () => { await o.event(); } },
+      ...L.looks.map(([x, y, t]) => look(x, y, async () => { await say(typeof t === 'function' ? t() : t); })),
     ],
     onEnter: async () => { if (!free() && !flag('see_' + key)) { setFlag('see_' + key); for (const p of [].concat(o.enter)) await say(p); } },
   };
 }
+
+
 async function kontonFight(key, bossId, intro, lastWords) {
   const r = await fight([bossId], { boss: true, bg: 'field', intro, winText: N[bossId] + 'を うちたおした！' });
   if (r !== 'win') return false;
@@ -5999,7 +6187,7 @@ chuVillage('hoki', {
       extra: async () => { if (flag('k_hoki') && !flag('hokiGift')) { setFlag('hokiGift'); addItem('dokukeshi', 3); SND.sfx('item'); await say('毒消しを 3つ もらった！'); } } },
     { id: 'woman', sprite: 'woman2', name: '女', x: 12, y: 6, wander: true, radius: 1,
       before: ['白装束の 行者さまが 火の 術で|牛鬼を 焼こうと したの。||でも 炎が 弱くて……|「玉さえ 取り返せば」と。'],
-      after: ['行者さまは 東の 寺の 方へ|行ったわ。'] },
+      after: ['行者さまは 東の 寺の 方へ|行ったわ。', '……そういえば、北東の 因幡では|夜に 子どもが さらわれるって|噂よ。こわいわね。'] },
     { id: 'kid', sprite: 'child', name: '子ども', x: 15, y: 10, wander: true, radius: 2,
       before: ['おなか いたい……|お水 のんだら いたいの……'], after: ['もう おなか いたくない！'] },
   ],
@@ -6060,6 +6248,7 @@ MAPS.onitera1 = { name: '鬼封じの寺・本堂', kind: 'in', bgm: 'cave', enc
 MAPS.onitera2 = { name: '鬼封じの寺・奥の院', kind: 'in', bgm: 'cave', rows: MAPS.kodera3.rows };
 CH2_MAPS.add('onitera1'); CH2_MAPS.add('onitera2');
 STORY.onitera1 = {
+  npcs: [{ id: 'koma', sprite: 'okoma', name: 'お駒', x: 9, y: 2, dir: 'up', cond: () => flag('komaSaved'), talk: say1('お駒', '……あの 子と、わたしが 奪った|子らの ために、毎日 経を|あげて います。', '因幡の 村の 人が、墓に 花を|供えて くれて いると 聞きました。||……ありがたい ことです。') }],
   warps: [{ x: 8, y: 12, to: 'chugoku', tx: CP.tera[0], ty: CP.tera[1] + 1, dir: 'down', sfx: 'door' }, { x: 14, y: 7, to: 'onitera2', tx: 6, ty: 7, dir: 'up', sfx: 'stairs' }],
   objects: [
     chest('c_oni1a', 2, 7, { item: 'hangontan' }),
@@ -6127,6 +6316,813 @@ async function benchPick() {
     await say('では 先で 待っている。|噂を 聞いたら 追いついて こい。', { name: mName(m) });
   }
 }
+
+/* =====================================================================
+   2. 控えの仲間：合流と入れ替え
+   ===================================================================== */
+// 仲間を入れ替える画面（入れる仲間→外す仲間の順に選ぶ）。会社でも、ボスの手前の合流でも使う
+async function swapMembers(o = {}) {
+  G.reserve = G.reserve || [];
+  for (;;) {
+    if (!G.reserve.length) { await say(o.empty || '控えの 仲間は いない。'); return; }
+    const c = await UI.choose([...G.reserve.map(m => ({ label: mName(m), right: 'Lv' + m.lv })), { label: 'やめる' }], { x: 60, y: 50, w: 140, cancel: true, title: '連れて いく 仲間' });
+    if (c < 0 || c >= G.reserve.length) return;
+    const inM = G.reserve[c];
+    if (G.party.length < 4) {
+      G.reserve.splice(c, 1); G.party.push(inM); inM.hp = Math.max(1, inM.hp); refreshFollowers();
+      await say(mName(inM) + 'が 一行に くわわった！'); continue;
+    }
+    const k = await UI.choose([...G.party.map(m => ({ label: mName(m), right: 'Lv' + m.lv, dis: m.id === 'shino' })), { label: 'やめる' }], { x: 60, y: 50, w: 140, cancel: true, title: 'かわりに 外す 仲間' });
+    if (k < 0 || k >= G.party.length) continue;
+    const outM = G.party[k];
+    if (outM.id === 'shino') { await say('信乃は 外せない。'); continue; }
+    G.party[k] = inM; G.reserve[c] = outM; refreshFollowers();
+    await say(mName(inM) + 'と ' + mName(outM) + 'が|入れかわった。');
+  }
+}
+// 控えの仲間がボスの手前で追いつく（里八株式会社が無いとき）
+async function reunion(place) {
+  if (flag('kaisha') || !(G.reserve && G.reserve.length)) return;
+  SND.sfx('step');
+  for (const m of G.reserve) { m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp'); }
+  const names = G.reserve.map(mName).join('と ');
+  await say('おーい！');
+  await say(names + 'が 追いついてきた！');
+  await say('噂を たどって きた。|' + place + 'とは、ずいぶん|物騒な ところへ 来たな。', { name: mName(G.reserve[0]) });
+  if ((await ask('仲間を 入れかえますか？', ['入れかえる', 'このまま'])) === 0) await swapMembers();
+  await say('では また 先で 待つ。|しくじるなよ。', { name: mName(G.reserve[0]) });
+}
+// 5人目以降：会社があれば本社へ、無ければ先に行く
+async function benchPick2() {
+  while (G.party.length > 4) {
+    await say(flag('kaisha') ? '連れて 行けるのは 4人までだ。|里八株式会社の 本社で 待つ 仲間を|えらんでください。' : '連れて 行けるのは 4人までだ。|ひと足 先に 行く 仲間を|えらんでください。');
+    const c = await UI.choose(G.party.map(m => ({ label: mName(m), right: 'Lv' + m.lv })), { x: 60, y: 50, w: 140, cancel: false, start: G.party.length - 1 });
+    const m = G.party[c];
+    if (!m) continue;
+    if (m.id === 'shino') { await say('信乃は 外せない。'); continue; }
+    if ((await ask(mName(m) + (flag('kaisha') ? 'を 本社に 残しますか？' : 'を 先に 行かせますか？'), ['はい', 'いいえ'])) !== 0) continue;
+    G.party.splice(c, 1); (G.reserve || (G.reserve = [])).push(m); refreshFollowers();
+    if (flag('kaisha')) { await say(mName(m) + 'は 博多の 本社へ|向かった。'); await say('本社で 待っている。|用が あれば 呼びに 来い。', { name: mName(m) }); }
+    else { await say(mName(m) + 'は ひと足 先に|旅立って いった。'); await say('では 先で 待っている。|噂を 聞いたら 追いついて こい。', { name: mName(m) }); }
+  }
+}
+
+/* =====================================================================
+   3. 第二章③ 因幡：鬼子母神と親兵衛
+   左母二郎は九州から逃げる途中、因幡の村で手下と横暴を働き、お駒をたぶらかして子を宿させ、玉を追って去った。
+   村はお駒を左母二郎の女とみなして村八分にし、お駒は流産。村を恨んで出奔し、森で女郎蜘蛛に玉（仁）を与えられて鬼子母神となる。
+   村の子を喰らい、因幡の浜で親兵衛もさらうが、親兵衛は次元牢の伏姫の力に守られて手が出せない。
+   「はなす」：主人公が村八分（人望マイナスで口をきいてもらえない）を一度でも経験し、お駒の話（産婆）と墓を知っていれば諭せる。
+   ===================================================================== */
+Object.assign(YOKAI_VAR, {
+  kishimo: ['tamazusa', 330, 1.25, 0.8], jorogumo: ['tsuchigumo', 300, 1.45, 1.05], kumoko: ['oogumo', 60, 0.9, 1.25],
+});
+Object.assign(EN_SKILLS, {
+  kijonotsume: { name: '鬼女の爪', msg: '{e}は 長い 爪で|{t}を 引き裂いた！', kind: 'phys', target: 'one', mult: 1.45, sfx: 'crit' },
+  nakigoe2:    { name: '泣き声', msg: '{e}の 泣き声が|あたりに ひびきわたった……', kind: 'magic', target: 'all', pow: [12, 17], sfx: 'dark' },
+  yoshibari:   { name: '妖糸しばり', msg: '{e}は 銀の 糸を 張りめぐらせた！', kind: 'sleep', target: 'all', chance: 0.35, turns: 1, sfx: 'dark', verb: '糸に からめとられた！' },
+  jorodoku:    { name: '毒の口づけ', msg: '{e}は {t}に|顔を 寄せた……', kind: 'poison', target: 'one', chance: 0.8, sfx: 'dark' },
+});
+Object.assign(ENEMIES, {
+  kumoko:   { name: '蜘蛛の子', spr: 'kumoko', hp: 64, atk: 46, def: 14, agi: 18, exp: 36, gold: 12, weak: ['fire'], chest: [10, 'dokukeshi', 'hangontan', 8], act: [[3, 'attack'], [1, 'ito']] },
+  kishimo:  { name: '鬼子母神', spr: 'kishimo', hp: 2400, atk: 71, def: 23, agi: 16, exp: 2600, gold: 0, boss: true, noRyo: true, acts: 2, act: [[3, 'attack'], [2, 'kijonotsume'], [2, 'nakigoe2'], [1, 'noroi']] },
+  jorogumo: { name: '女郎蜘蛛', spr: 'jorogumo', hp: 2600, atk: 72, def: 24, agi: 17, exp: 2800, gold: 1200, boss: true, acts: 2, weak: ['fire'], act: [[3, 'attack'], [2, 'yoshibari'], [2, 'jorodoku'], [2, 'dokuga']] },
+});
+Object.assign(ENC, {
+  kumoWood: { bg: 'forest', rate: 8, groups: [[3, ['kumoko', 'kumoko', 'kumoko']], [3, ['akagumo', 'kumoko']], [2, ['shiroitachi', 'kurodanuki']], [2, ['akagumo', 'akagumo']], [1, ['oonyudo', 'kumoko', 'kumoko']]] },
+  kumoCave: { bg: 'cave', rate: 7, groups: [[3, ['kumoko', 'kumoko', 'kumoko']], [3, ['akagumo', 'aoonibi']], [2, ['akagumo', 'kumoko', 'kumoko']], [2, ['oonyudo', 'akagumo']]] },
+});
+Object.assign(ITEMS, {
+  jin:     { name: '仁の玉', kind: 'key', desc: '「仁」の字が浮かぶ霊玉。親兵衛の玉' },
+  ubugi:   { name: '小さな産着', kind: 'key', desc: 'お駒の家に残っていた、袖を通されることのなかった産着' },
+});
+
+// 因幡の村：お駒を村八分にした村。子どもが夜ごと消える
+const INABA_ROWS = [
+  'TTTTTTTTTTTTTTTTTTTT',
+  'T.RRRR....;...RRRR.T',
+  'T.RRRR........RRRR.T',
+  'T.WWNW........WWDW.T',
+  'T...=..........=...T',
+  'T...============...T',
+  'T.......=.o........T',
+  'T.pppp..=......RRR.T',
+  'T.pppp..=......RRR.T',
+  'T.pppp..=......WDW.T',
+  'T.......=.......=..T',
+  'T....,..=====.....gT',
+  'TT......=........TTT',
+  'TTTTTTTT=TTTTTTTTTTT'];
+MAPS.v_inaba = { name: '因幡の村', kind: 'out', bgm: 'village', rows: INABA_ROWS };
+const komaDone = () => flag('kishimoDone');
+const komaTalkOk = () => flag('hachibu') && flag('komaStory') && flag('komaGrave');
+STORY.v_inaba = {
+  edges: { s: { to: 'chugoku', x: 0, y: 0, dir: 'down' } },   // 下で CP から入れ直す
+  warps: [{ x: 4, y: 3, to: 'vinn_inaba', tx: 5, ty: 5, dir: 'up' }, { x: 16, y: 3, to: 'vhouse_inaba', tx: 3, ty: 4, dir: 'up' }, { x: 16, y: 9, to: 'koma_house', tx: 3, ty: 4, dir: 'up' }],
+  npcs: [
+    { id: 'osa', sprite: 'oldman', name: '村長', x: 6, y: 4, dir: 'down', talk: async () => {
+      if (komaDone()) { await say('お駒が……鬼に なって おったとは。||あの 女を 鬼に したのは|わしらじゃ。わしらの 冷たい 目じゃ。', { name: '村長' }); await say('許して もらえるとは 思わん。|せめて 水子の 墓だけは|村で 守って いく。', { name: '村長' }); return; }
+      await say('よそ者に 話す ことは ない。||……子どもが 消える？|山の 獣の しわざじゃろう。|村の ことに 口を 出すな。', { name: '村長' });
+    } },
+    { id: 'm1', sprite: 'man1', name: '男', x: 12, y: 6, wander: true, radius: 2, talk: async () => {
+      if (komaDone()) { await say('お駒が 寺に 入ったって 本当か。|……おれは 石を 投げた ことが ある。|会わせる 顔も ねえよ。', { name: '男' }); return; }
+      await say('去年の 秋、九州から 流れてきた|浪人の 一味が この 村に 居すわってな。||頭は 網乾 左母二郎とか いう 男だ。', { name: '男' });
+      await say('米を 奪い、酒を 飲み、|好き放題 したあげく、|なにかの 玉を 追って 出ていったよ。||……女を 一人、残してな。', { name: '男' });
+    } },
+    { id: 'w1', sprite: 'woman1', name: '女', x: 5, y: 10, wander: true, radius: 2, talk: async () => {
+      if (komaDone()) { await say('ゆうべは 子どもたちが|ぐっすり 眠れたわ。|……お駒さん、ごめんなさい。', { name: '女' }); return; }
+      await say('あの 女の 話は しないで。|左母二郎の 女よ。||村を めちゃくちゃに した 男の|子を 身ごもって いたのよ。', { name: '女' });
+    } },
+    { id: 'haha', sprite: 'woman2', name: '泣いている 母親', x: 13, y: 10, dir: 'down', talk: async () => {
+      if (komaDone()) { await say('あの 子は もう 帰って こない。|でも、これで ほかの 子は……||ありがとう ございました。', { name: '母親' }); return; }
+      await say('うちの 子が……|ゆうべ 寝床から 消えたの。||戸口に 白い 糸が|からみついて いて……', { name: '母親' });
+      await say('東の 浜の 村でも|子どもが さらわれたって……', { name: '母親' });
+    } },
+    { id: 'sanba', sprite: 'kamezasa', name: '産婆', x: 17, y: 5, dir: 'left', talk: async () => {
+      if (komaDone()) { await say('お駒は 鬼封じの寺へ 行ったそうだね。|あの 子の ために 毎日|経を あげるんだと。', { name: '産婆' }); return; }
+      await say('……あんた、お駒の ことを|聞きに 来たのかい。||村の 連中は 口を つぐむだろうね。', { name: '産婆' });
+      await say('お駒は 気立ての いい 娘だったよ。|左母二郎に 甘い ことを 言われて、|だまされたのさ。', { name: '産婆' });
+      await say('左母二郎が 出ていった あと、|村は お駒を 「あの 男の 女」と|呼んで 誰も 口を きかなくなった。||米も 売らない、水も 汲ませない。|村八分さ。', { name: '産婆' });
+      await say('冬の 夜、お駒は 一人で 子を|流した。あたしが 呼ばれた ときには|もう 遅かった……', { name: '産婆' });
+      await say('あくる朝、お駒は 村はずれに|小さな 墓を 作って、そのまま|東の 森へ 消えたよ。||「この 村の 子を みんな|わたしの 子に してやる」……|そう 言い残してね。', { name: '産婆' });
+      setFlag('komaStory');
+    } },
+    { id: 'kid', sprite: 'child', name: '子ども', x: 9, y: 11, wander: true, radius: 1, talk: async () => {
+      await say(komaDone() ? 'もう 夜に 白い 女の人は 来ないよ。' : '夜に 白い 着物の 女の人が|窓から のぞくんだ。||泣いてるみたいな 声で|「おいで」って……', { name: '子ども' });
+    } },
+  ],
+  objects: [
+    look(10, 6, ['井戸だ。|釣瓶の 縄が 新しい。']),
+    look(18, 11, async () => {
+      setFlag('komaGrave');
+      if (komaDone()) { await say('小さな 墓だ。|野の花と、新しい 線香が|供えてある。'); return; }
+      await say('村はずれの 小さな 墓だ。|名は 刻まれていない。||石の 前に、しおれた 野の花が|置かれている……');
+    }),
+  ],
+};
+MAPS.koma_house = { name: 'あばら家', kind: 'in', bgm: 'night', rows: MAPS.house1.rows };
+STORY.koma_house = {
+  warps: [{ x: 3, y: 5, to: 'v_inaba', tx: 16, ty: 10, dir: 'down' }],
+  objects: [
+    { type: 'look', x: 5, y: 3, block: true, run: async () => {
+      if (flag('ubugiGot')) { await say('からっぽの 長持だ。'); return; }
+      await say('長持の 中に、小さな 産着が|一枚 たたんで しまってある。||袖を 通された あとは ない……');
+      setFlag('ubugiGot'); await getItem('ubugi', '小さな 産着を 手に入れた。');
+    } },
+    look(5, 1, ['たんすの 引き出しは|みな 空っぽだ。']),
+  ],
+  onEnter: async () => { if (!flag('komaHouseIn')) { setFlag('komaHouseIn'); await say('戸口に 「出ていけ」と|墨で 大きく 書かれている……||中は ほこりだらけだ。'); } },
+};
+townInn('vinn_inaba', '因幡の宿', ['v_inaba', 4, 4], 12, 'inaba');
+STORY.vinn_inaba.npcs[0].talk = async () => {
+  if (!komaDone()) { await say('……泊まるのは かまわんよ。|だが 夜は 戸を 開けるんじゃ ないよ。', { name: '宿の女将' }); }
+  await inn(12, { id: 'inaba', name: '宿の女将' });
+};
+townHouse('vhouse_inaba', '民家', ['v_inaba', 16, 4], [{ id: 'oji', sprite: 'oldman', name: 'じいさま', x: 3, y: 2, wander: true, radius: 1,
+  talk: say1('じいさま', () => komaDone() ? 'お駒の 墓に 花を 供えたのは|村の 女房たちじゃ。||遅すぎたがの……' : '人の 口に 戸は 立てられん。|じゃが 人の 心には|戸を 立てて しまうもんじゃ。') }], 120);
+
+// 因幡の浜：親兵衛の家（父・房八、母・沼藺。沼藺は小文吾の妹）
+const INAHAMA_ROWS = [
+  '~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~V~~~~~~~~~~~',
+  '........V...........',
+  'T.RRRR..=....RRRR..T',
+  'T.RRRR..=....RRRR..T',
+  'T.WDWW..=....WWNW..T',
+  'T...=...=......=...T',
+  'T...============...T',
+  'T.......=.o........T',
+  'T.RRRR..=..........T',
+  'T.RRRR..=.....,....T',
+  'T.WWDW..=..........T',
+  'TT..=...=........TTT',
+  'TTTTTTTT=TTTTTTTTTTT'];
+MAPS.v_inahama = { name: '因幡の浜', kind: 'out', bgm: 'village', rows: INAHAMA_ROWS };
+const kobunIn = () => G.party.some(m => m.id === 'kobungo');
+STORY.v_inahama = {
+  edges: { s: { to: 'chugoku', x: 0, y: 0, dir: 'down' } },
+  warps: [{ x: 3, y: 5, to: 'shinbe_house', tx: 3, ty: 4, dir: 'up' }, { x: 15, y: 5, to: 'vinn_inahama', tx: 5, ty: 5, dir: 'up' }, { x: 4, y: 11, to: 'vshop_inahama', tx: 4, ty: 4, dir: 'up' }],
+  npcs: [
+    { id: 'ryoshi', sprite: 'man2', name: '漁師', x: 12, y: 2, dir: 'down', talk: async () => {
+      if (flag('kishimoDone')) { await say('森から 帰ってきた 子どもは|いなかった。||だが もう さらわれる 子も いねえ。|それだけでも ありがてえ。', { name: '漁師' }); return; }
+      await say('房八さんとこの 親兵衛が|ゆうべ さらわれたんだ。||白い 着物の 女が、子どもを|かついで 森へ 走って いった。', { name: '漁師' });
+      await say('ところが 妙でな。|親兵衛の 体が ぼうっと 光って、|女が 手を 焼いてる ようだった。', { name: '漁師' });
+      await say('森は 浜から 南東だ。|蜘蛛の 巣だらけで|誰も 近寄らねえよ。', { name: '漁師' });
+      setFlag('kumoKnown');
+    } },
+    { id: 'w1', sprite: 'woman1', name: '浜の娘', x: 6, y: 8, wander: true, radius: 2, talk: say1('浜の娘', () => flag('kishimoDone') ? '親兵衛ちゃん、神さまに 連れて|いかれたって 本当？||きっと すごい 子に なって|帰ってくるわ。' : '西の 村の 女の 人が 鬼に|なったって、うちの 婆ちゃんが……||……こわいよ。') },
+    { id: 'tr', sprite: 'traveler', name: '旅の男', x: 14, y: 10, wander: true, radius: 2, talk: say1('旅の男', '西の 因幡の 村は|よそ者に 冷たいぞ。||あそこの 者が 口を ひらくのは、|同じ 目に あった 者だけ だろうな。') },
+  ],
+  objects: [look(10, 8, ['井戸だ。']), look(8, 1, ['船着き場だ。|小舟が 何艘も つないである。||沖は 荒れて いて、遠くへは|出られそうに ない。'])],
+  onEnter: async () => { if (!flag('inahamaIn')) { setFlag('inahamaIn'); await say('潮の 香りの する 漁村だ。|家々の 戸口に、魔除けの|札が 何枚も 貼られている……'); } },
+};
+MAPS.shinbe_house = { name: '房八の家', kind: 'in', bgm: 'village', rows: MAPS.house1.rows };
+STORY.shinbe_house = {
+  warps: [{ x: 3, y: 5, to: 'v_inahama', tx: 3, ty: 6, dir: 'down' }],
+  npcs: [
+    { id: 'fusa', sprite: 'man1', name: N.fusa, x: 1, y: 2, dir: 'down', talk: () => fusaTalk() },
+    { id: 'nui', sprite: 'nui', name: N.nui, x: 4, y: 1, dir: 'down', talk: () => fusaTalk() },
+  ],
+  objects: [look(5, 1, ['たんすの 上に、小さな 木の 刀が|置いてある。']), chest('c_shinbe', 5, 3, { item: 'reisui' })],
+};
+async function fusaTalk() {
+  if (flag('shinbeHome')) {
+    await say('親兵衛は 伏姫さまの もとで|守られて いるのですね。', { name: N.nui });
+    await say('いつか 帰って くる 日を、|この 家で 待ちます。', { name: N.fusa });
+    return;
+  }
+  if (flag('kishimoDone')) {
+    await say('親兵衛は……親兵衛は|どうなったのですか！', { name: N.nui });
+    await say('信乃は 森の 奥で 見た ことを|すべて 話した。||鬼女を 止めたこと。|伏姫の 声が 親兵衛を|光の 中へ 迎えたこと……');
+    if (kobunIn()) await say('沼藺、親兵衛は 生きている。|伏姫さまが 守って くださる。||わしの 目で 見た。まちがいない。', { name: N.kobun });
+    await say('……そうですか。|あの 子の 手の 牡丹の 痣は、|やはり……', { name: N.nui });
+    await say('みなさまに お礼を しなくては。|わずかですが、これを。', { name: N.fusa });
+    setFlag('shinbeHome'); addItem('hangontan', 2); G.gold += 800; SND.sfx('item');
+    await say('反魂丹を 2つと 800文を もらった！');
+    return;
+  }
+  if (kobunIn() && !flag('nuiMet')) {
+    setFlag('nuiMet');
+    await say('……兄さん！？|小文吾兄さん！', { name: N.nui });
+    await say('沼藺！ ここは お前の 嫁ぎ先か。|親兵衛は どうした！', { name: N.kobun });
+    await say('ゆうべ、鬼女に……|森へ さらわれて しまったの！', { name: N.nui });
+    await say('……わかった。|兄が 必ず 連れ戻す。', { name: N.kobun });
+    return;
+  }
+  await say('親兵衛が……|息子が 鬼女に さらわれたのです。', { name: N.fusa });
+  await say('浜の 南東の 森へ……|どうか、どうか 親兵衛を！', { name: N.nui });
+}
+townInn('vinn_inahama', '浜の宿', ['v_inahama', 15, 6], 12, 'inahama');
+townShop('vshop_inahama', '浜のよろず屋', ['v_inahama', 4, 12], T_ITEMS, 'よろず屋');
+STORY.vshop_inahama.npcs[0].talk = () => shop(['yakusou', 'dokukeshi', 'reisui', 'hangontan', 'mayoke', 'modorisuzu'], { name: 'よろず屋', hello: '蜘蛛の 森へ 行くなら|毒消しを 忘れるなよ。' });
+
+// 蜘蛛の森（外）と巣（洞）
+MAPS.kumomori1 = { name: '蜘蛛の森', kind: 'out', bgm: 'cave', enc: () => 'kumoWood', night: true, rows: [
+  'MMMMMMMMMM.MMMMMMMMM',
+  'MMMFFFFFFF.FFFFFFMMM',
+  'MFFFFFF....FFFFFFFFM',
+  'MFFFFFF.FFFFFF...FFM',
+  'MFF.....FFFFF..T..FM',
+  'MFF.FFFFFFFFF.FFF.FM',
+  'MFF.FFT....F..FFF.FM',
+  'MFF.FF..FF....FF..FM',
+  'MFF....FFFFFFFFF.FFM',
+  'MFFFFF.FFFFFFFF..FFM',
+  'MFFFFF......,...FFFM',
+  'MFFFFFFFF...g.FFFFFM',
+  'MFFFFFFFF..FFFFFFFFM',
+  'MMMMMMMMM..MMMMMMMMM'] };
+STORY.kumomori1 = {
+  edges: { s: { to: 'chugoku', x: 0, y: 0, dir: 'down' } },
+  warps: [{ x: 10, y: 0, to: 'kumomori2', tx: 10, ty: 11, dir: 'up', sfx: 'door' }],
+  objects: [look(12, 11, ['獣の 骨が 白い 糸で|ぐるぐる 巻きにされている……']), chest('c_kumo1', 6, 7, { item: 'hangontan' })],
+  onEnter: async () => { if (!flag('kumoIn')) { setFlag('kumoIn'); await say('木々の あいだに 白い 糸が|幾重にも 張りめぐらされている。||奥から 子どもの 泣き声が|かすかに 聞こえる……'); } },
+};
+MAPS.kumomori2 = { name: '蜘蛛の巣', kind: 'cave', bgm: 'cave', enc: () => 'kumoCave', rows: [
+  '####################',
+  '#######......#######',
+  '######........######',
+  '######........######',
+  '##b####..##..####b##',
+  '#..##....##....##..#',
+  '#.....##....##.....#',
+  '#.##..##.##.##..##Z#',
+  '#..#....#..#....#..#',
+  '#Z.#..###..###..#..#',
+  '##.....b......b....#',
+  '####.....#..#...####',
+  '#########.E.########'] };
+STORY.kumomori2 = {
+  warps: [{ x: 10, y: 12, to: 'kumomori1', tx: 10, ty: 1, dir: 'down', sfx: 'door' }],
+  npcs: [
+    { id: 'shinbe', sprite: 'shinbe', name: '親兵衛', x: 11, y: 2, dir: 'down', cond: () => !flag('kishimoDone'), talk: say1('親兵衛', '……こわく ないよ。|おいら、あったかい 光に|まもられてるんだ。') },
+  ],
+  objects: [
+    chest('c_kumo2', 18, 7, { item: 'reisui' }), chest('c_kumo3', 1, 9, { gold: 600 }),
+    { type: 'sparkle', x: 11, y: 2, cond: () => !flag('kishimoDone') },
+    { type: 'boss', spr: 'kishimo', x: 9, y: 2, scale: 0.42, block: true, cond: () => !flag('kishimoDone'), run: () => kishimoEvent() },
+    look(9, 2, ['巣の 奥は がらんとしている。|小さな 骨と、ちぎれた 糸だけが|残っている……'], { cond: () => flag('kishimoDone') }),
+  ],
+  triggers: [{ area: [6, 5, 13, 6], cond: () => !flag('kishimoDone') && !flag('kishiReunion'), run: async () => { setFlag('kishiReunion'); await reunion('鬼女の 巣'); } }],
+};
+async function kishimoEvent() {
+  await say('……誰？|わたしの 子を 取りに 来たの？', { name: '白い 着物の 女' });
+  SND.sfx('dark'); G.shake = 0.3;
+  await say('女の 体から 黒い 気が 立ちのぼり、|口が 耳まで 裂けた！');
+  await say('この 子たちは わたしの 子。|わたしの 子は みんな 死ぬの。|だから……わたしが 食べて あげるの！', { name: N.kishimo });
+  await say('でも、この 子だけは 光が 邪魔で|触れない。くやしい……|くやしい くやしい！', { name: N.kishimo });
+  const r = await fight(['kishimo'], { boss: true, bg: 'cave', intro: '鬼子母神が 長い 爪を ふりかざした！', winText: '鬼子母神を うちたおした！', onTalk: kishimoTalk });
+  if (r === 'talked') {
+    await say('お駒は 産着を 胸に 抱いて、|声を あげて 泣いた……');
+    await say('……わたし、どうして こんな……|あの 子たちに 何を……', { name: N.koma });
+    await say('お駒どの。あなたの 罪は 消えぬ。|だが 生きて、償う ことは できる。');
+    await say('鬼封じの寺へ 行くと いい。|あそこには 今、手を 合わせる 者が|一人も いない。');
+    await say('……はい。|あの 子と、食べて しまった 子らの|ために、一生 経を あげます。', { name: N.koma });
+    G.flags.ryo = ryo() + 1500; setFlag('komaSaved');
+    SND.sfx('heal'); await say('（一行の 人望が 上がった）');
+  } else if (r === 'win') {
+    await say('鬼子母神の 姿が くずれ、|やせた 女の 姿に 戻った……');
+    await say('……わたしの 子は……|どこ……', { name: N.koma });
+    await say('お駒は 息を 引きとった。');
+  } else return;
+  await jorogumoEvent();
+}
+// 戦いの「はなす」：鬼子母神だけに効く
+async function kishimoTalk(t, m) {
+  if (t.d !== ENEMIES.kishimo) return false;
+  await out(mName(m) + 'は ' + t.name + 'に 話しかけた。', 500);
+  if (!flag('komaStory') || !flag('komaGrave')) { await out(t.name + 'は 聞く耳を もたない！', 700); return false; }
+  if (!flag('hachibu')) {
+    await out('「お前に 何が わかる！」', 800);
+    await out(t.name + 'は 怒り くるって|おそいかかってきた！', 600);
+    const v = physDamage(t.d.atk, pDef(m), 1.7); SND.sfx('crit'); await hurtMember(m, v);
+    return false;
+  }
+  await out(mName(m) + '「村の 者に 背を 向けられる|つらさは、わたしも 知っている。」', 1400);
+  await out(mName(m) + '「誰も 口を きいて くれぬ。|水も 米も もらえぬ。」', 1400);
+  await out(t.name + 'の 爪が とまった……', 1000);
+  if (G.bag.ubugi) { await out(mName(m) + 'は 小さな 産着を|差しだした。', 1200); removeItem('ubugi'); }
+  await out(mName(m) + '「お駒どの。墓に 花を 供えて|いたのは、あなたで あろう。」', 1400);
+  await out('鬼子母神の 目から 涙が こぼれた……', 1200);
+  return 'end';
+}
+async function jorogumoEvent() {
+  SND.sfx('dark'); G.shake = 0.4;
+  await say('ほほほ……つまらぬ。|子を 喰らう 母の 鬼、|もう少し 楽しめると 思うたに。', { name: '？？？' });
+  await say('天井の 闇から、大きな 蜘蛛が|ゆっくりと 降りてきた！');
+  await say('わらわは 女郎蜘蛛。|あの 女に 玉を 貸して やったのは|わらわよ。', { name: N.jorogumo });
+  await say('その 光る 小僧の 玉、|返して もらうぞえ！', { name: N.jorogumo });
+  SND.sfx('shine'); G.whiteFlash = 0.4;
+  await say('その とき、親兵衛の 体から|やわらかな 光が あふれた！||光は 一行を 包み、傷を いやした。');
+  healAll();
+  const r = await fight(['jorogumo'], { boss: true, bg: 'cave', intro: '女郎蜘蛛が 八本の 足を ひろげた！', winText: '女郎蜘蛛を うちたおした！' });
+  if (r !== 'win') return;
+  await say('ぎ……ぎぎ……|玉梓さまに……なんと……', { name: N.jorogumo });
+  SND.sfx('shine'); G.whiteFlash = 0.5;
+  await say('女郎蜘蛛の 骸から、『仁』の 字が|浮かぶ 玉が 転がり出た。||玉は ひとりでに 宙を 舞い、|親兵衛の 手の ひらに おさまった。');
+  await say('……犬士たちよ。', { name: N.fuse });
+  await say('どこからか、澄んだ 女の 声が|ひびいてきた。');
+  await say('わらわは 伏姫。|玉梓に 囚われ、時の 止まった|牢の 中から 話して います。', { name: N.fuse });
+  await say('この 子は 親兵衛。|仁の 玉を 持つ、最後の 犬士。||けれど まだ 幼すぎる。|玉梓の 手は この 子にも 伸びる でしょう。', { name: N.fuse });
+  await say('しばらく わらわが 預かります。|時の 止まった この 場所で、|強く 育てましょう。', { name: N.fuse });
+  if (kobunIn()) await say('伏姫さま……！|親兵衛を、たのみます！', { name: N.kobun });
+  await say('いつか 必ず、あなたたちの|もとへ 帰しましょう。||……信乃、玉梓に 負けては なりませぬ。', { name: N.fuse });
+  SND.sfx('shine'); G.whiteFlash = 0.8;
+  await say('光が ひときわ 強く なり――|親兵衛の 姿は 消えていた。');
+  setFlag('kishimoDone');
+  { const n = npc('shinbe'); if (n) n.visible = false; G.npcs = G.npcs.filter(x => x.id !== 'shinbe'); }
+  await say('（因幡の浜の 親兵衛の 家に|知らせに 行こう）');
+  Save.auto();
+}
+
+/* =====================================================================
+   4. 第二章④ 対馬：お岩・伊右衛門・お銀と里八株式会社（仲間が5人そろったら）
+   伊右衛門（対馬の奉行）はお岩を毒殺して出世し、抜け荷の濡れ衣でお銀を牢に入れて財をねらっていた。
+   毒を売った薬屋の直吉は命を狙われ、肥後の人吉で庄屋の下男として暮らしている。
+   ===================================================================== */
+Object.assign(YOKAI_VAR, {
+  iemon: ['ronin', 255, 0.55, 0.75], iemonte: ['ronin', 20, 0.45, 0.9], ruzai: ['uramibi', 190, 0.8, 1.05], umibozu: ['hitotsume', 215, 0.9, 0.55],
+});
+Object.assign(EN_SKILLS, {
+  dokushu: { name: '毒酒', msg: '{e}は 毒の 酒を|{t}に あびせかけた！', kind: 'poison', target: 'one', chance: 0.8, sfx: 'dark' },
+  namiuchi: { name: '大波', msg: '{e}は 大波を 呼んだ！', kind: 'magic', elem: 'water', target: 'all', pow: [13, 18], sfx: 'water' },
+});
+Object.assign(ENEMIES, {
+  ruzai:   { name: '流人の亡霊', spr: 'ruzai', hp: 80, atk: 50, def: 15, agi: 14, exp: 50, gold: 20, weak: ['fire'], chest: [8, 'reisui', 'hangontan', 8], act: [[2, 'attack'], [1, 'onnen'], [1, 'noroi']] },
+  umibozu: { name: '海坊主', spr: 'umibozu', hp: 150, atk: 54, def: 18, agi: 9, exp: 70, gold: 30, weak: ['fire'], resist: ['water'], chest: [6, 'yakusou', 'kusari', 10], act: [[3, 'attack'], [1, 'namiuchi']] },
+  iemonte: { name: '伊右衛門の手下', spr: 'iemonte', hp: 340, atk: 57, def: 18, agi: 13, exp: 220, gold: 120, act: [[3, 'attack'], [1, 'iai']] },
+  iemon:   { name: '民谷伊右衛門', spr: 'iemon', hp: 1900, atk: 68, def: 23, agi: 18, exp: 2600, gold: 1500, boss: true, acts: 2, act: [[3, 'attack'], [2, 'iaigiri'], [2, 'dokushu'], [1, 'noroi']] },
+});
+Object.assign(ENC, {
+  tsuSea: { bg: 'field', rate: 11, groups: [[3, ['kaizoku', 'kaizoku']], [3, ['umibozu']], [2, ['ruzai', 'ruzai']], [1, ['umibozu', 'kaizoku']]] },
+  rukei:  { bg: 'cave', rate: 8, groups: [[3, ['ruzai', 'ruzai', 'ruzai']], [3, ['umibozu', 'ruzai']], [2, ['kaizoku', 'kaizoku', 'ruzai']], [1, ['umibozu', 'umibozu']]] },
+});
+Object.assign(ITEMS, {
+  dokucho: { name: '毒の売り帳', kind: 'key', desc: '直吉の売り帳。「民谷伊右衛門さま　鼠取りの毒　一包」と書かれている' },
+  shomon:  { name: 'お銀の証文', kind: 'key', desc: '石見の銀山の親方にあてた、お銀の取り引きの証文' },
+  ginbo:   { name: '銀の延べ棒', kind: 'key', desc: '石見の銀山から出た銀。お銀の店の元手になる' },
+});
+const oginOpen = () => flag('samo2Done');   // 仲間が5人そろった後
+
+// 唐津の町（九州）：対馬への船が出る
+MAPS.karatsu = { name: '唐津の湊', kind: 'out', bgm: 'village', rows: ROWS_PORT };
+STORY.karatsu = {
+  edges: { s: { to: 'world', x: WP.karatsu[0], y: WP.karatsu[1] + 1, dir: 'down' } },
+  warps: [{ x: 4, y: 3, to: 'inn_kara', tx: 5, ty: 5, dir: 'up' }, { x: 14, y: 3, to: 'shop_kara', tx: 4, ty: 4, dir: 'up' }, { x: 4, y: 9, to: 'arms_kara', tx: 4, ty: 4, dir: 'up' }],
+  npcs: [
+    { id: 'sendo', sprite: 'man2', name: '船頭', x: 20, y: 5, dir: 'left', talk: async () => {
+      const c = await ask('対馬へ 渡るかい？|霧が 出てるが、対馬までは|目を つぶってても 行けるさ。', ['渡る', 'やめる'], { name: '船頭' });
+      if (c !== 0) return;
+      await fadeTo(1, 400); loadMap('tsushima', 19, 5, 'left'); await fadeTo(0, 400); if (STORY.tsushima.onEnter) await STORY.tsushima.onEnter();
+    } },
+    { id: 'm1', sprite: 'man1', name: '湊の男', x: 9, y: 7, wander: true, radius: 3, talk: say1('湊の男', '対馬の 向こうの 海は|ひと月も 霧が 晴れねえ。||釜山へ 渡る 船も みんな|ここで 足止めさ。') },
+    { id: 'w1', sprite: 'woman1', name: '湊の娘', x: 13, y: 11, wander: true, radius: 2, talk: say1('湊の娘', '博多の お銀さんが 対馬で|捕まったって 本当？||あんなに 気前の いい 人が|悪い ことを するはず ないのに。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。'])],
+};
+townInn('inn_kara', '唐津の宿', ['karatsu', 4, 4], 12, 'kara');
+townShop('shop_kara', '道具屋', ['karatsu', 14, 4], T_ITEMS, '道具屋');
+townShop('arms_kara', '鍛冶屋', ['karatsu', 4, 10], T_ARMS, '鍛冶屋');
+STORY.arms_kara.npcs[0].talk = () => shop(['nodachi', 'shakujo', 'nagajitte', 'kongotekko', 'tetsusoroban', 'okegawa', 'tosei'], { name: '鍛冶屋', hello: '本州の 品も 入ってるぜ。' });
+
+// 対馬の湊
+MAPS.tsushima = { name: '対馬の湊', kind: 'out', bgm: 'village', rows: [
+  'TTTTTTTTTTTTTTTTTT~~~~',
+  'T.KKKKKKK...RRRR..~~~~',
+  'T.KKKKKKK...RRRR..~~~~',
+  'T.WWWBWWW...WWNW..~~~~',
+  'T....=.........=..~~~~',
+  'T....=============HHH~',
+  'T.......=.o.......~~~~',
+  'T.RRRR..=...RRRR..~~~~',
+  'T.RRRR..=...RRRR..~~~~',
+  'T.WWIW..=...WWAW..~~~~',
+  'T...=...=.....=...~~~~',
+  'T.g.=========....~~~~~',
+  'TTg.....=........~~~~~',
+  'TTTTTTTT=TTTTTTTTT~~~~'] };
+const iemonDone = () => flag('iemonDone');
+STORY.tsushima = {
+  tint: () => iemonDone() ? null : { c: 'rgba(200,205,220,1)', fog: 0.38 },
+  warps: [{ x: 5, y: 3, to: 'tsu_yakata', tx: 6, ty: 5, dir: 'up' }, { x: 14, y: 3, to: 'inn_tsu', tx: 5, ty: 5, dir: 'up' }, { x: 4, y: 9, to: 'shop_tsu', tx: 4, ty: 4, dir: 'up' }, { x: 14, y: 9, to: 'arms_tsu', tx: 4, ty: 4, dir: 'up' }],
+  npcs: [
+    { id: 'sendo', sprite: 'man2', name: '船頭', x: 20, y: 5, dir: 'left', talk: tsuSendo },
+    { id: 'oiwa', sprite: 'oiwa', name: '？？？', x: 3, y: 12, dir: 'right', alpha: 0.55, cond: () => !iemonDone(), talk: oiwaTalk },
+    { id: 'm1', sprite: 'man1', name: '町人', x: 9, y: 7, wander: true, radius: 3, talk: say1('町人', () => iemonDone() ? '伊右衛門が 海に 沈んだって？|お岩さまの たたりだと、|みんな 噂してるよ。' : 'お奉行の 伊右衛門さまは、|前の 奉行の 娘婿さ。||奥方の お岩さまが 急な 病で|亡くなってから、羽振りが いいね。') },
+    { id: 'w1', sprite: 'woman2', name: '町の女', x: 13, y: 11, wander: true, radius: 2, talk: say1('町の女', () => iemonDone() ? '霧が 晴れたら、海が こんなに|青かったなんて……' : '夜に なると、墓場の あたりに|白い 着物の 女が 立つのよ。||片目が はれあがってて……|ああ、思い出したくない！') },
+    { id: 'tr', sprite: 'traveler', name: '旅の男', x: 6, y: 5, wander: true, radius: 2, talk: say1('旅の男', '釜山へ 渡ろうと 来たんだが、|この 霧じゃ 船が 出せない。||昔の 水軍は、霧の 海でも|迷わない 道具を 持ってたそうだが。') },
+  ],
+  objects: [look(10, 6, ['井戸だ。']), look(2, 11, ['古い 墓だ。|『民谷 岩』と 刻まれている。']), look(2, 12, ['無縁仏の 墓だ。'])],
+  onEnter: async () => { if (!flag('tsuIn')) { setFlag('tsuIn'); await say('対馬の 湊は 白い 霧に|包まれていた。||沖の 方は 何も 見えない……'); } },
+};
+async function tsuSendo() {
+  const opts = ['唐津へ 戻る'];
+  if (flag('iemonFled') && !iemonDone()) opts.unshift('流刑島へ 渡る');
+  opts.push('やめる');
+  const c = await ask(flag('iemonFled') && !iemonDone() ? '流刑島へは 牢番の 舟で|霧の 道を 抜けて いくしか ねえ。|お殿さまの お許しは 出てるぜ。' : '釜山？ この 霧じゃ 無理だ。|唐津へ 戻るなら 出すよ。', opts, { name: '船頭' });
+  const s = opts[c];
+  if (s === '唐津へ 戻る') { await fadeTo(1, 400); loadMap('karatsu', 19, 5, 'left'); await fadeTo(0, 400); }
+  if (s === '流刑島へ 渡る') { await fadeTo(1, 400); loadMap('rukei', 10, 11, 'up'); await fadeTo(0, 400); if (STORY.rukei.onEnter) await STORY.rukei.onEnter(); }
+}
+async function oiwaTalk() {
+  if (flag('oiwaTalk')) {
+    await say(G.bag.dokucho ? '……その 帳面を お殿さまに。|伊右衛門の 罪を……' : '肥後の 人吉……|庄屋の 家の 下男……|左の 頬に 薬の やけどの 痕……', { name: N.oiwa }); return;
+  }
+  await say('……旅の お方……|わたしが 見えるのですね……', { name: '？？？' });
+  await say('白い 着物の 女だ。|顔の 半分が 赤黒く はれあがり、|片方の 目が ふさがっている……');
+  await say('わたしは 岩。|お奉行 民谷伊右衛門の 妻でした。', { name: N.oiwa });
+  await say('伊右衛門は 出世の ために、|わたしに 毒を 盛りました。||「血の 道の 薬だ」と 言って……|この 顔は、その 毒の ため。', { name: N.oiwa });
+  await say('いま 牢に いる お銀さんも、|伊右衛門の 罠です。||抜け荷の 濡れ衣を 着せて、|お店の 財を 奪う つもり……', { name: N.oiwa });
+  await say('毒を 売った 薬屋の 直吉は、|口を 封じられるのを 恐れて|九州へ 逃げました。', { name: N.oiwa });
+  await say('肥後の 人吉……|庄屋の 家の 下男……|左の 頬に 薬の やけどの 痕……||あの 人の 売り帳が あれば、|伊右衛門の 罪が 明らかに……', { name: N.oiwa });
+  setFlag('oiwaTalk');
+  { const n = npc('oiwa'); if (n) n.def.name = N.oiwa; }
+}
+townInn('inn_tsu', '対馬の宿', ['tsushima', 14, 4], 14, 'tsu');
+townShop('shop_tsu', '道具屋', ['tsushima', 4, 10], T_ITEMS, '道具屋');
+townShop('arms_tsu', '鍛冶屋', ['tsushima', 14, 10], T_ARMS, '鍛冶屋');
+STORY.arms_tsu.npcs[0].talk = () => shop(['nodachi', 'shakujo', 'nagajitte', 'kongotekko', 'tetsusoroban', 'tosei'], { name: '鍛冶屋', hello: '朝鮮渡りの 鋼も あるぜ。' });
+
+// 対馬の館：殿・奉行の伊右衛門・牢のお銀
+MAPS.tsu_yakata = { name: '対馬の館', kind: 'in', bgm: 'village', rows: [
+  'X#L###S###L#X',
+  'X___________X',
+  'X_____z_____X',
+  'X___________X',
+  'XOOO#___#OOOX',
+  'X:::#___#:::X',
+  'XXXXXXEXXXXXX'] };
+STORY.tsu_yakata = {
+  warps: [{ x: 6, y: 6, to: 'tsushima', tx: 5, ty: 4, dir: 'down' }],
+  npcs: [
+    { id: 'tono', sprite: 'tono', name: N.sotono, x: 6, y: 1, dir: 'down', talk: () => sotonoTalk() },
+    { id: 'iemon', sprite: 'iemon', name: N.iemon, x: 8, y: 2, dir: 'down', cond: () => !flag('iemonFled'), talk: say1(N.iemon, () => G.bag.dokucho ? '……なんだ、その 目は。|よそ者が 何を 嗅ぎまわって いる。' : 'お奉行の 民谷伊右衛門じゃ。||よそ者が 館を うろつくでない。|用が 済んだら 去れ。') },
+    { id: 'ogin', sprite: 'ogin', name: N.ogin, x: 2, y: 5, dir: 'up', cond: () => !flag('iemonFled'), talk: async () => {
+      await say('……あんたたち、九州の 人だね。|博多の 番頭に 頼まれて来たのかい。', { name: N.ogin });
+      await say('抜け荷なんて してないよ。|伊右衛門の やつ、あたしの 店の|身代が 目当てなのさ。', { name: N.ogin });
+      await say('悔しいけど、ここに いちゃ|何も できやしない。||あいつの 尻尾を つかむ 何かが|あれば ねえ……', { name: N.ogin });
+    } },
+    { id: 'guard', sprite: 'guard', name: '牢番', x: 10, y: 3, dir: 'left', talk: say1('牢番', () => flag('iemonFled') ? '面目 ねえ。伊右衛門に 斬られかけて、|鍵を 取られちまった……' : '牢の 女商人に 話しかけるのは|かまわんが、鍵は 開けんぞ。') },
+  ],
+  objects: [look(1, 1, ['朝鮮の 壺が 飾ってある。'])],
+};
+async function sotonoTalk() {
+  if (iemonDone()) { await say('伊右衛門の 悪事を 見抜けなんだ|わしの 落ち度じゃ。||霧も 晴れた。そなたらには|礼の 言葉も ない。', { name: N.sotono }); return; }
+  if (flag('iemonFled')) { await say('伊右衛門は 流刑島へ 逃げた。|湊の 船頭に 申しつけて ある。||舟を 出させよ。お銀を 頼むぞ。', { name: N.sotono }); return; }
+  if (!G.bag.dokucho) {
+    await say('対馬を 預かる 者じゃ。||お銀の 件か。抜け荷の 罪じゃ。|奉行の 伊右衛門が 調べ上げた。||わしは 奉行を 信じて おる。', { name: N.sotono });
+    return;
+  }
+  await say('……何？ 伊右衛門が 妻の お岩に|毒を 盛ったと 申すか。', { name: N.sotono });
+  await say('信乃は 直吉の 売り帳を|殿に 差しだした。');
+  removeItem('dokucho');
+  await say('『民谷伊右衛門さま　鼠取りの毒　一包』||……お岩が 死んだのは、|この 毒を 買った 翌月……', { name: N.sotono });
+  await say('伊右衛門！ これは どういう ことじゃ！', { name: N.sotono });
+  await walkNpc('iemon', ['right'], 0.3);
+  await say('……ちっ。|死人の 口から 漏れたか。', { name: N.iemon });
+  SND.sfx('crit'); G.whiteFlash = 0.4; G.shake = 0.4;
+  await say('伊右衛門は 刀を 抜き、|牢番を 突き飛ばして 鍵を 奪った！');
+  await walkNpc('iemon', ['down', 'left', 'left', 'left', 'left', 'left'], 0.18);
+  await say('来い、女！|身代ごと 島で 使って やる！', { name: N.iemon });
+  await say('はなしな！ この 人でなし！', { name: N.ogin });
+  await fadeTo(1, 300);
+  setFlag('iemonFled');
+  G.npcs = G.npcs.filter(n => n.id !== 'iemon' && n.id !== 'ogin');
+  await fadeTo(0, 300);
+  await say('伊右衛門は お銀を 引きずって|裏の 浜から 舟で 逃げた！');
+  await say('くっ……流刑島じゃ。|あやつ、霧の 海の 流刑島に|隠れる つもりじゃ。', { name: N.sotono });
+  await say('湊の 船頭に 牢番の 舟を|出させる。霧の 道は 牢番が 知って おる。||お銀を 助けて やってくれ！', { name: N.sotono });
+  Save.auto();
+}
+
+// 肥後・人吉の直吉（庄屋の下男）。お岩の話を聞くまでは、ただの親切な男
+function naokichiNpc() {
+  return { id: 'nao', sprite: 'naokichi', name: '下男', x: 12, y: 11, wander: true, radius: 2, cond: () => !G.bag.dokucho && !flag('iemonFled'), talk: naokichiTalk };
+}
+async function naokichiTalk() {
+  if (!flag('oiwaTalk')) {
+    const hurt = G.party.some(m => m.hp < stat(m, 'hp'));
+    if (hurt) {
+      await say('御武家さま、怪我してるでねか。|ほら、これで 治るだよ。', { name: '下男' });
+      SND.sfx('heal'); for (const m of G.party) if (m.hp > 0) m.hp = Math.min(stat(m, 'hp'), m.hp + Math.round(stat(m, 'hp') * 0.3));
+      await say('下男は 手早く 薬草を もみ、|傷口に 当てて くれた。');
+      await say('……お主は？');
+      await say('いえ、以前に してた|生業の 癖で ついね。', { name: '下男' });
+    } else await say('庄屋さまの 使いで|薬草を 摘みに 行くとこだよ。', { name: '下男' });
+    return;
+  }
+  await say('男の 左の 頬に、薬で 焼けたような|古い 痕が ある……');
+  await say('お主、対馬の 薬屋|直吉では ないか。');
+  await say('…………！|な、何の ことだか……', { name: N.nao });
+  await say('対馬で お岩どのに 会った。|伊右衛門が 毒を 盛った ことも、|お主が 毒を 売った ことも 聞いた。');
+  await say('……お岩さまの 幽霊に？||あ、あっしは 知らなかったんだ！|鼠を 殺す 毒だと 言われて……', { name: N.nao });
+  await say('伊右衛門は 必ず 拙者が 始末する。||お主の 毒で 罪なき おなごが|非業の 死を 遂げたのだ。');
+  await say('少しでも 罪を 滅ぼし、|今度こそ 真っ当な 薬売りとして|人助けに 生きてみよ。');
+  await say('…………。||……へい。|これが、あっしの 売り帳で ござんす。', { name: N.nao });
+  await getItem('dokucho', '毒の売り帳を 手に入れた！');
+  await say('お岩さま……|どうか 成仏 なすって ください……', { name: N.nao });
+}
+
+// 流刑島：浜と牢屋敷
+MAPS.rukei = { name: '流刑島', kind: 'out', bgm: 'night', night: true, rows: [
+  '~~~~~~~~~~~~~~~~~~~~',
+  '~~~MMMMMMMMMMMMMM~~~',
+  '~~MMMMMMM.MMMMMMMM~~',
+  '~~MM.....=.....MMM~~',
+  '~~M..T...=...T...M~~',
+  '~~M....,.=.......M~~',
+  '~~M..g...=....g..M~~',
+  '~~M......=.......M~~',
+  '~~MM.....=.....MMM~~',
+  '~~~M.....=.....M~~~~',
+  '~~~~.....=.....~~~~~',
+  '~~~~~....=....~~~~~~',
+  '~~~~~~~~~V~~~~~~~~~~',
+  '~~~~~~~~~V~~~~~~~~~~'] };
+STORY.rukei = {
+  tint: () => iemonDone() ? null : { c: 'rgba(150,155,185,1)', fog: 0.3 },
+  warps: [{ x: 9, y: 2, to: 'rukei_ro', tx: 10, ty: 11, dir: 'up', sfx: 'door' }],
+  npcs: [{ id: 'sendo', sprite: 'guard', name: '牢番', x: 11, y: 11, dir: 'up', talk: async () => {
+    if ((await ask('対馬へ 戻りますか？', ['戻る', 'やめる'], { name: '牢番' })) !== 0) return;
+    await fadeTo(1, 400); loadMap('tsushima', 19, 5, 'left'); await fadeTo(0, 400);
+  } }],
+  objects: [look(5, 6, ['名も ない 流人の 墓だ。']), look(14, 6, ['名も ない 流人の 墓だ。'])],
+  onEnter: async () => { if (!flag('rukeiIn')) { setFlag('rukeiIn'); await say('霧の 向こうに 黒い 島影が|浮かびあがった。||流人を 閉じこめる 牢屋敷が|島の 奥に 見える……'); } },
+};
+MAPS.rukei_ro = { name: '流刑島の牢屋敷', kind: 'cave', bgm: 'cave', enc: () => 'rukei', rows: [
+  '####################',
+  '#......#####.....Z.#',
+  '#.OOO..#####.OOO...#',
+  '#.....b.......b....#',
+  '###.######.#######.#',
+  '#.....#.......#....#',
+  '#.OOO.#.#####.#.OO.#',
+  '#.....#...#...#....#',
+  '#####.###.#.###.####',
+  '#Z....#.......#....#',
+  '#.b.............#..#',
+  '#######.......######',
+  '##########E#########'] };
+STORY.rukei_ro = {
+  warps: [{ x: 10, y: 12, to: 'rukei', tx: 9, ty: 3, dir: 'down', sfx: 'door' }],
+  npcs: [
+    { id: 'iemon', sprite: 'iemon', name: N.iemon, x: 3, y: 1, dir: 'right', cond: () => !iemonDone() },
+    { id: 'ogin', sprite: 'ogin', name: N.ogin, x: 2, y: 1, dir: 'right', cond: () => !iemonDone() },
+  ],
+  objects: [chest('c_ruk1', 17, 1, { item: 'hangontan' }), chest('c_ruk2', 1, 9, { gold: 900 })],
+  triggers: [{ area: [1, 3, 6, 3], cond: () => !iemonDone(), run: () => iemonEvent() }, { area: [5, 1, 6, 2], cond: () => !iemonDone(), run: () => iemonEvent() }],
+};
+async function iemonEvent() {
+  await say('……ここまで 来たか。|しつこい 犬どもめ。', { name: N.iemon });
+  await say('伊右衛門！ お岩どのの 恨み、|お銀どのの 苦しみ、|ここで 晴らす！');
+  await say('お岩？ ふん、あの 女は 出世の|足かせよ。毒で 片づけて 何が 悪い。||お銀の 身代も わしの 物だ。|おぬしらも ここで 島の 土に なれ！', { name: N.iemon });
+  const r = await fight(['iemonte', 'iemon', 'iemonte'], { boss: true, bg: 'cave', intro: '伊右衛門と 手下どもが|刀を 抜いた！', winText: '伊右衛門たちを うちやぶった！' });
+  if (r !== 'win') return;
+  await say('ぐ……ま、まだ だ……|舟が ある……！', { name: N.iemon });
+  await fadeTo(1, 400);
+  loadMap('rukei', 10, 8, 'down');
+  G.npcs.push(Object.assign(mkMover('iemon', 10, 11, 'down'), { id: 'iemon2', def: {}, hx: 10, hy: 11, wt: 1 }));
+  G.npcs = G.npcs.filter(n => n.id !== 'sendo');
+  await fadeTo(0, 400);
+  await say('伊右衛門は 牢番の 舟に|飛び乗った！');
+  await say('あばよ、犬ども！|身代は 無くとも、命あっての|物種よ！', { name: N.iemon });
+  SND.sfx('water'); G.shake = 0.3;
+  await say('……その とき。||舟べりの 海の 中から、|白い 手が すうっと 伸びた。');
+  await say('……伊右衛門どの……', { name: N.oiwa });
+  await say('ひっ……！ お、お岩……！|はなせ、はなせええ！', { name: N.iemon });
+  SND.sfx('water'); G.whiteFlash = 0.4;
+  await say('白い 手は 伊右衛門の 足を つかみ、|舟は 大きく かたむいて――||伊右衛門は 霧の 海へ|引きずりこまれて いった。');
+  G.npcs = G.npcs.filter(n => n.id !== 'iemon2');
+  await sleep(DEBUG.fast ? 0 : 600);
+  SND.sfx('shine');
+  await say('霧の 上に、白い 着物の 女が|ぼうっと 浮かんだ。');
+  await say('……ありがとう ございました。|これで、ようやく……', { name: N.oiwa });
+  await say('お岩の 姿は 朝日に 溶けるように|消えていった。');
+  setFlag('iemonDone'); G.tint = null;
+  await say('霧が 晴れていく……！');
+  G.npcs.push(Object.assign(mkMover('ogin', 9, 8, 'down'), { id: 'ogin2', def: {}, hx: 9, hy: 8, wt: 1 }));
+  await say('……助かったよ。あんたたちが|来なきゃ、あたしは 今ごろ|島の 土さ。', { name: N.ogin });
+  await say('あたしは お銀。博多で 店を|張ってる 商人だ。||この 借りは 商人の 誇りに|かけて 返すよ。', { name: N.ogin });
+  await say('……ねえ。あんたたち、玉を 集めて|旅を してるんだろう？|仲間が 増えて、連れて 歩けない|者も いるって 聞いた。', { name: N.ogin });
+  await say('それなら いい 考えが ある。||南蛮の 商人に 聞いたんだけどね。|みんなで 元手を 出しあって、|一つの 店を 回す しくみ……', { name: N.ogin });
+  await say('「かぶしきがいしゃ」って いうのさ！', { name: N.ogin });
+  await say('か、かぶしき……？');
+  await say('あたしの 博多の 店を 本社に するよ。|旅に 連れて いけない 仲間は|社員として 本社で 働く。||入れ替えたい ときは、本社に|来れば いい。', { name: N.ogin });
+  await say('屋号は……そうだね。|里見の 八犬士で、|「里八株式会社」！', { name: N.ogin });
+  SND.stopBgm(); await SND.jingle('item'); SND.bgm('night');
+  setFlag('kaisha'); setFlag('oginBack');
+  await say('里八株式会社が できた！');
+  if (G.reserve && G.reserve.length) await say('先に 旅立った 仲間たちにも|文を 出して おくよ。||みんな 本社に 集まって もらおう。', { name: N.ogin });
+  await say('あたしは 先に 博多へ 戻って、|店を 立て直すよ。||落ち着いたら 本社に 顔を|出しておくれ。', { name: N.ogin });
+  G.npcs = G.npcs.filter(n => n.id !== 'ogin2');
+  await fadeTo(1, 400);
+  G.npcs.push(Object.assign(mkMover('guard', 11, 11, 'up'), { id: 'sendo', def: STORY.rukei.npcs[0], hx: 11, hy: 11, wt: 1 }));
+  await fadeTo(0, 400);
+  Save.auto();
+}
+
+/* ---------------- 博多：お銀の店 → 里八株式会社の本社 ---------------- */
+// 社員（控えの仲間）が増えると、本社の敷地と建屋が広がる
+function honshaRows() {
+  const n = (G.reserve || []).length;
+  if (n >= 4) return [
+    'X#L##Y#Y#Y##L##X',
+    'X_____n__n_____X',
+    'X_z__z____z__z_X',
+    'X______________X',
+    'XCCCCC____CCCCCX',
+    'X______________X',
+    'X_b____PP____b_X',
+    'XXXXXXXEXXXXXXXX'];
+  if (n >= 2) return [
+    'X#L#Y#Y#L##X',
+    'X___n__n___X',
+    'X_z____z___X',
+    'XCCCC__CCCCX',
+    'X__________X',
+    'X_b____P___X',
+    'XXXXXEXXXXXX'];
+  return MAPS.item_shop.rows;
+}
+MAPS.honsha = { name: '里八株式会社 本社', kind: 'in', bgm: 'village', rows: MAPS.item_shop.rows };
+const honshaExit = () => { const r = MAPS.honsha.rows; return [r[r.length - 1].indexOf('E'), r.length - 1]; };
+STORY.honsha = {
+  warps: [],
+  npcs: [],
+  objects: [],
+};
+function setupHonsha() {
+  MAPS.honsha.rows = honshaRows();
+  const [ex, ey] = honshaExit(), W = MAPS.honsha.rows[0].length;
+  STORY.honsha.warps = [{ x: ex, y: ey, to: 'hakata', tx: 5, ty: 4, dir: 'down' }];
+  const npcs = [
+    { id: 'banto', sprite: 'merchant', name: '番頭', x: ex, y: 1, dir: 'down', talk: hontoTalk },
+  ];
+  // 立てる場所：床（_ と :）で、出口のまわりと奥の帳場の列をよける
+  const R = MAPS.honsha.rows, spots = [];
+  for (let y = 2; y < R.length - 1; y++) for (let x = 1; x < W - 1; x++) if ('_:'.includes(R[y][x]) && Math.abs(x - ex) > 1 && y < R.length - 2) spots.push([x, y]);
+  spots.sort((a, b) => (a[0] % 3) - (b[0] % 3) || a[1] - b[1]);
+  if (flag('oginBack') && !G.party.some(m => m.id === 'ogin') && !(G.reserve || []).some(m => m.id === 'ogin')) {
+    const p = spots.shift() || [ex + 1, ey - 1];
+    npcs.push({ id: 'ogin', sprite: 'ogin', name: N.ogin, x: p[0], y: p[1], dir: 'down', talk: oginHonshaTalk });
+  }
+  (G.reserve || []).forEach((m, i) => { const p = spots[i % Math.max(1, spots.length)] || [ex + 1, ey - 1]; npcs.push({ id: 'staff' + i, sprite: MEMBERS[m.id].sprite, name: mName(m), x: p[0], y: p[1], dir: 'down', talk: async () => {
+    await say(pick(['本社の 仕事も 悪くないな。|だが 腕が なまりそうだ。', '呼んで くれれば|いつでも 旅に 戻るぞ。', '帳面の つけ方を 覚えたぞ。|……刀より むずかしい。']), { name: mName(m) });
+    if ((await ask('入れかえますか？', ['入れかえる', 'やめる'])) === 0) { await swapMembers(); await fadeTo(1, 200); setupHonsha(); loadMap('honsha', ...honshaExitIn(), 'up'); await fadeTo(0, 200); }
+  } }); });
+  STORY.honsha.npcs = npcs;
+}
+const honshaExitIn = () => { const [x, y] = honshaExit(); return [x, y - 1]; };
+async function hontoTalk() {
+  const n = (G.reserve || []).length;
+  await say('へい、里八株式会社で ございます。||ただいま 社員は ' + n + '名。' + (n >= 4 ? '|蔵も 建て増し いたしました。' : n >= 2 ? '|店を 広げさせて いただきました。' : ''), { name: '番頭' });
+  const c = await ask('ご用は？', ['仲間の 入れかえ', '社員名簿', 'やめる'], { name: '番頭' });
+  if (c === 0) { await swapMembers({ empty: '本社に 控えて いる 社員は|おりませぬ。' }); await fadeTo(1, 200); setupHonsha(); loadMap('honsha', ...honshaExitIn(), 'up'); await fadeTo(0, 200); }
+  if (c === 1) await say(n ? '社員名簿：|' + G.reserve.map(m => mName(m) + '（Lv' + m.lv + '）').join('|') : '社員名簿は まだ 白紙で ございます。', { name: '番頭' });
+}
+async function oginHonshaTalk() {
+  if (!flag('shomonGot')) {
+    await say('来たね！ 見ての とおり、|店は まだ がらんどうさ。||伊右衛門に 身代を 持っていかれて、|元手が ないんだよ。', { name: N.ogin });
+    await say('そこで 頼みだ。||本州の 石見の 銀山の 親方に、|この 証文を 届けて おくれ。|あたしの 名で 銀を 前借りするのさ。', { name: N.ogin });
+    setFlag('shomonGot'); await getItem('shomon', 'お銀の証文を あずかった。');
+    await say('石見の 町で 鉱夫の 親方を|さがして おくれ。|頼んだよ！', { name: N.ogin });
+    return;
+  }
+  if (!G.bag.ginbo) { await say('石見の 銀山の 親方に|証文を 届けて おくれ。||本州の 石見の 町だよ。', { name: N.ogin }); return; }
+  removeItem('ginbo');
+  await say('銀の 延べ棒！|やった、これで 店が 回せる！', { name: N.ogin });
+  await say('……よし、決めた。||店は 番頭に まかせて、|あたしも 旅に ついて いくよ。', { name: N.ogin });
+  await say('旅先で 仕入れて、本社で 売る。|妖怪を 倒して 手に入る 珍しい|品も、いい 商売に なるからね。', { name: N.ogin });
+  await say('それに……あんたたちに 返す|借りが まだ 残ってるんだ。|商人は 借りを 踏み倒さない！', { name: N.ogin });
+  const lv = Math.round(G.party.reduce((s, m) => s + m.lv, 0) / G.party.length);
+  const m = joinParty('ogin', lv); m.w = 'tetsusoroban'; m.a = 'tosei'; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp');
+  setFlag('oginJoin');
+  SND.stopBgm(); await SND.jingle('join'); SND.bgm('village');
+  await say('お銀が 仲間に なった！');
+  if (G.party.length > 4) await benchPick2();
+  await fadeTo(1, 200); setupHonsha(); loadMap('honsha', ...honshaExitIn(), 'up'); await fadeTo(0, 200);
+  Save.auto();
+}
+
+/* =====================================================================
+   5. 第二章の終わり：安芸の港から四国へ（道節が仲間になった後）
+   ===================================================================== */
+async function ch2EndBoat() {
+  const c = await ask('海が 静まったぜ。|渦潮も おさまった。||四国へ 渡るかい？|（第二章の 終わりです）', ['渡る', 'やめる'], { name: '船乗り' });
+  if (c !== 0) return;
+  await say('よし、乗りな！|四国まで ひとっ走りだ。', { name: '船乗り' });
+  await fadeTo(1, 800); SND.stopBgm(); setFlag('ch2');
+  G.mode = 'ending';
+  await Title.ending({
+    card: ['第二章', '忠の炎　完'],
+    pages: [
+      '信乃たちは 四匹の 混沌を 倒し、|左母二郎を 討った 道節を|仲間に 迎えた。',
+      (flag('kishimoDone') ? '因幡の 森では 伏姫の 声が|幼い 親兵衛を 光の 中へ 迎えた。|' : '') + '忠の 玉が 戻り、|集まった 玉は 三つ。',
+      '瀬戸の 海を 越えて、|一行は 四国へ 渡る。',
+    ],
+    next: '第三章へ つづく',
+  });
+  G.mode = 'field';
+  loadMap('aki', 19, 5, 'left');
+  await fadeTo(0, 600);
+  await say('（第三章　四国は 制作中です。|今は 安芸の 港に 戻ります。||寄り道の 続きは 自由に 遊べます）');
+}
+
+/* =====================================================================
+   6. つなぎこみ：中国の野・九州の野・既存の町
+   ===================================================================== */
+(function wireCh2c() {
+  // 中国の野：因幡の村・因幡の浜・蜘蛛の森
+  for (const [k, to, tx, ty] of [['inaba', 'v_inaba', 8, 12], ['inahama', 'v_inahama', 8, 12], ['kumomori', 'kumomori1', 10, 12]]) {
+    STORY.chugoku.warps.push({ x: CP[k][0], y: CP[k][1], to, tx, ty, dir: 'up', sfx: 'step' });
+    STORY[to].edges.s = { to: 'chugoku', x: CP[k][0], y: CP[k][1] + 1, dir: 'down' };
+  }
+  for (const id of ['v_inaba', 'vinn_inaba', 'vhouse_inaba', 'koma_house', 'v_inahama', 'shinbe_house', 'vinn_inahama', 'vshop_inahama', 'kumomori1', 'kumomori2']) CH2_MAPS.add(id);
+  // 寺の奥の院：道節が加わったあとの入れ替えも会社に合わせる
+  benchPick = benchPick2;
+  // 九州の野：唐津は仲間が5人そろってから開く
+  const lk = STORY.world.objects.find(o => o.x === WP.karatsu[0] && o.y === WP.karatsu[1]);
+  if (lk) lk.cond = () => !oginOpen();
+  STORY.world.warps.push({ x: WP.karatsu[0], y: WP.karatsu[1], to: 'karatsu', tx: 8, ty: 12, dir: 'up', sfx: 'step', cond: async () => oginOpen() });
+  const wt = STORY.world.tile;
+  STORY.world.tile = (n, p, x, y) => (n === 'fTown' && x === WP.karatsu[0] && y === WP.karatsu[1] && oginOpen()) ? ['fTown', 1] : wt(n, p, x, y);
+  // 博多：お銀の店は会社ができると本社に
+  const hw = STORY.hakata.warps.find(w => w.to === 'ogin_mise');
+  if (hw) hw.cond = async () => {
+    if (!flag('kaisha')) return true;
+    setupHonsha(); await warp('honsha', ...honshaExitIn(), 'up'); return false;
+  };
+  const banto0 = STORY.ogin_mise.npcs[0].talk;
+  STORY.ogin_mise.npcs[0].talk = async () => {
+    if (!oginOpen()) return banto0();
+    await say('お、お武家さま！|お待ちして おりました！', { name: '番頭' });
+    await say('主の お銀が、対馬で 抜け荷の|疑いを かけられ、牢に|入れられたと 知らせが……', { name: '番頭' });
+    await say('お銀は 抜け荷など する 人では|ございません！||唐津の 湊から 対馬へ 船が|出ます。どうか お銀を！', { name: '番頭' });
+    setFlag('oginNews');
+  };
+  // 人吉：直吉
+  STORY.hitoyoshi.npcs.push(naokichiNpc());
+  // 石見：鉱夫の親方に証文
+  const iw = STORY.iwami.npcs.find(n => n.id === 'm1');
+  if (iw) { const t0 = iw.talk; iw.talk = async () => {
+    if (G.bag.shomon) {
+      removeItem('shomon');
+      await say('お銀さんの 証文！|生きて 戻ったのか、よかった！', { name: '鉱夫の親方' });
+      await say('お銀さんには 世話に なってる。|銀なら いくらでも 回すぜ。', { name: '鉱夫の親方' });
+      await getItem('ginbo', '銀の延べ棒を 手に入れた！');
+      await say('博多の お銀さんに|よろしく 伝えて くれ！', { name: '鉱夫の親方' });
+      return;
+    }
+    if (flag('kaisha')) { await say('お銀さんが 戻ったって？|そりゃ めでたい！', { name: '鉱夫' }); return; }
+    await t0();
+  }; }
+  // 下関：お銀の噂（仲間が5人そろったら）
+  const sj = STORY.shimo.npcs.find(n => n.id === 'm1');
+  if (sj) { const t0 = sj.talk; sj.talk = async () => { if (oginOpen() && !flag('oginNews')) { await say('博多の お銀の 店の 番頭が、|腕の 立つ 者を 探してるそうだ。||九州へは 船頭に 頼めば|門司へ 渡れるぜ。', { name: '港の男' }); return; } await t0(); }; }
+  // 安芸の船乗り：道節が仲間になったら四国へ（第二章の終わり）
+  const ak = STORY.aki.npcs.find(n => n.id === 'sendo');
+  if (ak) { const t0 = ak.talk; ak.talk = async () => { if (flag('samo2Done')) return ch2EndBoat(); await t0(); }; }
+})();
 
 /* =====================================================================
    60 MAIN  記録・題名・操作盤・起動
@@ -6311,10 +7307,16 @@ const Title = (() => {
     UI.root.appendChild(e); stage = 'dark'; SND.sfx('shine');
     await sleep(DEBUG.fast ? 0 : 2400); e.classList.add('out'); await sleep(DEBUG.fast ? 0 : 600); e.remove();
   }
-  async function ending() {
+  async function ending(o) {
     stage = 'end'; t = 0; SND.bgm('title'); await fadeTo(0, 800);
-    await card('第一章', '村雨丸　完'); stage = 'end'; SND.bgm('title');
+    await card(...(o ? o.card : ['第一章', '村雨丸　完'])); stage = 'end'; SND.bgm('title');
     const P = (s) => say(s, { cls: 'center', y: 32 });
+    if (o) {   // 第二章以降の終わり
+      for (const p of o.pages) await P(p);
+      const pt = Math.floor(G.playTime / 60);
+      await P('遊んだ 時間　' + Math.floor(pt / 60) + '時間' + (pt % 60) + '分|信乃の レベル　' + G.party[0].lv + '|' + o.next);
+      await fadeTo(1, 800); stage = 'title'; return;
+    }
     await P('信乃は 村雨丸を 取りもどし、|荘助・現八・小文吾と 出会った。');
     await P('孝と 義――|二つの 玉が 戻った。|のこる 犬士は あと 四人。');
     await P('九州の 妖気を はらった 信乃たちは、|村雨丸を 古河の公方へ 届けるため|海を 渡る。');
@@ -6402,6 +7404,15 @@ function testPreset() {
       bag: { yakusou: 10, dokukeshi: 3, reisui: 4, hangontan: 3, modorisuzu: 2, kou: 1, gi: 1, kizuchi: 1 }, flags: fl, opened: {}, steps: 0, playTime: 0, lastInn: 'aki', mayoke: 0 };
     return { v: 1, wv: 2, map: 'shimo', x: 19, y: 5, dir: 'left', party: [sh, mk('sosuke', 'kongozue', 'okegawa'), mk('genpachi', 'tetsujitte', 'okegawa'), mk('kobungo', 'kurotekko', 'okegawa')], gold: 3000,
       bag: { yakusou: 8, dokukeshi: 3, reisui: 3, hangontan: 2, modorisuzu: 2, kou: 1, gi: 1, dotanuki: 1 }, flags: fl, opened: {}, steps: 0, playTime: 0, lastInn: 'moji', mayoke: 0 };
+  }
+  if (t === 'ch2c' || t === 'ch2d') {   // 道節が仲間になった後（③因幡は ch2c、④博多は ch2d）
+    const mk = (id, w, a) => { const m = newMember(id, 21); m.w = w; m.a = a; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp'); return m; };
+    const fl = {}; for (const k of ['dog', 'opening', 'askGaku', 'askBanya', 'gakuCave', 'caveKnown', 'caveIn', 'sosuke', 'samojiroDone', 'tegata', 'surikae', 'genFight', 'genJoin', 'ryuka', 'kobungoMet', 'bunbeOk', 'kobungo', 'kobunDone', 'koderaOpen', 'koderaIn', 'karoDone', 'nueDone', 'giBack', 'dotanukiGiven', 'murasameSkill', 'shinbeMet', 'ch1']) fl[k] = true;
+    for (const k of ['k_bingo', 'k_hoki', 'k_mimasaka', 'k_bizen', 'ch2Arrive', 'samo2Done', 'chuBack', 'oniteraIn', 'v2']) fl[k] = true;
+    const party = [mk('shino', 'murasame', 'tosei'), mk('sosuke', 'shakujo', 'tosei'), mk('genpachi', 'nagajitte', 'tosei'), mk('dosetsu', 'dosetsuto', 'tosei')];
+    const at = t === 'ch2c' ? { map: 'chugoku', x: CP.inaba[0], y: CP.inaba[1] + 1, lastInn: 'izumo' } : { map: 'world', x: WP.fukuoka[0], y: WP.fukuoka[1] + 1, lastInn: 'haka' };
+    return { v: 1, wv: 2, ...at, dir: 'up', party, reserve: [mk('kobungo', 'kongotekko', 'tosei')], gold: 4000,
+      bag: { yakusou: 10, dokukeshi: 4, reisui: 4, hangontan: 3, modorisuzu: 2, kou: 1, gi: 1, chu: 1, kizuchi: 1 }, flags: fl, opened: {}, steps: 0, playTime: 0, mayoke: 0 };
   }
   if (t !== 'sosuke') return null;
   const m = newMember('shino', 6); m.w = 'uchigatana'; m.a = 'kawado'; m.hp = stat(m, 'hp'); m.mp = stat(m, 'mp');
